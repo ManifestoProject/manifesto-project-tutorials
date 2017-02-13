@@ -1,0 +1,9 @@
+# Working with the Manifesto Corpus
+
+## access
+
+## with manifestoR
+
+## with manifestata
+
+We have finished a nice book.

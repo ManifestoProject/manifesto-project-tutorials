@@ -1,0 +1,43 @@
+# Working with the Manifesto Project Dataset
+
+## accessing the dataset
+
+## the dataset structure and variables
+
+## manifestoR & manifestata
+
+## Different measures of...
+
+### Issue emphasis
+
+### Calculating Left-Right Positions
+
+#### rile
+
+#### kim fording
+
+#### vanilla
+
+#### log ratio
+
+#### franzmann kaiser
+
+#### jahn
+
+[@jahn2011]
+
+### uncertainty estimates
+
+#### blm
+
+#### mcdonald budge
+
+### More measures
+
+#### effect number of parties
+
+#### niche measures
+
+#### clarity
+
+

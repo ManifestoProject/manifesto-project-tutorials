@@ -1,0 +1,18 @@
+--- 
+title: "An Introduction to the Manifesto Project (Data)"
+author: "Authors"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: [marpor.bib,book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+description: "This book provides an introduction and overview of the Manifesto Project Data."
+---
+
+# Preface {-}
+
+
+Cite if you like:

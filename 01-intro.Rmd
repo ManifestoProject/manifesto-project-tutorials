@@ -1,0 +1,79 @@
+# Introduction {#intro}
+
+## Who should (not) read this?
+
+This book is written for scholars, students, and other users of the Manifesto Project Data. 
+Currently, it is very difficult for new users to get an overview of the data distributed by the Manifesto Project as well as the scholarly debate on how to use the Manifesto Project Data. Many information on the project as well as the scholarly debate is fragmented and distributed across very different types of documents and publications. 
+
+This book aims to provide information on
+
+* what the Manifesto Project does, 
+* what can (and cannot) be done with the Manifesto Project data, 
+* and what the data was used for in the past.
+
+Scholars and students that are already familiar with the data or who have already used it, can certainly skip some chapters but still gain some new insights. 
+
+## Structure of the book
+
+* History
+* Method
+* Manifesto Project Dataset
+* Manifesto Corpus
+* Manifesto API
+* Existing Research
+
+
+## More Resources on the Manifesto Project Data
+
+This book makes an attempt to provide an overview of the Manifesto Project Data. Therefore, many aspects touched here are dealt elsewhere in much more detail. The following structured list should provide some guidance on where to find more information on certain aspects of the Manifesto Project. There are similar lists that recommend further readings at the end of every chapter. 
+
+Books published by the MRG, CMP and MARPOR:
+
+
+
+[@budge1987]
+
+The three books of Mapping Policy Preferences series [@budge2001-1; @klingemann2006]
+
+[@volkens2013]
+
+Other useful documents
+
+
+[Coding Instructions](https://manifesto-project.wzb.eu/information/documents/handbooks)
+[Variable Codebook of the Dataset](https://manifesto-project.wzb.eu/down/data/2016b/codebooks/codebook_MPDataset_MPDS2016b.pdf)
+[Release Notes of the Dataset indicating all the changes](https://manifesto-project.wzb.eu/down/data/2016b/codebooks/release_notes_2016b.pdf)
+
+Documentation:
+Codebook, Coding Instructions
+
+
+Website: 
+
+[manifestoproject.wzb.eu](http://manifestoproject.wzb.eu)
+
+
+
+<!--
+
+You can label chapter and section titles using `{#label}` after them, e.g., we can reference Chapter \@ref(intro). If you do not manually label them, there will be automatic labels anyway, e.g., Chapter \@ref(methods).
+
+Figures and tables with captions will be placed in `figure` and `table` environments, respectively.
+
+```{r nice-fig, fig.cap='Here is a nice figure!', out.width='80%', fig.asp=.75, fig.align='center'}
+par(mar = c(4, 4, .1, .1))
+plot(pressure, type = 'b', pch = 19)
+```
+
+Reference a figure by its code chunk label with the `fig:` prefix, e.g., see Figure \@ref(fig:nice-fig). Similarly, you can reference tables generated from `knitr::kable()`, e.g., see Table \@ref(tab:nice-tab).
+
+```{r nice-tab, tidy=FALSE}
+knitr::kable(
+  head(iris, 20), caption = 'Here is a nice table!',
+  booktabs = TRUE
+)
+```
+
+You can write citations, too. For example, we are using the **bookdown** package [@R-bookdown] in this sample book, which was built on top of R Markdown and **knitr** [@xie2015].
+
+-->

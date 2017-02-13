@@ -1,0 +1,93 @@
+# Methodology
+
+
+We describe our methods in this chapter.
+Test
+
+
+
+
+## Sampling
+
+The current version of the Manifesto Project Dataset contains information on more than 4000 electoral programmes from around 1000 parties that competed in more than 650 elections in over 50 countries. In the following, we will illustrate the current coverage and sampling strategy in regard to the selection of countries, elections, parties and documents.
+
+### Democratic Countries
+The dataset covers electoral programmes from more than 50 different countries. 
+The Manifesto Project started at the end of 1979 as the Manifesto Research Group (MRG) supported by the European Consortium of Political Research (ECPR).
+Initially, collection and coding was mostly limited to established western democracies (Western Europe, USA, Canada, New Zealand, Australia, Israel and Japan) and went back to all elections after the end of WWII in 1945. 
+With the take over of the Comparative Manifestos Project and the breakdown of the Soviet Union, collection and coding were extended to Central and Eastern European countries from the first democratic election in 1990 onwards. 
+Most recently, the project extended its data collection to countries in South America. 
+
+_Exceptions_: In the past some countries and elections have been sampled that were not fully-democratic or free and fair, e.g. the coding of elections in Azerbaijan or Belarus.  
+
+### Parliamentary Elections
+Collection is mostly limited to parliamentary (lower house) elections. 
+Some of this take place at the same date as eg. presidential elections. This is why platforms might reflect the positions of a party and a candidate. 
+Our "sister-project" the [Euromanifesto Project](/information/documents/linkings) collects and codes electoral programmes issued for European parliamentary elections. 
+
+_Exceptions_: In South American countries we mostly collect and code programmes issued at presidential elections. 
+
+### Parties Represented in Parliament
+In general, we only collect and code programmes of parties that gained at least one seat in parliament at the focal election. 
+Due to the fragmentation of party systems in Central and Eastern European countries, the threshold is increased to two seats there. 
+
+_Exceptions_: There are some exceptions from this rule. 
+On the one hand, programmes of some parties were not coded in the past despite having won a seat in parliament because they were considered to be of low relevance.
+On the other hand, some parties have been coded although they may not have gained a seat due to their important role for the party system in the past or for other reasons. 
+
+### Electoral Programmes
+We seek to collect and code electoral programmes for all parties. 
+
+_Exceptions_: However, some parties do not publish electoral programmes. 
+In this case, we look for documents that come closest to electoral programmes by searching for documents that were of great importance during the electoral campaign, that reflect the party's broader programmatic profile and that are written by the parties themselves. 
+These substitute documents can for example be a prominent speech by a party leader or a detailed leaflet laying out a party's policy plan. New parties sometimes do not publish a program specifically for one election, but run for an election on their general program.
+You can find a [list](/datasets) of coded documents on the download site of the main dataset. Moreover, the [primary documents dataset](/datasets/mppdds) provides additional information on the comparability of the coded documents.
+
+## Coding
+
+Coding instructions 
+
+Different versions 
+
+### Coding unit
+The coding unit is the quasi-sentence. A quasi-sentence is a single statement. A grammatical sentence can contain more than one quasi sentence, but a quasi-sentence can never span over more than one grammatical sentence. 
+
+Coders are asked to split the whole electoral program into quasi-sentences. 
+
+Show example where one grammatical sentence spans over several quasi sentences.
+One example where one natural sentence is one quasi sentence. 
+
+Example where bullet list is coded as different quasi sentences. 
+
+
+> We believe in deficit reduction not by placing the burden on the middle class and the poor, but by cutting out programs we can’t afford	// and asking the wealthiest to again contribute their fair share. //
+> These values are why we enacted historic health care reform that provides economic security for families //	and enacted sweeping financial reform legislation that will prevent the recklessness that cost so many their jobs, homes, and savings.
+>
+> --- Democratic Party (US), 2012 Electoral Platform
+
+
+
+
+
+
+### Coding Scheme
+
+
+every quasi-sentence
+
+policy goals
+
+
+
+#### changes over time
+
+#### CEE subcategories
+
+cmp introduced cee categories
+
+#### coding instructions 5 
+
+marpor 
+
+### Coding and  Coder Training
+

@@ -1,0 +1,122 @@
+# Research using Manifesto Project Data
+
+mostly citations from abstracts
+
+## ... as dependent variable
+
+
+### Public Opinion
+* Niche parties do not respond to shifts in public opinion, but mainstream parties do [@adams2006-1]
+* Parties of the center and right react to both public opinion and the global economy, whereas parties of the left are not or less responsive [@adams2008]
+* Mainstream parties respond to public opinion, niche parties to their supporters [@ezrow2011]
+* opinion leaders [@adams2009-1]
+
+
+### Time 
+
+* Parties talk about a growing number of issues, they are converging on the left–right scale, and the ideological cues they are sending to voters are increasingly ambiguous [@albright2010]
+
+### Electoral loss
+
+* Parties shift their policies more when they have lost votes in the previous election than when they have gained votes; and the effect of past election results dissipates with the passage of time [@somer-topcu2009]
+
+### office aspiration/government experience
+
+* Parties with low office aspiration shift their position more when they are in government than when they are in opposition [@schumacher2015-1]
+
+### Competitors
+
+* Mainstream parties emphasize anti-immigrant positions in response to radical right success, green party success will have the opposite effect for environmental issues [@abou-chadi2016-1] 
+
+
+### Economy
+
+* The more integrated an economy, the less differences between parties in terms of left-right positions [@steiner2012]
+* Parties are less responsive in terms of their left-right positions in more open economics [@ezrow2014]
+* Economc integration leads to convergence of party positions and increasing emphasis of non-economic issues [@ward2015]
+* [@ward2011]
+
+
+### inequality
+* greater income inequality under permissive electoral systems contributes to growing party polarisation [@han2015]
+* [@pontusson2010]
+* "supply-side constriction in the choices presented to voters, rather than the weakening of class divisions, accounts for the declining political relevance of redistributive values and the class basis of party choice." [@evans2012] check again for manifesto usage
+* [@tavits2014-1]
+
+### sonstiges
+* Parties on the economic right are more supportive of decentralization than parties on the economic left, while culturally liberal parties favour decentralization more than culturally conservative parties [toubeau2015]
+
+### party competition
+* When the number of parties in the system increases, the dispersion of parties also increases, but only up to a point [@andrews2009]
+
+## ... as independent variable
+
+### globalization
+* Leftist parties in government reduce the effect of globalization on income inequality [@ha2012].
+### satisfaction with democracy
+
+* Citizen satisfaction increases when party choices in a political system are more ideologically proximate to the mean voter position in left–right terms [@ezrow2011-1]
+
+### legitimacy
+* [@anderson2012]
+
+### Public Opinion
+
+whether climate change is a threat [@sohlberg2016]. 
+
+### Perceived Party Positions
+
+* Voters do not change their perceived positions of parties in line with parties' changes in left-right positions [@adams2011]
+* Voters perceived positions of parties are not in line with parties' changes on the issue of European integration [@adams2014]
+* Voters do change their perceived positions of parties in line with parties' changes in left-right positions [@fernandez-vazquez2014]
+
+
+### Mass Media
+
+* Parties that emphasize certain issues are more often associated with these issues in media coverage [@merz2016-1].
+
+### Electoral Success
+
+* Parties loose votes when they change their position on principle issues [@tavits2007]
+* Niche parties loose when they moderate their left-right position [@adams2006-1]
+* Parties gain votes at the current election when they moderated their policies at the previous election [@adams2009]
+
+### Coalition Formation
+
+* Parties that emphasize themes in their election manifestos that correspond to the policy remit of specific cabinet portfolios are more likely to obtain control over these portfolios [@back2011-1]
+* 
+
+
+### policy making
+
+* Governmental parties having pro-environmentalist policy positions adopt more environmental measures  [@knill2010]
+* Green tax burdens are influenced by the left–right and environmental positions of legislative medians  [@ward2012]
+
+### Government Spending
+
+* Parties emphasizing certain issues areas in their program spend more on these when in power [@budge1990]
+* Association between parties' issue emphasis in electoral programs and government spending  [@klingemann1994] -- debated in [@king1993]
+* Shifts in Italian government's issue emphasis can explain changes in welfare and defence spending, but not in spendings on public order and education [@russo2016]
+* An analysis of determinants of the gap between parties' emphasis of welfare issues and welfare spending  [@horn2016]
+* Party ideology does not influence education spending [@garritzmann2015]
+* Parties that emphasize law and order in their program spend more on public order and safety if there is room to manœuvre [@wenzelburger2015-1]
+* Government ideology, measured as welfare and international positions, affects defense spending -- conditional on the international security environment [@whitten2011-1]
+
+### Foreign Affairs
+
+* Left parties in government contribute more to NATO's military intervention in Lybia [@haesebrouck2016]
+* Parties that emphasize concepts related to militarism relative to anti-militarism and pacifism are more likely to initiate conflicts [@heffington2016]
+* Government ideology has no effect on establishment/strength of diplomatic relationships with North Korea [@onderco2015]
+* Partisanship has no effect on participation in air strikes against IS [@haesebrouck2016-1]
+
+
+## Methodological
+
+### Critical
+
+
+
+### Scaling Preferences
+
+
+
