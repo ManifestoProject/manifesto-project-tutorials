@@ -1,0 +1,4 @@
+job1:
+  script:
+  - echo $MANIFESTO_APIKEY > manifesto_apikey.txt
+  - R -e "source("buildscript.R")"
