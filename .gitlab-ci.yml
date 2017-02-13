@@ -11,7 +11,7 @@ push_to_website:
   stage: deploy
   script:
     - rm -f /srv/manifesto-project.wzb.eu/public/down/manifesto-introduction/*
-    - cp /_book/. /srv/manifesto-project.wzb.eu/public/down/manifesto-introduction/
+    - cp /. /srv/manifesto-project.wzb.eu/public/down/manifesto-introduction/
 
 
 stages:
