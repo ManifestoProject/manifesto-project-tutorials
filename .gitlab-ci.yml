@@ -10,9 +10,9 @@ build_book:
 push_to_website:
   stage: deploy
   script:
-    - rm -rf /srv/manifesto-project.wzb.eu/public/down/manifesto-introduction/libs
-    - rm -f /srv/manifesto-project.wzb.eu/public/down/manifesto-introduction/*
-    - cp -r _book/* /srv/manifesto-project.wzb.eu/public/down/manifesto-introduction/
+    - rm -rf /srv/manifesto-project.wzb.eu/public/manifesto-introduction/libs
+    - rm -f /srv/manifesto-project.wzb.eu/public/manifesto-introduction/*
+    - cp -r _book/* /srv/manifesto-project.wzb.eu/public/manifesto-introduction/
 
 
 stages:
