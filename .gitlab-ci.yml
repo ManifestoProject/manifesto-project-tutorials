@@ -1,4 +1,5 @@
 job1:
   script:
   - echo $MANIFESTO_APIKEY > manifesto_apikey.txt
-  - R -e "source("buildscript.R")"
+  - R -e "library(withr); with_libpaths('~/.Rlib', source('buildscript.R', local = TRUE, echo = TRUE))"
+
