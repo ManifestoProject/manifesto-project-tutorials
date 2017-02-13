@@ -1,0 +1,75 @@
+# Methodological Discussion on Manifesto Project Data
+
+
+* Summarry of the methodological debate on Manifesto Project Data [@gemenis2013]
+* Manifestos are expressions of a party's identity as well as of a party's image because they address voters and members alike [@harmel2016]
+* Bayesian methods are superior to structural equation modeling when combining several sources of left-right positions to a common estimate [@bakker2009]
+* continous measure of partisanship of government based on goverment composition data and manifesto data [@kim2002]
+* median voter voter ideology [@kim2002]; continued by [@neve2011]
+* The Manifesto Corpus is a new resource for research on political parties [@merz2016]
+* strengths and weaknesses [@volkens2007]
+
+## Coding
+
+* The coding of natural sentences instead of quasi-sentences is equally reliable [@daubler2012] 
+* Misclassification of codes is a serious and systemic problem with the current CMP data set and coding process [@mikhaylov2012]
+
+## Document Selection
+
+* The Danish part of the manifesto document collection is problematic because it is based on many substitute documents of varying length [@hansen2008]
+* The use of substitute documents instead of electoral programs is problematic  [@gemenis2012]. Responses: [@benoit2012;@budge2012].
+
+## Uncertainty estimates
+
+* Scholars should acknowledge measurement error in manifesto data and should use bootstrapped confidence intervals around estimates based on Manifesto Project Data [@benoit2009]
+* Error estimates for the Manifesto Project Data can be calculated based on parties trajectories and some assumptions about parties behavior [@mcdonald2014]
+* Uncertainty estimates based on two different approaches produce very similar results [@meyer2013]
+
+## Comparisons of manifesto data and expert surveys
+* There is some agreement but also numerous inconsistencies between expert survey data and manifesto data [@benoit2007-1]
+* The associations between election rules and ideological congruence are relatively robust to various measurement approaches -- including Manifesto Project Data and expert surveys [@powell2009]
+* Party positions based on expert surveys and manifestos are correlated [@hooghe2010]
+* Using esimates based on different methodologies produces different results [@keman2007]
+* Manifesto measures are error-prone for parties that are internally divided [@marks2007]
+* Manifesto Project Data show more variance over time within parties than expert surveys [@mcdonald2007]
+* Salience measures of european integration used in the Manifesto Project, European Election, and Expert surveys have a common structure. [@netjes2007]
+* Substantive research results on EU politics are dependent on the choice of measurement indicators [@ray2007]
+
+## ambiguity, clarity and cohesion
+
+* Manifesto data can be used to measure a party's ideological cohesion [@jahn2012]
+* giebler2015, lacewell201x
+
+## validity
+
+* party positions based on manifesto data are highly valid [@budge2001]
+
+
+## Party Preferences based on Media Data
+
+* Issue positions of manifesto correlate with positions based on media data, but issue emphasis does not correlate [@helbling2011]
+* There is an association between issue emphasis in media coverage and manifestos [@merz2016]
+
+## Comparisons of Manifesto Project Data and Computerized Scores
+
+* budge pennings [@budge2007]
+* response: [@benoit2007]
+* re-response [@budge2007-2]
+* Wordscores and Manifesto Project Data produce largely comparable data [@klemmensen2007].
+* Computer coding can be used to locate weaknesses of Manifesto Project Data and the other way round [@pennings2011]
+* Wordfish produces more plausible estimates for Japanese parties as the Manifesto Project Data because the documents are proxy documents [@proksch2011]
+
+
+### Scaling Preferences
+
+* Using different procedures to calculate left-right positions can produce substantively different results [@dinas2010]
+* Categories can be better classified more fine-grained than dichotomously into left and right [@jahn2011]
+* The different procedures of calculating left-right scores are based on different underlying assumptions [@franzmann2013]
+* response by jahn [@jahn2014]
+* Left-right positions according to the rile are not appropriate in Central and Eastern European countries [@molder2013]
+* A naive iterative methodology to calculate left-right positions that puts emphasis on the importance of selecting the right (and left) categories [@prosser2014]
+* factor analysis [@gabel2000]
+* [@klingemann1995]
+
+## other measures
+* continuos nicheness measure [we propose a continuous measure that allows for more fine-grained measurement of a party’s ‘nicheness’ [@2015]
