@@ -1,7 +1,10 @@
+
 install.packages("manifestoR")
 install.packages("bookdown")
 
-library(bookdown)
 library(manifestoR)
+library(bookdown)
 
-rmarkdown::render_site(output_format = 'bookdown::gitbook', encoding = 'UTF-8')
+
+mp_setapikey(key.file = "manifesto_apikey.txt")
+render_site(output_format = 'bookdown::gitbook', encoding = 'UTF-8')"

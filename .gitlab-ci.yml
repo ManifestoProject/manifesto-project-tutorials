@@ -1,7 +1,7 @@
 job1:
   script:
   - echo $MANIFESTO_APIKEY > manifesto_apikey.txt
-  - R -e "library(withr); install.packages('manifestoR', repos = 'https://cloud.r-project.org', lib = '~/.Rlib'); install.packages('bookdown', repos = 'https://cloud.r-project.org', lib = '~/.Rlib'); library(manifestoR); library(bookdown); rmarkdown::render_site(output_format = 'bookdown::gitbook', encoding = 'UTF-8')"
+  - R -e "library(withr); with_libpaths('~/.Rlib', source('buildscript.R', local = TRUE, echo = TRUE))"
   artifacts:
     paths:
     - _book/
