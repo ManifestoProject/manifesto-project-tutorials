@@ -8,7 +8,7 @@ documentclass: book
 bibliography: [marpor.bib,book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-github-repo: rstudio/bookdown-demo
+github-repo: ManifestoProject/manifesto-introduction
 description: "This book provides an introduction and overview of the Manifesto Project Data."
 ---
 

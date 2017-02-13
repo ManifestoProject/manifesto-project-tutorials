@@ -112,11 +112,61 @@ whether climate change is a threat [@sohlberg2016].
 
 ## Methodological
 
+
+* what to do and not to do with manifesto data [@gemenis2013]
+* Manifestos are expressions of a party's identity as well as of a party's image because they address voters and members alike [@harmel2016]
+* Bayesian methods are superior to structural equation modeling when combining several sources of left-right positions to a common estimate [@bakker2009]
+
+
+## coding:
+
+* The coding of natural sentences instead of quasi-sentences is equally reliable [@daubler2012] 
+* mikhaylov
+
+## Document Selection
+
+* The Danish part of the manifesto document collection is problematic because it is based on many substitute documents of varying length [@hansen2008]
+* The use of substitute documents instead of electoral programs is problematic  [@gemenis2012]. Responses: [@benoit2012;@budge2012].
+
+## Uncertainty estimates
+
+* Scholars should acknowledge measurement error in manifesto data and should use bootstrapped confidence intervals around estimates based on Manifesto Project Data [@benoit2009]
+* [@mcdonald]
+
+## Comparisons of manifesto data and expert surveys
+* There is some agreement but also numerous inconsistencies between expert survey data and manifesto data [@benoit2007-1]
+* The associations between election rules and ideological congruence are relatively robust to various measurement approaches [@powell2009]
+
+keman2007
+
+
+## different left-right scaling procedures
+
+* Using different procedures to calculate left-right positions can produce substantively different results [@dinas2010]
+## validity
+
+* party positions based on manifesto data are highly valid [@budge2001].
+* 
+
+
+## Party Preferences based on Media Data
+
+* Issue positions of manifesto correlate with positions based on media data, but issue emphasis does not correlate [@helbling2011]
+* There is an association between issue emphasis in media coverage and manifestos [@merz2016]
+
+## comparisons of manifesto data and wordscores
+
+
+* budge pennings [@budge2007]
+* response: [@benoit2007]
+* re-response [@budge2007-2]
+
 ### Critical
 
 
 
 ### Scaling Preferences
 
-
+* jahn 
+* The different procedures of calculating left-right scores are based on different underlying assumptions [@franzmann2013]
 
