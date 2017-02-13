@@ -1,7 +1,20 @@
-job1:
+build_book:
+  stage: build
   script:
   - echo $MANIFESTO_APIKEY > manifesto_apikey.txt
   - R -e "library(withr); with_libpaths('~/.Rlib', source('buildscript.R', local = TRUE, echo = TRUE))"
   artifacts:
     paths:
     - _book/
+
+push_to_website:
+  stage: deploy
+  script:
+    - rm -f /srv/manifesto-project.wzb.eu/public/down/manifesto-introduction/*
+    - cp /_book/. /srv/manifesto-project.wzb.eu/public/down/manifesto-introduction/
+
+
+stages:
+  - build
+  - deploy
+
