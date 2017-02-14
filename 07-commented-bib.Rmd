@@ -53,8 +53,8 @@ mostly citations from abstracts
 
 ### globalization
 * Leftist parties in government reduce the effect of globalization on income inequality [@ha2012].
-### satisfaction with democracy
 
+### satisfaction with democracy
 * Citizen satisfaction increases when party choices in a political system are more ideologically proximate to the mean voter position in left–right terms [@ezrow2011-1]
 
 ### legitimacy
