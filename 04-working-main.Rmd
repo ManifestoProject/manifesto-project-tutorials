@@ -2,7 +2,31 @@
 
 ## accessing the dataset
 
+The Manifesto Project Dataset can be accessed in different ways:
+
+* The dataset can be downloaded from the [Manifesto Project Website](https://manifesto-project.wzb.eu/datasets). To be able to download the dataset, you need to reg
+
+* [browsed online](https://visuals.manifesto-project.wzb.eu/mpdb-shiny/cmp_dashboard_dataset/)
+
+* download from website
+
+
 ## the dataset structure and variables
+
+party year
+
+### identification variables
+
+### electoral statistics
+
+### coding variables
+
+### progtype
+
+
+estimates
+missing programs
+
 
 ## manifestoR & manifestata
 
@@ -34,7 +58,7 @@
 
 ### More measures
 
-#### effect number of parties
+#### effect number of issues
 
 #### niche measures
 

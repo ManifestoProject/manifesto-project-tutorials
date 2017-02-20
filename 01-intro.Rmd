@@ -13,6 +13,21 @@ This book aims to provide information on
 
 Scholars and students that are already familiar with the data or who have already used it, can certainly skip some chapters but still gain some new insights. 
 
+
+examples:
+
+learn how to use the manifesto project dataset to create graphs and tables
+
+```{r, echo = FALSE, fig.cap = 'German Party Position at the Federal Elections 2009.'}
+mpds %>%
+  filter(countryname == "Germany", date == 200909) %>%
+  arrange(party) %>%
+  ggplot(aes(x = rile, y = reorder(partyname, -rile))) + 
+    geom_point() + xlab("Left-Right Position") + ylab("")
+```
+
+and how to analyze the Manifesto Corpus.
+
 ## Structure of the book
 
 * History

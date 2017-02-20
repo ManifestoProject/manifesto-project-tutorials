@@ -51,6 +51,9 @@ mostly citations from abstracts
 
 ## ... as independent variable
 
+### wage share of GDP
+* When ideological centre in parliament shifts to the right, the wage share of GDP decreases [@wood2016]
+
 ### globalization
 * Leftist parties in government reduce the effect of globalization on income inequality [@ha2012].
 
