@@ -5,10 +5,15 @@ bookdown::pdf_book:
   citation_package: natbib
   keep_tex: yes
 bookdown::epub_book: default
+bookdown::html_book:
+    toc: yes
+    css: toc.css
 bookdown::gitbook:
   css: style.css
+  split_by: section
   config:
     toc:
+      collapse: section
       before: |
         <li><a href="./">Manifesto Introduction</a></li>
       after: |

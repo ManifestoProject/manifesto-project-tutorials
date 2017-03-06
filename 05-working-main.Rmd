@@ -1,4 +1,4 @@
-# Working with the Manifesto Project Dataset
+# The Manifesto Project Dataset
 
 ## accessing the dataset
 

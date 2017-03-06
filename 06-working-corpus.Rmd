@@ -1,0 +1,39 @@
+# The Manifesto Corpus
+
+## Access the Manifesto Corpus
+
+## ... using manifestoR
+
+### tm corpus format
+
+### quanteda corpus format
+
+### tidytext format
+
+The tidy text format is inspired by the tidy data format [@wickham2014]. Data is tidy if
+
+- each variable is a column
+- each observation is a row
+- each type of observational unit is a table
+
+The tidy text format picks up these three principles. Tidy text is format where information is stored in a table 
+ "table with one-token-per-row" [@silge2016]. This is in contrast to the idea of term-document or document-feature matrices.
+
+The advantage of the tidy text format is that it allows users the user of many R operations that are known from other data manipulation and data management tasks.
+
+The tidytext package provides functions to transform several other data formats into a tidy text format. 
+These functions can also be applied to the Manifesto Corpus format.
+
+```{r}
+de2013 <- mp_corpus(countryname == "Germany" & date == 201309) %>%
+   tidy() %>% unnest_tokens(text,text)
+   
+```
+
+
+   
+### term frequency
+
+
+## ... using manifestata
+
