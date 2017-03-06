@@ -65,7 +65,7 @@ mostly citations from abstracts
 
 ### Public Opinion
 
-whether climate change is a threat [@sohlberg2016]. 
+* whether climate change is a threat [@sohlberg2016]. 
 
 ### Perceived Party Positions
 

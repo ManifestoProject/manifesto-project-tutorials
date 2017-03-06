@@ -18,7 +18,7 @@ examples:
 
 learn how to use the manifesto project dataset to create graphs and tables
 
-```{r, echo = FALSE, fig.cap = 'German Party Position at the Federal Elections 2009.'}
+```{r, echo = FALSE, fig.cap = 'Positions of German parties at the federal elections in 2009.'}
 mpds %>%
   filter(countryname == "Germany", date == 200909) %>%
   arrange(party) %>%

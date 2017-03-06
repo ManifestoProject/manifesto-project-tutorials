@@ -20,6 +20,9 @@ Most recently, the project extended its data collection to countries in South Am
 
 _Exceptions_: In the past some countries and elections have been sampled that were not fully-democratic or free and fair, e.g. the coding of elections in Azerbaijan or Belarus.  
 
+``` {r, echo = FALSE, fig.cap = 'Coverage of the Manifesto Project Dataset'}
+
+```
 ### Parliamentary Elections
 Collection is mostly limited to parliamentary (lower house) elections. 
 Some of this take place at the same date as eg. presidential elections. This is why platforms might reflect the positions of a party and a candidate. 

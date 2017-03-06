@@ -4,7 +4,7 @@
 
 The Manifesto Project Dataset can be accessed in different ways:
 
-* The dataset can be downloaded from the [Manifesto Project Website](https://manifesto-project.wzb.eu/datasets). To be able to download the dataset, you need to reg
+* The dataset can be downloaded from the [Manifesto Project Website](https://manifesto-project.wzb.eu/datasets). To be able to download the dataset, you need to login on the website. Login is possible after having registered. Registration is free and simple.
 
 * [browsed online](https://visuals.manifesto-project.wzb.eu/mpdb-shiny/cmp_dashboard_dataset/)
 

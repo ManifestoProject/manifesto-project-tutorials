@@ -1,8 +1,23 @@
 # Working with the Manifesto Corpus
 
-## access
+## Access the Manifesto Corpus
 
-## with manifestoR
+## ... using manifestoR
 
-## with manifestata
+### tm corpus format
+
+### quanteda corpus format
+
+### tidytext format
+
+tidy data format:
+
+de2013 <- mp_corpus(countryname == "Germany" & date == 201309) %>%
+   tidy() %>% unnest_tokens(text,text)
+   
+   
+### term frequency
+
+
+## ... using manifestata
 
