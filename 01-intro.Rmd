@@ -30,7 +30,7 @@ and how to analyze the Manifesto Corpus.
 
 ## Structure of the book
 
-* History
+* History ...
 * Method
 * Manifesto Project Dataset
 * Manifesto Corpus
