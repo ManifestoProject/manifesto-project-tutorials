@@ -22,8 +22,18 @@ learn how to use the manifesto project dataset to create graphs and tables
 mpds %>%
   filter(countryname == "Germany", date == 200909) %>%
   arrange(party) %>%
-  ggplot(aes(x = rile, y = reorder(partyname, -rile))) + 
-    geom_point() + xlab("Left-Right Position") + ylab("")
+  ggplot(aes(x = rile, y = date)) +
+    xlab("Left-Right Position") +
+    ylab("") +
+    scale_colour_manual("Party", values = c("CDU/CSU" = "black", "SPD" = "red", "90/Greens" = "green3", "LINKE" = "deeppink3", "FDP" = "gold")) +
+    geom_vline(xintercept = 0, colour = "black", size=0.7) +
+    geom_hline(yintercept = 200909.0, colour = "black", size=0.5, alpha=0.5) +
+    geom_point(size=3, aes(color = partyabbrev)) +
+    #geom_text(aes(label=partyabbrev, color = partyabbrev,  vjust = -0.9), position = position_dodge(10))+
+    geom_label(aes(label=partyabbrev, color = partyabbrev,  vjust = -0.9), position = position_dodge(7))+
+    theme(axis.ticks = element_blank(), axis.text.y = element_blank(), legend.position = "none")+
+    coord_fixed(ratio = 10)
+
 ```
 
 and how to analyze the Manifesto Corpus.
