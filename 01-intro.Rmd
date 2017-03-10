@@ -22,6 +22,9 @@ learn how to use the manifesto project dataset to create graphs and tables
 mpds %>%
   filter(countryname == "Germany", date == 200909) %>%
   arrange(party) %>%
+  mutate(
+    partyabbrev = ifelse(party==41113,"Greens",partyabbrev)
+  ) %>%
   ggplot(aes(x = rile, y = date)) +
     xlab("Left-Right Position") +
     ylab("") +
