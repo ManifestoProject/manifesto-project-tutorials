@@ -76,6 +76,66 @@ Example where bullet list is coded as different quasi sentences.
 
 ### Coding Scheme
 
+| code | description |
+| --- | --- |
+| 101 | foreign special + |
+| 102 |  foreign special -           | 
+| 103 |  anti-imperalism | 
+| 104 |  military + | 
+| 105 |  military - | 
+| 106 |  peace | 
+| 107 |  internationalism + | 
+| 108 |  europe + | 
+| 109 |  internationalism - | 
+| 110 |  europe - | 
+| 201 |  freedom & human rights | 
+| 202 |  democracy | 
+| 203 |  constitution + | 
+| 204 |  constitution - | 
+| 301 |  decentralisation | 
+| 302 |  centralisation | 
+| 303 |  gov-admin efficiency | 
+| 304 |  political corruption | 
+| 305 |  political authority | 
+| 401 |  free market economy | 
+| 402 |  incentives | 
+| 403 |  market regulation | 
+| 404 |  economic planning | 
+| 405 |  corporatism/mixed economy | 
+| 406 |  protectionism + | 
+| 407 |  protectionism - | 
+| 408 |  economic goals | 
+| 409 |  keynesian demand management | 
+ 410 |  economic growth + | 
+ 411 |  technology & infrastructure | 
+ 412 |  controlled economy | 
+ 413 |  nationalisation | 
+ 414 |  economic orthodoxy | 
+ 415 |  marxist analysis + | 
+ 416 |  anti-growth economy + | 
+ 501 |  environmentalism + | 
+ 502 |  culture + | 
+ 503 |  equality + | 
+ 504 |  welfare + | 
+ 505 |  welfare - | 
+ 506 |  education + | 
+ 507 |  education - | 
+ 601 |  national way of life + | 
+ 602 |  national way of life - | 
+ 603 |  traditional morality + | 
+ 604 |  traditional morality - | 
+ 605 |  law and order + | 
+ 606 |  civic mindedness + | 
+ 607 |  multiculturalism + | 
+ 608 |  multiculturalism - | 
+ 701 |  labour groups + | 
+ 702 |  labour groups - | 
+ 703 |  agriculture + | 
+ 704 |  middle class and prof. group | 
+ 705 |  minority groups
+ 706 |  non-economic demographic gro | 
+uncoded | uncoded quasi-sentences(000) |
+
 
 every quasi-sentence
 
@@ -101,7 +161,7 @@ marpor
 
 ### Issue emphasis
 
-## Commented Bibliography on the Methodological Discussion
+## The Methodological Debate
 
 
 * Summary of the methodological debate on Manifesto Project Data [@gemenis2013]
