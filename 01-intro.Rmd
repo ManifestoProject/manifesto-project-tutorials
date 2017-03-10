@@ -18,14 +18,14 @@ examples:
 
 learn how to use the manifesto project dataset to create graphs and tables
 
-```{r, echo = FALSE, fig.cap = 'Positions of German parties at the federal elections in 2009.'}
+```{r, echo = FALSE, warning = FALSE, fig.cap = 'Positions of German parties at the federal elections in 2009.'}
 mpds %>%
   filter(countryname == "Germany", date == 200909) %>%
   arrange(party) %>%
   ggplot(aes(x = rile, y = date)) +
     xlab("Left-Right Position") +
     ylab("") +
-    scale_colour_manual("Party", values = c("CDU/CSU" = "black", "SPD" = "red", "90/Greens" = "green3", "LINKE" = "deeppink3", "FDP" = "gold")) +
+    scale_colour_manual("Party", values = c("CDU/CSU" = "black", "SPD" = "red", "Greens" = "green3", "LINKE" = "deeppink3", "FDP" = "gold")) +
     geom_vline(xintercept = 0, colour = "black", size=0.7) +
     geom_hline(yintercept = 200909.0, colour = "black", size=0.5, alpha=0.5) +
     geom_point(size=3, aes(color = partyabbrev)) +
