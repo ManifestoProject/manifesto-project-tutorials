@@ -6,6 +6,8 @@ build_book:
   artifacts:
     paths:
     - _book/
+  only:
+   - master
 
 push_to_website:
   stage: deploy
@@ -14,7 +16,8 @@ push_to_website:
     - rm -rf /srv/manifesto-project.wzb.eu/public/manifesto-introduction/libs
     - rm -f /srv/manifesto-project.wzb.eu/public/manifesto-introduction/*
     - cp -r _book/* /srv/manifesto-project.wzb.eu/public/manifesto-introduction/
-
+  only:
+    - master
 
 stages:
   - build
