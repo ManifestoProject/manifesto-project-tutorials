@@ -1,6 +1,6 @@
 --- 
 title: "An Introduction to the Manifesto Project (Data)"
-author: "Authors"
+author: "Nicolas Merz"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
@@ -14,5 +14,6 @@ description: "This book provides an introduction and overview of the Manifesto P
 
 # Preface {-}
 
+You can cite this document: 
 
-Cite if you like:
+Merz,  Nicolas (2017): An Introduction to the Manifesto Project. Available online:  https://manifesto-project.wzb.eu/manifesto-introduction, Version from `r Sys.Date()`

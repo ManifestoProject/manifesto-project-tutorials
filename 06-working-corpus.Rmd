@@ -1,8 +1,8 @@
-# The Manifesto Corpus
+# The Manifesto Corpus {#corpus}
 
 ## Access the Manifesto Corpus
 
-## ... using manifestoR
+## ... using manifestoR {#manifestoR}
 
 ### tm corpus format
 
@@ -24,12 +24,15 @@ The advantage of the tidy text format is that it allows users the user of many R
 The tidytext package provides functions to transform several other data formats into a tidy text format. 
 These functions can also be applied to the Manifesto Corpus format.
 
-```{r}
-de2013 <- mp_corpus(countryname == "Germany" & date == 201309) %>%
-   tidy() %>% unnest_tokens(text,text)
-   
-```
+```{r chunk-labele, echo=FALSE, error=FALSE, message=FALSE, warning=FALSE, collapse=TRUE, warnings=FALSE}
+library(tidytext)
+de2013 <- de %>%
+   tidy() %>% unnest_tokens(text,text) %>% select(party,text)
 
+knitr::kable(
+  head(de2013), caption="TESt"
+)
+```
 
    
 ### term frequency

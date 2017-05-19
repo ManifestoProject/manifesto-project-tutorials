@@ -1,23 +1,45 @@
-# The Manifesto Project Dataset
+# The Manifesto Project Dataset {#maindataset}
 
-## accessing the dataset
+## Access
 
 The Manifesto Project Dataset can be accessed in different ways:
 
-* The dataset can be downloaded from the [Manifesto Project Website](https://manifesto-project.wzb.eu/datasets). To be able to download the dataset, you need to login on the website. Login is possible after having registered. Registration is free and simple.
+* The dataset can be downloaded from the [Manifesto Project Website](https://manifesto-project.wzb.eu/datasets). To be able to download the dataset, you need to login on the website. Login is possible after having registered. Registration is free, simple and quick. The dataset is available in different formats: 
+    * .xlsx for [Excel](https://products.office.com/de-de/excel),
+    * .dta for [Stata](http://www.stata.com/) (version 13 and 14), 
+    * .sav for [SPSS](https://www-01.ibm.com/software/de/analytics/spss/), 
+    * .csv as  [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values).
 
-* [browsed online](https://visuals.manifesto-project.wzb.eu/mpdb-shiny/cmp_dashboard_dataset/)
+* The dataset can be [browsed  online](https://visuals.manifesto-project.wzb.eu/mpdb-shiny/cmp_dashboard_dataset/). The online dashboard is convenient for simple analysis, but does not offer the same analytical possibilites as a statistical software packages such as R, Stata or SPSS.
 
-* download from website
+* The dataset can be accessed directly in R and Stata using the add-ons [manifestoR](#manifestoR-ds) and [manifestata](#manifestata-ds).
 
 
-## the dataset structure and variables
+## Data set structure and variables
 
-party year
+Each row in the dataset represents one electoral program. 
 
-### identification variables
+
+### Identification variables
+
+The country variable is 2 or 3 digit code that identifies the country. The codes follow a loose systematic where:
+
+* 1x: Nordic countries (11 Sweden, 12, Norway, 13 Denmark, 14, Finland, 15 Iceland)
+* 2x: Benelux countries (21 Belgium, 22, Netherlands, 23 Luxembourg)
+* 3x: South/West European countries (31 France, 32 Italy, 33 Spain, 34 Greece, 35 Portugal)
+* 4x: (Partially) German speaking countries (41 Germany, 42, Austria, 43, Switzerland)
+* 5x: Islands (51 UK, 52, Northern Ireland, 53, Ireland, 54 Malta, 55 Cyprus)
+* 6x: English speaking countries oversea (61 United States, 62 Canada, 63 Australia, 64 New Zealand)
+* 7x,8x,9x,1xx: other (mostly) OECD and Central/Eastern European countries (71 Japan, 72 Israel, 73 Sri Lanka, 74, Turkey, 75 Albania, 76 Armenia, 77 Azerbaijan, 78 Belarus, 79 Bosnia-Herzegovina, 80 Bulgaria, 81, Croatia, 82 Czech Republic, 83, Estonia, 84 Georgia, 85 Germand Democratic Republic, 86 Hungary, 87 Latvia, 88 Lithuania, 89 Macedonia, 90 Moldova, 91 Montenegro, 92 Poland, 93 Romania, 94 Russia, 95 Serbia, 96 Slovakia, 97 Slovenia, 98 Ukraine, 113 South Korea, 171 Mexico)
+
+
+The *party* variable is a 5 or 6 digit code that identifies every party in the dataset.
+
+The variables *party* and *date* uniquely identify every row in the dataset. 
 
 ### electoral statistics
+
+* pervote 
 
 ### coding variables
 
@@ -28,7 +50,7 @@ estimates
 missing programs
 
 
-## manifestoR & manifestata
+## manifestoR & manifestata {#manifestoR-ds}
 
 ## Different measures of...
 

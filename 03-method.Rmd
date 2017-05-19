@@ -1,4 +1,4 @@
-# Methodology
+# Methodology {#methodology}
 
 
 We describe our methods in this chapter.
@@ -47,27 +47,58 @@ In this case, we look for documents that come closest to electoral programmes by
 These substitute documents can for example be a prominent speech by a party leader or a detailed leaflet laying out a party's policy plan. New parties sometimes do not publish a program specifically for one election, but run for an election on their general program.
 You can find a [list](/datasets) of coded documents on the download site of the main dataset. Moreover, the [primary documents dataset](/datasets/mppdds) provides additional information on the comparability of the coded documents.
 
+#### Critique: Document Selection
+
+* The Danish part of the manifesto document collection is problematic because it is based on many substitute documents of varying length [@hansen2008]
+* The use of substitute documents instead of electoral programs is problematic  [@gemenis2012]. Responses: [@benoit2012;@budge2012].
+
 ## Coding
 
-Coding instructions 
+Despite the long history of the project, the general coding methodology has only slightly changed over time. The [current version of the coding instructions](https://manifesto-project.wzb.eu/information/documents/handbooks) can be found on the website. The website also provides a [document with changes of the coding instructions over time](https://manifesto-project.wzb.eu/down/papers/Evolution_of_the_Manifesto_Coding_Instructions_and_the_Category_Scheme.pdf).
 
-Different versions 
+The following discusses the coding unit, the coding scheme and the coding training. Finally, the methodological in regard to the coding process is briefly reviewed.
 
 ### Coding unit
-The coding unit is the quasi-sentence. A quasi-sentence is a single statement. A grammatical sentence can contain more than one quasi sentence, but a quasi-sentence can never span over more than one grammatical sentence. 
 
-Coders are asked to split the whole electoral program into quasi-sentences. 
+The coding usually encompasses the whole textual part of a party's electoral programs. However, some parts are usually excluded: preambles, text in tables and pictures. 
 
-Show example where one grammatical sentence spans over several quasi sentences.
-One example where one natural sentence is one quasi sentence. 
+The first step of the coding process is the unitization of the document. All text is split into so-called quasi-sentences - the general coding unit of the Manifesto Project. 
+A quasi-sentence is a single statement. A grammatical sentence can contain more than one quasi sentence, but a quasi-sentence can never span over more than one grammatical sentence. The following example illustrates this process in more detail. The extract below is takem from the 2012 manifesto of the Democratic Party in the US. 
+
+> [...] `r paste(dems_extract$text, sep=" ", collapse="")` [...]
+>
+> --- Democratic Party (US), Extract from  2012 Electoral Platform
+
+The extract shows the text before the unitization process. The next extract illustrates the extract after the unitization. The coder added two slashes (//) between all quasi-sentences to indicate the end of one and the start of the following quasi-sentence. 
+
+> [...] `r paste(dems_extract$text, sep="//", collapse=" __//__ ")` [...]
+>
+> --- Democratic Party (US), Extract from 2012 Electoral Platform
+
+
+
+
+
+
+In the coding process, each quasi-sentence is allocated one category from a coding scheme encompassing a large variety of policy and issue categories. 
+In a next step the text is transformed into a table where each row contains one quasi-sentence. Each quasi-sentence is then allocated one of the categories of the coding scheme. 
+
+
+
+```{r, echo=FALSE}
+dems_extract %>% 
+  select(text,cmp_code) %>% 
+  left_join(cmp_labels, by = c("cmp_code" = "pername")) %>% 
+  select(-variable) %>% 
+  rename(category = cmp_code,description = value, quasi_sentence = text) %>% 
+  knitr::kable()
+```
+
+
+
 
 Example where bullet list is coded as different quasi sentences. 
 
-
-> We believe in deficit reduction not by placing the burden on the middle class and the poor, but by cutting out programs we can’t afford	// and asking the wealthiest to again contribute their fair share. //
-> These values are why we enacted historic health care reform that provides economic security for families //	and enacted sweeping financial reform legislation that will prevent the recklessness that cost so many their jobs, homes, and savings.
->
-> --- Democratic Party (US), 2012 Electoral Platform
 
 
 
@@ -76,65 +107,12 @@ Example where bullet list is coded as different quasi sentences.
 
 ### Coding Scheme
 
-| code | description |
-| --- | --- |
-| 101 | foreign special + |
-| 102 |  foreign special -           | 
-| 103 |  anti-imperalism | 
-| 104 |  military + | 
-| 105 |  military - | 
-| 106 |  peace | 
-| 107 |  internationalism + | 
-| 108 |  europe + | 
-| 109 |  internationalism - | 
-| 110 |  europe - | 
-| 201 |  freedom & human rights | 
-| 202 |  democracy | 
-| 203 |  constitution + | 
-| 204 |  constitution - | 
-| 301 |  decentralisation | 
-| 302 |  centralisation | 
-| 303 |  gov-admin efficiency | 
-| 304 |  political corruption | 
-| 305 |  political authority | 
-| 401 |  free market economy | 
-| 402 |  incentives | 
-| 403 |  market regulation | 
-| 404 |  economic planning | 
-| 405 |  corporatism/mixed economy | 
-| 406 |  protectionism + | 
-| 407 |  protectionism - | 
-| 408 |  economic goals | 
-| 409 |  keynesian demand management | 
- 410 |  economic growth + | 
- 411 |  technology & infrastructure | 
- 412 |  controlled economy | 
- 413 |  nationalisation | 
- 414 |  economic orthodoxy | 
- 415 |  marxist analysis + | 
- 416 |  anti-growth economy + | 
- 501 |  environmentalism + | 
- 502 |  culture + | 
- 503 |  equality + | 
- 504 |  welfare + | 
- 505 |  welfare - | 
- 506 |  education + | 
- 507 |  education - | 
- 601 |  national way of life + | 
- 602 |  national way of life - | 
- 603 |  traditional morality + | 
- 604 |  traditional morality - | 
- 605 |  law and order + | 
- 606 |  civic mindedness + | 
- 607 |  multiculturalism + | 
- 608 |  multiculturalism - | 
- 701 |  labour groups + | 
- 702 |  labour groups - | 
- 703 |  agriculture + | 
- 704 |  middle class and prof. group | 
- 705 |  minority groups
- 706 |  non-economic demographic gro | 
-uncoded | uncoded quasi-sentences(000) |
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+cmp_labels %>% rename(code = pername, description = value) %>% 
+  select(-variable) %>% select(code,description) %>%
+  DT::datatable(caption="Variable Labels", rownames=FALSE)
+```
+
 
 
 every quasi-sentence
@@ -155,65 +133,41 @@ marpor
 
 ### Coding and  Coder Training
 
-## Scaling
 
-### Left-Right Positions
+reliability test
 
-### Issue emphasis
-
-## The Methodological Debate
+reference to variable
 
 
-* Summary of the methodological debate on Manifesto Project Data [@gemenis2013]
-* Manifestos are expressions of a party's identity as well as of a party's image because they address voters and members alike [@harmel2016]
-* Bayesian methods are superior to structural equation modeling when combining several sources of left-right positions to a common estimate [@bakker2009]
-* continous measure of partisanship of government based on goverment composition data and manifesto data [@kim2002]
-* median voter voter ideology [@kim2002]; continued by [@neve2011]
-* The Manifesto Corpus is a new resource for research on political parties [@merz2016]
-* strengths and weaknesses [@volkens2007]
-* party positions based on manifesto data are highly valid [@budge2001]
-* bara 2009 (social historical research)
 
-### Document Selection
-
-* The Danish part of the manifesto document collection is problematic because it is based on many substitute documents of varying length [@hansen2008]
-* The use of substitute documents instead of electoral programs is problematic  [@gemenis2012]. Responses: [@benoit2012;@budge2012].
-
-
-### Coding and Category Scheme
+### critique - methodological discussion - Coding and Category Scheme
 
 * The coding of natural sentences instead of quasi-sentences is equally reliable [@daubler2012] 
 * Misclassification of codes is a serious and systemic problem with the current CMP data set and coding process [@mikhaylov2012]
 * zulianello
 
-### Comparison with other measures
-#### Comparisons of manifesto data and expert surveys
-* There is some agreement but also numerous inconsistencies between expert survey data and manifesto data [@benoit2007-1]
-* The associations between election rules and ideological congruence are relatively robust to various measurement approaches -- including Manifesto Project Data and expert surveys [@powell2009]
-* Party positions based on expert surveys and manifestos are correlated [@hooghe2010]
-* Using esimates based on different methodologies produces different results [@keman2007]
-* Manifesto measures are error-prone for parties that are internally divided [@marks2007]
-* Manifesto Project Data show more variance over time within parties than expert surveys [@mcdonald2007]
-* Salience measures of european integration used in the Manifesto Project, European Election, and Expert surveys have a common structure. [@netjes2007]
-* Substantive research results on EU politics are dependent on the choice of measurement indicators [@ray2007]
+## Scaling
 
 
-#### Comparisons of Manifesto Project Data and Computerized Scores
+```{r}
+dems_2012 <- mp_maindataset() %>% 
+  filter(date == 201211 & party == 61320) %>% 
+  select(matches("per\\d{3}$")) %>% 
+  gather(key="per") %>%
+  rename(categ=per,share=value) %>%
+  arrange(categ) %>%
+  mutate(
+    category = as.character(str_sub(categ,start=-3,end=-1)),
+    categ_num = as.numeric(categ)
+  ) 
 
-* budge pennings [@budge2007]
-* response: [@benoit2007]
-* re-response [@budge2007-2]
-* Wordscores and Manifesto Project Data produce largely comparable data [@klemmensen2007].
-* Computer coding can be used to locate weaknesses of Manifesto Project Data and the other way round [@pennings2011]
-* Wordfish produces more plausible estimates for Japanese parties as the Manifesto Project Data because the documents are proxy documents [@proksch2011]
+ggplot(dems_2012,aes(x=reorder(category,categ_num),y=share)) + 
+  geom_bar(stat="identity") + coord_flip()
+  
+```
 
 
-#### Comparisons with Media Data
-
-* Issue positions of manifesto correlate with positions based on media data, but issue emphasis does not correlate [@helbling2011]
-* There is an association between issue emphasis in media coverage and manifestos [@merz2016-1]
-
-### Scaling Preferences
+### Left-Right Positions
 
 #### Left-Right Positions
 * rile
@@ -231,6 +185,9 @@ marpor
 * elff
 * mpp3
 
+### Issue emphasis
+
+
 
 #### Uncertainty estimates
 
@@ -238,5 +195,52 @@ marpor
 * Error estimates for the Manifesto Project Data can be calculated based on parties trajectories and some assumptions about parties behavior [@mcdonald2014]
 * Uncertainty estimates based on two different approaches produce very similar results [@meyer2013]
 
+
+#### The Methodological Debate
+
+
+* Summary of the methodological debate on Manifesto Project Data [@gemenis2013]
+* Manifestos are expressions of a party's identity as well as of a party's image because they address voters and members alike [@harmel2016]
+* Bayesian methods are superior to structural equation modeling when combining several sources of left-right positions to a common estimate [@bakker2009]
+* continous measure of partisanship of government based on goverment composition data and manifesto data [@kim2002]
+* median voter voter ideology [@kim2002]; continued by [@neve2011]
+* The Manifesto Corpus is a new resource for research on political parties [@merz2016]
+* strengths and weaknesses [@volkens2007]
+* party positions based on manifesto data are highly valid [@budge2001]
+* bara 2009 (social historical research)
+
+
+
+
+## Validity 
+Comparison with other measures
+
+### Comparisons of manifesto data and expert surveys
+* There is some agreement but also numerous inconsistencies between expert survey data and manifesto data [@benoit2007-1]
+* The associations between election rules and ideological congruence are relatively robust to various measurement approaches -- including Manifesto Project Data and expert surveys [@powell2009]
+* Party positions based on expert surveys and manifestos are correlated [@hooghe2010]
+* Using esimates based on different methodologies produces different results [@keman2007]
+* Manifesto measures are error-prone for parties that are internally divided [@marks2007]
+* Manifesto Project Data show more variance over time within parties than expert surveys [@mcdonald2007]
+* Salience measures of european integration used in the Manifesto Project, European Election, and Expert surveys have a common structure. [@netjes2007]
+* Substantive research results on EU politics are dependent on the choice of measurement indicators [@ray2007]
+
+
+### Comparisons of Manifesto Project Data and Computerized Scores
+
+* budge pennings [@budge2007]
+* response: [@benoit2007]
+* re-response [@budge2007-2]
+* Wordscores and Manifesto Project Data produce largely comparable data [@klemmensen2007].
+* Computer coding can be used to locate weaknesses of Manifesto Project Data and the other way round [@pennings2011]
+* Wordfish produces more plausible estimates for Japanese parties as the Manifesto Project Data because the documents are proxy documents [@proksch2011]
+
+
+### Comparisons with Media Data
+
+* Issue positions of manifesto correlate with positions based on media data, but issue emphasis does not correlate [@helbling2011]
+* There is an association between issue emphasis in media coverage and manifestos [@merz2016-1]
+
+### Scaling Preferences
 
 
