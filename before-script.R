@@ -1,5 +1,3 @@
-install.packages("labelled")
-
 library(tibble)
 library(manifestoR)
 library(ggplot2)
