@@ -1,7 +1,7 @@
 install.packages("manifestoR", repos="https://cloud.r-project.org")
 install.packages("bookdown", repos="https://cloud.r-project.org")
 install.packages("labelled", repos="https://cloud.r-project.org")
-
+install.packages("jsonlite", repos="https://cloud.r-project.org")
 library(manifestoR)
 library(bookdown)
 library(rmarkdown)
