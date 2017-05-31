@@ -121,7 +121,7 @@ policy goals
 
 
 
-#### changes over time
+#### Different versions of the coding instructions {#versions}
 
 #### CEE subcategories
 
@@ -131,7 +131,7 @@ cmp introduced cee categories
 
 marpor 
 
-### Coding and  Coder Training
+### Coding and  Coder Training {#training}
 
 
 reliability test

@@ -32,22 +32,79 @@ The country variable is 2 or 3 digit code that identifies the country. The codes
 * 6x: English speaking countries oversea (61 United States, 62 Canada, 63 Australia, 64 New Zealand)
 * 7x,8x,9x,1xx: other (mostly) OECD and Central/Eastern European countries (71 Japan, 72 Israel, 73 Sri Lanka, 74, Turkey, 75 Albania, 76 Armenia, 77 Azerbaijan, 78 Belarus, 79 Bosnia-Herzegovina, 80 Bulgaria, 81, Croatia, 82 Czech Republic, 83, Estonia, 84 Georgia, 85 Germand Democratic Republic, 86 Hungary, 87 Latvia, 88 Lithuania, 89 Macedonia, 90 Moldova, 91 Montenegro, 92 Poland, 93 Romania, 94 Russia, 95 Serbia, 96 Slovakia, 97 Slovenia, 98 Ukraine, 113 South Korea, 171 Mexico)
 
+countryname
+
+oecdmember
+
+eumember
+
+
+edate 
+
+date
 
 The *party* variable is a 5 or 6 digit code that identifies every party in the dataset.
 
-The variables *party* and *date* uniquely identify every row in the dataset. 
+partyname
+
+partyabbrev
+
+parfam
+
+**The variables party and date uniquely identify every row in the dataset.**
+
+The dataset contains four variables related to the coding process. 
+
+The *coderid* is a unique identifier for every coder. 
+
+The *manual variable* indicates the version of the coding instructions with which the coding took place (see [here](#versions) for why there are different versions).
+
+The *testresult* variable indicates the result of the reliability score of the [entry test of the coder](#training). 
+
+The *testeditsim* is another measure of reliability of the coders' entry test result. 
+
+
 
 ### electoral statistics
 
 * pervote 
+* voteest
+* presvote
+* absseat
+* totseats
 
-### coding variables
 
-### progtype
+
+### Manifesto variables
 
 
 estimates
 missing programs
+
+datasetorigin
+
+corpusversion
+
+### Coding variables
+
+The *total* variable indicates the total number of quasi-sentences in the manifesto. 
+
+The dataset contains three sets of content analytical variables (*per101-706*; *per1011-7062*; *per103_1-703_2*). All of these variables indicate the share of quasi-sentences in the respective category calculated as a fraction of the overall number of allocated codes per document
+
+* The three digit variables *(per101–per706)* are the main categories of the coding scheme
+* The four digit variables *(per1011-per7062)* are sub-categories mostly addressing issues in transitional democracies in (mostly) Central and Eastern European countries. However, they were introduced in version one of the coding instructions and were gradually abandoned in most of the countries as the issues could also be coded into the three digit main categories. Currently, the share of these categories is not included in the main categories. If analysts use observations from CEE countries for which the CEE codes were used and want to compare them to manifestos without CEE codes then they should aggregate such CEE codes into the main categories.
+* The four digit variables with underscore *(per103_1-703_2)* are new categories introduced with version 5 of the coding instructions. The first three digits indicate the main category to which they are related. The new coding instructions tell users to utilise these new subcategories rather than the respective main categories.  Currently, the new categories are aggregated into the main categories to ensure over-time comparability of the main categories. The only exception to this aggregation are categories 202_2, 605_2 and 703_2, which have to be added to the uncoded sentences, as such issues were not covered in the handbook4 category scheme. For this reason these sentences were previously coded as 000. So, scholars interested in long-time series can simply continue to use the existing main categories (per101-706, including e.g. the rile) as they did in the past and ignore the new categories. Scholars interested in the new categories should be aware that the respective main categories of the new sub- categories are aggregates of the new categories (i.e. if one uses the main categories together with the new subcategories the per-variables will likely add up to more than 100%).
+
+For more information on the different version of the coding instructions
+and coding schemes, please consult the [website where one can find all
+versions of the coding instructions](https://manifesto-project.wzb.eu/information/documents/handbooks) and a document that highlights the
+most important changes between them.
+
+### Aggregate indices
+
+
+### Dataset version
+
 
 
 ## manifestoR & manifestata {#manifestoR-ds}

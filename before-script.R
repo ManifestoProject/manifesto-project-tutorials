@@ -1,5 +1,3 @@
-install.packages("labelled")
-
 library(tibble)
 library(manifestoR)
 library(ggplot2)
@@ -9,6 +7,8 @@ library(manifestorita)
 library(labelled)
 library(haven)
 library(DT)
+library(labelled)
+
 mp_setapikey("manifesto_apikey.txt")
 mp_use_corpus_version("2016-6")
 
