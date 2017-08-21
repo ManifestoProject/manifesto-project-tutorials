@@ -3,6 +3,8 @@ install.packages("bookdown", repos="https://cloud.r-project.org")
 install.packages("labelled", repos="https://cloud.r-project.org")
 install.packages("jsonlite", repos="https://cloud.r-project.org")
 install.packages("formatR", repos="https://cloud.r-project.org")
+install.packages("knitr", repos="https://cloud.r-project.org")
+
 library(jsonlite)
 library(httr)
 library(manifestoR)
