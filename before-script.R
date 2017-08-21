@@ -6,6 +6,7 @@ library(SnowballC)
 library(manifestorita)
 library(labelled)
 library(haven)
+library(shiny)
 library(DT)
 library(labelled)
 

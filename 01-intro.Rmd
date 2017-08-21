@@ -2,14 +2,14 @@
 
 ## Motivation
 
-This introduction is written for scholars, students, and other users of the Manifesto Project Data. 
+This document is written for users of the Manifesto Project Data. 
 This introduction aims at three goals. It should
 
 1. provide an overview of the data maintained and distributed by the Manifesto Project. 
-2. give hands-on advice on how to use the data that is based on the current methodological discussion. 
+2. give hands-on advice on how to use the data based on the current methodological discussion. 
 3. illustrate how the data by the Manifesto Project was used in the past to answer a large variety of research questions. 
 
-Currently, many information on the project as well as the scholarly debate is fragmented and distributed across very different types of documents and publications. This book attempts to bring this distributed information together and thereby give a low-level introduction to scholars that are completely unfamiliar with the Manifesto Project. Scholars and students that are already familiar with the data or who have already used it in the past can certainly skip some passages and read the book more selectively but will likely still gain some new insights. 
+Currently, many information on the project as well as the scholarly debate is fragmented and distributed across very different types of documents and publications. This book attempts to bring this distributed information together and thereby give a low-level introduction to scholars that are completely unfamiliar with the Manifesto Project. Scholars and students that are already familiar with the data or who have already used it in the past can certainly skip various chapters and read the book more selectively.  
 
 
 examples:

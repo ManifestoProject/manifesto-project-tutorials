@@ -34,6 +34,25 @@ knitr::kable(
 )
 ```
 
+
+### key word search 
+
+library(manifestoR)
+library(tidyverse)
+library(tidytext)
+
+mp_setapikey(key.file="manifesto_apikey.txt")
+mp_use_corpus_version("2016-6")
+
+dictionary <- tibble(word=c("war","peace"))
+
+dict_counts <- mp_corpus(country== 61 | country == 51) %>% 
+   tidy() %>% 
+   group_by(party,date) %>%
+   unnest_tokens(word,text,token="words", to_lower=TRUE) %>%
+   inner_join(dictionary) %>%
+   count(word, sort=TRUE)
+
    
 ### term frequency
 

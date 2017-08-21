@@ -3,11 +3,11 @@
 
 This section presents a selection of scholarly work that made use of the manifesto dataset.
 The literature can be categorized by the research design and the specific topic. 
-First, this section separtes the huge amount of studies based on whether manifesto data is used as the dependent variable or as the independent variable. Is the goal of the research to explain why parties emphasize certain issues and take certain positions (manifesto as dependent variable) or is the goal to understnd the consequences these emphases strategies and positions (independent variable). 
+First, this section separtes the huge amount of studies based on whether manifesto data is used as the dependent variable or as the independent variable. Is the goal of the research to explain why parties emphasize certain issues and take certain positions (manifesto as dependent variable) or is the goal to understand the consequences these emphases strategies and positions (independent variable). 
 
 In a second step the research is categorized according to more specific topics. Each paper is summarized in  a single sentence.
 
-NB: If you think that your research is missing here, please send me a link to your published article or chapter, attach your study. You can also make a suggestion for the summarizing sentence. Please have in mind that we only review published studies here. 
+NB: If you think that your research is missing here, please send me a link to your published article or chapter and attach your study as pdf document. You can also make a suggestion for the summarizing sentence. Please have in mind that we only review published studies here. 
 
 ## ... as dependent variable
 
