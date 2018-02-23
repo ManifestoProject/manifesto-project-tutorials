@@ -1,0 +1,39 @@
+---
+title: "Working with the Main Dataset"
+output:
+  rmdformats::html_clean:
+    highlight: kate
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# the main dataset
+
+```{r message=FALSE, warning=FALSE, paged.print=TRUE}
+
+cmp_cats <- paste("per",v4_categories(),sep="")
+
+mp_maindataset() %>% filter(countryname=="United States" & date == 201211) %>%
+  DT::datatable(caption="Extract Main Dataset", rownames=FALSE, options = list(scrollX = TRUE)) %>%
+  formatStyle(c('country','countryname','oecdmember','eumember'), color='white',backgroundColor = 'blue', fontWeight = 'bold') %>%
+  formatStyle(c('edate','date'), color='white', backgroundColor = 'green', fontWeight = 'bold') %>%
+  formatStyle(c('party','partyname','partyabbrev','parfam'), color='white', backgroundColor = 'red', fontWeight = 'bold') %>%
+  formatStyle(c('coderid','manual','coderyear','testresult','testeditsim'), color='white', backgroundColor = 'orange', fontWeight = 'bold') %>%
+  formatStyle(c('pervote','voteest','presvote','absseat','totseats'), color='black', backgroundColor = 'yellow', fontWeight = 'bold') 
+```
+
+## individual categories
+
+## left-right
+
+## manifestoR measures (nicheness)
+
+## save as dta and open in Stata or Excel
+
+## own measures
+
+## bootstrap
+
+

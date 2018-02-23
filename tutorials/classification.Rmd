@@ -1,0 +1,14 @@
+---
+title: "Using the Manifesto Corpus as Training Data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Classification
+
+## quanteda
+
+## naive bayes with landtagswahlprogramme

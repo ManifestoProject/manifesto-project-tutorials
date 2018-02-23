@@ -1,0 +1,265 @@
+---
+title: "A short primer on the Manifesto Project and its methodology"
+output:
+  rmdformats::html_clean:
+    highlight: kate
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(tibble)
+library(manifestoR)
+library(ggplot2)
+library(tidytext)
+library(SnowballC)
+library(manifestorita)
+library(labelled)
+library(haven)
+library(shiny)
+library(DT)
+library(labelled)
+library(readxl)
+
+mp_setapikey("manifesto_apikey.txt")
+mp_use_corpus_version("2017-2")
+
+mpds <- mp_maindataset(version ="2017b")
+
+de <- mp_corpus(countryname == "Germany" & date == 201309)
+
+codebook <- read_excel("codebook.xlsx")
+
+cmp_labels <- codebook %>% filter(type=="main") %>% select(code,title,description_md)
+cee_labels <- codebook %>% filter(type=="cee")  %>% select(code,title,description_md)
+hb5_labels <- codebook %>% filter(type=="hb5") %>% select(code,title,description_md)
+
+dems_extract <- mp_corpus(countryname == "United States" & date == 201211 & party == 61320)[[1]] %>%
+  as_data_frame() %>% filter(pos > 275 & pos < 281)
+
+dem_doc <- mp_corpus(party==61320 & date == 201211)[[1]]
+
+reps_metadata <- mp_metadata(party==61620 & date > 198000)
+```
+
+This introduction should give a brief overview of the Manifesto Project methodology as well as illustrate the structure of the Manifesto Project Main Dataset and the Manifesto Corpus. 
+
+The Manifesto Project collects and analyzes parties' electoral programs (manifestos). It's data collection is publicly available and forms the basis for many [publications in political science and other disciplines](https://manifesto-project.wzb.eu/publications/all). Since 2009, the Manifesto Project is funded by the German Research Foundation under the name Manifesto Research on Political Representation (MARPOR) and is located the WZB Berlin Social Science Center. MARPOR continues the work and data collection of the Comparative Manifestos Project and the Manifesto Research Group that go back until 1979. 
+
+
+# Methodology
+
+## Collection and sampling
+
+- Countries: Democratic countries, mostly member countries of the OECD as well as many Central and Eastern Europe countries.[^1] 
+
+[^1]: _Exceptions_: In the past, a few countries and elections have been sampled that were not (fully-)democratic or free and fair, e.g. the coding of elections in Azerbaijan or Belarus. 
+
+- Elections: Parliamentary (lower house) elections since the first democratic election in a country (and earliest since the end of 2nd world war).[^2]
+
+[^2]: _Exceptions_: In South American countries we mostly collect and code programmes issued at presidential elections. 
+
+- Parties: Programs of parties that gained at least one seat in parliament at the focal election.[^3]
+
+[^3]: _Exceptions_: There are some exceptions from this rule. 
+On the one hand, programmes of some parties were not coded in the past despite having won a seat in parliament because they were considered to be of low relevance. On the other hand, some parties have been coded although they may not have gained a seat due to their important role for the party system in the past or for other reasons. 
+
+- Documents: An authoritative document enacted and published by a party before an election that outlines a party's policy plan for the time after the election and covers a broad range of policy issues.[^4]
+
+[^4]: _Exceptions_: Some parties do not publish electoral programmes. 
+In this case, we look for documents that come closest to electoral programmes by searching for documents that were of importance during the electoral campaign, that reflect the party's broader programmatic profile and that are written by the parties themselves. These substitute documents can for example be a prominent speech by a party leader or a detailed leaflet laying out a party's policy plan. New parties sometimes do not publish a program specifically for one election, but run for an election on their general program.
+
+## Training and Rules
+
+The coding (or annotation as it is also called) is conducted by country experts.
+The coding follows strict rules that are described in detail in the coding instructions. Despite the long history of the project, the general coding methodology has only slightly changed over time which makes the data comparable over time. The [current version of the coding instructions](https://manifesto-project.wzb.eu/information/documents/handbooks) can be found on the website.[^5]
+
+[^5]: The coding instructions have slightly changed over time. [All major changes are well documented](https://manifesto-project.wzb.eu/down/papers/Evolution_of_the_Manifesto_Coding_Instructions_and_the_Category_Scheme.pdf).
+
+The country expert coders are mostly political scientist or political science students and native speakers. They were trained to parse and code the documents according to the rules specified in the coding instructions. The expert training is done in English on two training documents. Only if the coding results in these documents surpass a certain level of accuracy, the coder will be asked to code the documents from his or her own country.
+
+## Coding Unit
+
+The coding usually encompasses the entire text of a party's electoral programs. Only a few parts are excluded: preambles, text in tables and pictures, and headlines. The first step of the coding process is the unitization of the document. All text is split into so-called quasi-sentences - the general coding unit of the Manifesto Project. 
+_A quasi-sentence is a single statement. A grammatical sentence can contain more than one quasi sentence, but a quasi-sentence can never span over more than one grammatical sentence._ The following example illustrates this process in more detail. The extract below is takem from the 2012 manifesto of the Democratic Party in the US. 
+
+> [...] `r paste(dems_extract$text, sep=" ", collapse=" ")` [...]
+>
+> --- Democratic Party (US), Extract from  2012 Electoral Platform
+
+The extract shows the text before the unitization process. The next extract illustrates the extract after the unitization. The coder added two slashes (//) between all quasi-sentences to indicate the end of one and the start of the following quasi-sentence. 
+
+> [...] `r paste(dems_extract$text, sep="//", collapse=" __//__ ")` [...]
+>
+> --- Democratic Party (US), Extract from 2012 Electoral Platform
+
+This illustrates well that almost the entire text is split into quasi-sentences. 
+
+
+Three important remarks about the coding unit:
+
+- **The coding unit is the quasi-sentence. One quasi-sentence equals one statement.**
+- **A grammatical sentence can contain several quasi-sentences, but a quasi-sentence should never span over more than one grammatical sentence.**
+- **Almost all text is parsed into quasi-sentences (exceptions are the preamble and headlines).**
+
+
+## Code Allocation
+
+In a next step the text is transformed into a table where each row contains one quasi-sentence. Then the quasi-sentences are allocated to codes. These codes belong to a category scheme that covers a broad range of policy issues. The following table lists the major codes of the category scheme:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+cmp_labels %>% rename(category = title, description=description_md) %>% 
+  mutate(description = str_trunc(description,180)) %>%
+  bind_rows(tribble(~code,~category,~description,"000","Uncoded","Quasi-sentences that do not fit any other category")) %>% arrange(code) %>%
+  DT::datatable(caption="Coding Scheme", rownames=FALSE, options = list(scrollX = TRUE,pageLength = 5, lengthMenu = c(5, 10, 15, 20)))
+```
+
+The three most important coding rules are: 
+
+- **One (and only one) code should assigned to each quasi-sentence.**
+- **The coding of policy goals precedes over the coding of political means if both are mentioned in one quasi-sentence.**
+- **Coders should use as little context and personal knowledge as necessary to decide about the code of a quasi-sentence.**  
+
+The extract shown above from the electoral program of the Democratic Party looks like following after the coding:
+
+```{r, echo=FALSE}
+dems_extract %>% 
+  select(text,cmp_code) %>% 
+  left_join(cmp_labels, by = c("cmp_code" = "code")) %>% 
+  select(-description_md) %>%
+  rename(category = cmp_code,description = title, quasi_sentence = text) %>% 
+  knitr::kable()
+```
+
+One code is allocated to each quasi-sentence that reflects the policy goal or issue mentioned in the statement.
+In essence, the coding methodology has only slightly changed since the begin of the Manifesto Project in 1979. A major change is that since 2009 the coding of quasi-sentences is done on the computer instead of on printed copies of the documents. 
+
+# Manifesto Project Main Dataset 
+
+The Manifesto Project Main Dataset was first published in 2001 with the book Mapping Policy Preferences I (Budge et al. 2001). Since 2009 the dataset is available online. 
+
+## Coverage
+
+not yet done.
+```{r coverage, eval=FALSE, fig.cap=, include=FALSE}
+mpds %>% attach_year() %>% group_by(countryname) %>% distinct(countryname,year) %>%
+  ggplot(aes(x = year, y = countryname)) + geom_point()
+```
+
+
+
+## Structure 
+
+- **Each row in the dataset represents one electoral program. **
+- **The perXXX variables indicate the share (per-centage) of quasi-sentences related to the focal category.**
+- **The variables party and date jointly uniquely identify every row in the dataset.**
+
+
+See below for a simplified version of the dataset with the most important variables. _Country_ and _countryname_ as well as _edate_ and _date_ identify the specific country and election in and for which the manifesto was published. The variable _party_ is an identifier variable. _partyname_ is a party's name in English. The total variable indicates the number of quasi-sentences in the manifesto. The per-variables indicate the share of quasi-sentences related to eacht code. A value of 0.586 for the variable per101 for the manifesto of the Democratic Party means that 0.57% of quasi-sentences were coded as 101 (positive mentionings about a party's foreign Relationships with a specific country). The peruncod indicates the share of sentences that were coded with the code 000 that is applied to quasi-sentences were no other code fits.
+
+```{r message=FALSE, warning=FALSE, paged.print=TRUE}
+
+cmp_cats <- paste("per",v4_categories(),sep="")
+
+mp_maindataset() %>% filter(countryname=="United States" & date == 201211) %>%
+    select(country,countryname,edate,date,party,partyname,total,cmp_cats) %>%
+  DT::datatable(caption="Simplified Main Dataset (you can scroll horizontally here!)", rownames=FALSE, options = list(scrollX = TRUE)) %>%
+  formatStyle(c('country','countryname'), color='white',backgroundColor = 'blue', fontWeight = 'bold') %>%
+  formatStyle(c('edate','date'), color='white', backgroundColor = 'green', fontWeight = 'bold') %>%
+  formatStyle(c('party','partyname'), color='white', backgroundColor = 'red', fontWeight = 'bold')
+```
+
+Note that you can scroll the table above horizontally. Please also be aware that the table above is a very simplified version of the dataset. The real dataset includes many more variables. The ones shown above are the most central variables in the dataset.
+
+Note also that the dataset files for Stata and SPSS contain labels for variables and values whenever this is reasonable and therefore might look slightly different than shown here. A following tutorial will deal with the question how the Manifesto Project Main Dataest can be used to measure parties' political preferences. 
+
+
+## Access
+
+The Manifesto Project Main Dataset can be accessed in different ways:
+
+* You can [__download it from the Manifesto Project Website__](https://manifesto-project.wzb.eu/datasets). Different file formats are available: .xlsx for Excel, .dta for Stata, .sav for SPSS, .csv as  [comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values). To be able to download the dataset, you need to login on the website. Login is possible after having registered. Registration is free, simple and quick. 
+
+* You can [__browse it online__](https://visuals.manifesto-project.wzb.eu/mpdb-shiny/cmp_dashboard_dataset/). The online dashboard is convenient for simple analysis, but does not offer the same analytical possibilites as a statistical software packages such as R, Stata or SPSS.
+
+* You can access the dataset directly in R or Stata using the Manifesto Project add-ons: [__manifestoR__](https://manifesto-project.wzb.eu/information/documents/manifestoR) and [__manifestata__](https://manifesto-project.wzb.eu/information/documents/manifestata). This circumvents the download from the website and instead conveniently loads the dataset directly in the software in a less error-prone manner. 
+
+
+
+# The Manifesto Corpus
+
+
+
+- __The Manifesto Corpus is a digital text collection of electoral programs based on the collection and coding that was conducted for the generation of the Manifesto Project Main dataset.__
+- __The Manifesto Corpus contains three types of informations: machine-readable texts, meta-information for each document (such as language and title),  and (for some documents) annotations/codes on the quasi-sentence level.__ 
+- __The Manifesto Corpus uses the same identifier variables as the Manifesto Main dataset so that data from Corpus and Dataset can be easily linked - but machine-readable texts and annotations are not available for all manifestos that are covered by the Main dataset.__
+
+
+
+## Structure
+
+The coverage of the Manifesto Corpus and the Manifesto Project Main Dataset are not exacly congruent. As in the past, the coding was done on printed copies, not all manifestos are available as digital texts. In particular, the codings are not always available digitally in the Manifesto Corpus. The Manifesto Corpus contains different types of documents:
+
+- machine-readable electoral programs, or
+- machine-readable electoral programs parsed into quasi-sentences and accompanied by codes (see coding scheme above)
+
+Moreover, the meta-data of each document contain links to the pdf on our server to the scanned or downloaded copies of the original programs. The following shows a simplified version of the meta-data table for all manifestos of the Republican party in the US since 1980. The party variable indicates a party identifier (the same that is used in the Main dataset). The language refers to the language of the column. This can be useful for filtering documents for one or specific languages. The column annotation indicates whether a document is parsed into quasi-sentences and contains annotations or not. The "source" column refers to the project by which the document was collected.[^6]
+
+[^6]: CEMP is the abbreviation for the Comparative Electronic Manifesto Project - a sister project of the Comparative Manifestos Project that made a huge effort in the 90s and 2000s to digitize manfiestos - however without digitizing the codes. 
+
+MARPOR refers to the current funding of Manifesto project. You can find more details on all other meta-information on the Manifesto Corpus website. 
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+reps_metadata %>% 
+  arrange(date) %>%
+  select(party,date,language,source,annotations,title) %>%
+  DT::datatable(caption="Simplified Corpus Metadata for Manifestos of the US Republican Party since 1980", rownames=FALSE, options = list(scrollX = TRUE))
+```
+
+
+The following table shows exemplarily how information for each document is stored. This is a document that has annotations==TRUE, so that is parsed into quasi-sentences and comes along with codes next to each quasi-sentence. 
+
+```{r message=FALSE, warning=FALSE, paged.print=TRUE}
+dem_doc %>% as.data.frame() %>% select(pos,text,cmp_code,-eu_code) %>%
+  DT::datatable(caption="US Republican Platform 2012", rownames=FALSE, options = list(scrollX = TRUE,pageLength = 5, lengthMenu = c(5, 10, 15, 20)))
+```
+One can see that the two first quasi-sentences do not have codes, that is because these are the title of the document and a headline. The number of rows in this document slightly differs from the value in the total column in the Main Dataset table above because for the total variable in the Main Dataset we only count sentences with codes (including 0 codes).
+
+## Access
+
+The Corpus is stored in an online database. It can be accessed in four different ways: 
+
+* __Explore online__: Browse the corpus online in your browser [by document](https://visuals.manifesto-project.wzb.eu/mpdb-shiny/cmp_dashboard_corpus_doc/) or [by keyword](https://visuals.manifesto-project.wzb.eu/mpdb-shiny/cmp_dashboard_corpus/).
+* __[Download csv documents](https://visuals.manifesto-project.wzb.eu/mpdb-shiny/cmp_dashboard_dataset/)__: Download individual electoral programmes in .csv format. These are encoded in [UTF-8](https://en.wikipedia.org/wiki/UTF-8). Make sure to import them correctly. You need to login (or register) to be able to download documents. 
+* __[Access using manifestoR](https://manifesto-project.wzb.eu/information/documents/manifestoR)__: We offer an R package that facilitates downloading and processing the Manifesto Corpus. It allows bulk downloading several documents at once and transforms the downloaded data into a corpus format. You need an API-key to be able to download documents with manifestoR. Login and create the key on your profile page. 
+* __[Access using manifestata](https://manifesto-project.wzb.eu/information/documents/manifestata)__: We offer a stata add-on that facilitates downloading and processing the Manifesto Corpus. It allows bulk downloading several documents at once. You need an API-key to be able to download documents with manifestoR. Login and create the key on your profile page. 
+* __[Access via API](https://manifesto-project.wzb.eu/information/documents/api)__: You are a programmer and would like to have direct access to our database? Our API returns all data in our database in a standardised JSON format. You need an API-key to be able to use the API. Login and create the key on your profile page. 
+
+These options are more 
+
+# Further resources 
+
+Dataset documentation:
+
+- [Coding Instructions](https://manifesto-project.wzb.eu/information/documents/handbooks) - the coding instructions state in detail the coding rules and coding scheme.
+- [Dataset codebook](https://manifesto-project.wzb.eu/datasets) - the data set codebook describes the content and type of all variables included in the main dataset. 
+- [Release Notes of the Dataset](https://manifesto-project.wzb.eu/down/data/2017b/codebooks/release_notes_2017b.pdf) - the release notes inform about changes between different dataset versions. 
+
+Recommended project publications: 
+
+- Merz, N., Regel, S., & Lewandowski, J. (2016). The Manifesto Corpus: A new resource for research on political parties and quantitative text analysis. Research & Politics, 3(2), 2053168016643346. : [doi-link](http://dx.doi.org/10.1177/2053168016643346) _(This article announced the Manifesto Corpus. It explains its structure and illustrates potential use cases.)_
+
+- Volkens, A., Bara, J., Budge, I., McDonald, M. D., & Klingemann, H.-D. (Eds.). (2013). Mapping Policy Preferences from Texts. Statistical Solutions for Manifesto Analysts. Oxford: Oxford University Press. _(The latest book in the Mapping Policy Preferences series mostly addressed methodological questions such as scaling, document selection and measurement error.)_
+
+- Klingemann, H.-D., Volkens, A., Bara, J., Budge, I., and McDonald, M. (2006). Mapping Policy Preferences II: Estimates for Parties, Electors, and Governments in Eastern Europe, European Union and OECD 1990-2003. Oxford: Oxford University Press. _("MPP2" - as this book is often abbreviated - came with an extended data collection including data from countries in Central and Eastern Europe)._
+
+- Budge, I., Klingemann, H.-D., Volkens, A., Bara, J., and Tanenbaum, E. (2001). Mapping Policy Preferences. Estimates for Parties, Electors, and Governments 1945-1998. Oxford: Oxford University Press. _(This was the first book published by the Comparative Manifestos Project. The book was accompanied with a CD-ROM - the first release of the Main Dataset.)_
+
+- Budge, I., Robertson, D., Hearl, D. (Eds.). (1987). Ideology, strategy and party change: spatial analyses of post-war election programmes in 19 democracies. Cambridge: Cambridge University Press. _(As this was the first book published by the Manifesto Research Group it discussed many aspects in a detailed manner such as the document selection.)_
+
+ 
+
