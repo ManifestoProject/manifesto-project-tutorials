@@ -1,5 +1,6 @@
 ---
 title: "A short primer on the Manifesto Project and its methodology"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   rmdformats::html_clean:
     highlight: kate
@@ -25,9 +26,12 @@ library(labelled)
 library(readxl)
 
 mp_setapikey("manifesto_apikey.txt")
-mp_use_corpus_version("2017-2")
 
-mpds <- mp_maindataset(version ="2017b")
+corpus_version <- "2017-2"
+mpds_version <- "2017b"
+
+mp_use_corpus_version(corpus_version)
+mpds <- mp_maindataset(version = mpds_version)
 
 de <- mp_corpus(countryname == "Germany" & date == 201309)
 
@@ -43,9 +47,41 @@ dems_extract <- mp_corpus(countryname == "United States" & date == 201211 & part
 dem_doc <- mp_corpus(party==61320 & date == 201211)[[1]]
 
 reps_metadata <- mp_metadata(party==61620 & date > 198000)
+
+meta_for_coverage <- mp_metadata(TRUE) %>% 
+  add_year() %>% 
+  mutate(country=country_from_party(party)) 
+
+gen_coverage <- function(meta_data) {
+  meta_data %>% 
+  group_by(country) %>%
+    summarize(
+    year_min = as.integer(min(year)),
+    year_max = as.integer(max(year)),
+    year_len = year_max - year_min
+    )
+} 
+
+combined_coverage <- bind_rows(
+  meta_for_coverage %>% 
+    gen_coverage() %>% 
+    mutate(covtype="mpds"),
+  meta_for_coverage %>% 
+    filter(!is.na(manifesto_id)) %>% 
+    gen_coverage() %>% 
+    mutate(covtype="machine_readable"),
+  meta_for_coverage %>% 
+    filter(annotations==TRUE) %>% 
+    gen_coverage() %>% 
+    mutate(covtype="with_annotations")
+) %>% left_join(mpds %>% select(country,countryname) %>% distinct(countryname,country, keep_all=TRUE)) %>%
+  filter(country!=85 & country != 78)
+
 ```
 
-This introduction should give a brief overview of the Manifesto Project methodology as well as illustrate the structure of the Manifesto Project Main Dataset and the Manifesto Corpus. 
+This introduction should give a brief overview of the Manifesto Project methodology as well as illustrate the structure of the Manifesto Project Main Dataset and the Manifesto Corpus.[^1]
+
+[^1]: This tutorial was generated based on version `r mpds_version` of the Manifesto Project Main Dataset and version `r corpus_version` of the Manifesto Corpus
 
 The Manifesto Project collects and analyzes parties' electoral programs (manifestos). It's data collection is publicly available and forms the basis for many [publications in political science and other disciplines](https://manifesto-project.wzb.eu/publications/all). Since 2009, the Manifesto Project is funded by the German Research Foundation under the name Manifesto Research on Political Representation (MARPOR) and is located the WZB Berlin Social Science Center. MARPOR continues the work and data collection of the Comparative Manifestos Project and the Manifesto Research Group that go back until 1979. 
 
@@ -54,30 +90,30 @@ The Manifesto Project collects and analyzes parties' electoral programs (manifes
 
 ## Collection and sampling
 
-- Countries: Democratic countries, mostly member countries of the OECD as well as many Central and Eastern Europe countries.[^1] 
+- Countries: Democratic countries, mostly member countries of the OECD as well as many Central and Eastern Europe countries.[^2] 
 
-[^1]: _Exceptions_: In the past, a few countries and elections have been sampled that were not (fully-)democratic or free and fair, e.g. the coding of elections in Azerbaijan or Belarus. 
+[^2]: _Exceptions_: In the past, a few countries and elections have been sampled that were not (fully-)democratic or free and fair, e.g. the coding of elections in Azerbaijan or Belarus. 
 
-- Elections: Parliamentary (lower house) elections since the first democratic election in a country (and earliest since the end of 2nd world war).[^2]
+- Elections: Parliamentary (lower house) elections since the first democratic election in a country (and earliest since the end of 2nd world war).[^3]
 
-[^2]: _Exceptions_: In South American countries we mostly collect and code programmes issued at presidential elections. 
+[^3]: _Exceptions_: In South American countries we mostly collect and code programmes issued at presidential elections. 
 
-- Parties: Programs of parties that gained at least one seat in parliament at the focal election.[^3]
+- Parties: Programs of parties that gained at least one seat in parliament at the focal election.[^4]
 
-[^3]: _Exceptions_: There are some exceptions from this rule. 
+[^4]: _Exceptions_: There are some exceptions from this rule. 
 On the one hand, programmes of some parties were not coded in the past despite having won a seat in parliament because they were considered to be of low relevance. On the other hand, some parties have been coded although they may not have gained a seat due to their important role for the party system in the past or for other reasons. 
 
-- Documents: An authoritative document enacted and published by a party before an election that outlines a party's policy plan for the time after the election and covers a broad range of policy issues.[^4]
+- Documents: An authoritative document enacted and published by a party before an election that outlines a party's policy plan for the time after the election and covers a broad range of policy issues.[^5]
 
-[^4]: _Exceptions_: Some parties do not publish electoral programmes. 
+[^5]: _Exceptions_: Some parties do not publish electoral programmes. 
 In this case, we look for documents that come closest to electoral programmes by searching for documents that were of importance during the electoral campaign, that reflect the party's broader programmatic profile and that are written by the parties themselves. These substitute documents can for example be a prominent speech by a party leader or a detailed leaflet laying out a party's policy plan. New parties sometimes do not publish a program specifically for one election, but run for an election on their general program.
 
 ## Training and Rules
 
 The coding (or annotation as it is also called) is conducted by country experts.
-The coding follows strict rules that are described in detail in the coding instructions. Despite the long history of the project, the general coding methodology has only slightly changed over time which makes the data comparable over time. The [current version of the coding instructions](https://manifesto-project.wzb.eu/information/documents/handbooks) can be found on the website.[^5]
+The coding follows strict rules that are described in detail in the coding instructions. Despite the long history of the project, the general coding methodology has only slightly changed over time which makes the data comparable over time. The [current version of the coding instructions](https://manifesto-project.wzb.eu/information/documents/handbooks) can be found on the website.[^6]
 
-[^5]: The coding instructions have slightly changed over time. [All major changes are well documented](https://manifesto-project.wzb.eu/down/papers/Evolution_of_the_Manifesto_Coding_Instructions_and_the_Category_Scheme.pdf).
+[^6]: The coding instructions have slightly changed over time. [All major changes are well documented](https://manifesto-project.wzb.eu/down/papers/Evolution_of_the_Manifesto_Coding_Instructions_and_the_Category_Scheme.pdf).
 
 The country expert coders are mostly political scientist or political science students and native speakers. They were trained to parse and code the documents according to the rules specified in the coding instructions. The expert training is done in English on two training documents. Only if the coding results in these documents surpass a certain level of accuracy, the coder will be asked to code the documents from his or her own country.
 
@@ -141,14 +177,6 @@ In essence, the coding methodology has only slightly changed since the begin of 
 
 The Manifesto Project Main Dataset was first published in 2001 with the book Mapping Policy Preferences I (Budge et al. 2001). Since 2009 the dataset is available online. 
 
-## Coverage
-
-not yet done.
-```{r coverage, eval=FALSE, fig.cap=, include=FALSE}
-mpds %>% attach_year() %>% group_by(countryname) %>% distinct(countryname,year) %>%
-  ggplot(aes(x = year, y = countryname)) + geom_point()
-```
-
 
 
 ## Structure 
@@ -175,6 +203,25 @@ mp_maindataset() %>% filter(countryname=="United States" & date == 201211) %>%
 Note that you can scroll the table above horizontally. Please also be aware that the table above is a very simplified version of the dataset. The real dataset includes many more variables. The ones shown above are the most central variables in the dataset.
 
 Note also that the dataset files for Stata and SPSS contain labels for variables and values whenever this is reasonable and therefore might look slightly different than shown here. A following tutorial will deal with the question how the Manifesto Project Main Dataest can be used to measure parties' political preferences. 
+
+
+## Coverage
+
+The Manifesto Project Main Dataset covers `r `elections from 
+
+```{r coverage}
+#mpds %>% attach_year() %>% group_by(countryname) %>% distinct(countryname,year) %>%
+#  ggplot(aes(x = year, y = countryname)) + geom_bar()
+library(forcats)
+combined_coverage %>% filter(covtype=="mpds" & countryname!="NA") %>%
+  mutate(countryname=as.factor(.$countryname)) %>%
+  ggplot(aes(x=fct_reorder(countryname,year_min,.desc = TRUE),ymin=year_min,ymax=year_max)) + 
+  geom_linerange() +
+  coord_flip()  +
+  scale_y_continuous(breaks=c(1910,1920,1930,1940,1950,1960,1970,1980,1990,2000,2010,2020)) + 
+  xlab("") + xlab("") + labs(title="Coverage of the Manifesto Project Main Dataset")
+  
+```
 
 
 ## Access
@@ -206,9 +253,9 @@ The coverage of the Manifesto Corpus and the Manifesto Project Main Dataset are 
 - machine-readable electoral programs, or
 - machine-readable electoral programs parsed into quasi-sentences and accompanied by codes (see coding scheme above)
 
-Moreover, the meta-data of each document contain links to the pdf on our server to the scanned or downloaded copies of the original programs. The following shows a simplified version of the meta-data table for all manifestos of the Republican party in the US since 1980. The party variable indicates a party identifier (the same that is used in the Main dataset). The language refers to the language of the column. This can be useful for filtering documents for one or specific languages. The column annotation indicates whether a document is parsed into quasi-sentences and contains annotations or not. The "source" column refers to the project by which the document was collected.[^6]
+Moreover, the meta-data of each document contain links to the pdf on our server to the scanned or downloaded copies of the original programs. The following shows a simplified version of the meta-data table for all manifestos of the Republican party in the US since 1980. The party variable indicates a party identifier (the same that is used in the Main dataset). The language refers to the language of the column. This can be useful for filtering documents for one or specific languages. The column annotation indicates whether a document is parsed into quasi-sentences and contains annotations or not. The "source" column refers to the project by which the document was collected.[^7]
 
-[^6]: CEMP is the abbreviation for the Comparative Electronic Manifesto Project - a sister project of the Comparative Manifestos Project that made a huge effort in the 90s and 2000s to digitize manfiestos - however without digitizing the codes. 
+[^7]: CEMP is the abbreviation for the Comparative Electronic Manifesto Project - a sister project of the Comparative Manifestos Project that made a huge effort in the 90s and 2000s to digitize manfiestos - however without digitizing the codes. 
 
 MARPOR refers to the current funding of Manifesto project. You can find more details on all other meta-information on the Manifesto Corpus website. 
 
@@ -229,6 +276,92 @@ dem_doc %>% as.data.frame() %>% select(pos,text,cmp_code,-eu_code) %>%
 ```
 One can see that the two first quasi-sentences do not have codes, that is because these are the title of the document and a headline. The number of rows in this document slightly differs from the value in the total column in the Main Dataset table above because for the total variable in the Main Dataset we only count sentences with codes (including 0 codes).
 
+## Coverage
+
+```{r, echo = FALSE, fig.cap = 'Coverage of the Manifesto Project Dataset'}
+coverage_elections <- meta_for_coverage %>% 
+# coverage_elections<-mpds %>%
+  attach_year() %>%
+  left_join(mpds %>% select(country,countryname) %>% distinct(countryname,country, keep_all=TRUE)) %>%
+  select(countryname, year,annotations,manifesto_id) %>%
+  group_by(countryname) %>%
+  mutate(last_election = max(year)) %>%
+  mutate(first_election = min(year)) %>%
+  mutate(decade = (as.character((10*as.integer(as.numeric(as.character(year))/ 10)+5))) %>% paste0("0101") %>% as.Date("%Y%m%d"))
+
+
+ #{mutate(., newdate= (.$date %>% paste0("01") %>% as.Date("%Y%m%d")))}
+
+labels_first_last_elect<- coverage_elections %>%
+                            select(countryname, first_election, last_election)%>%
+                            distinct(.keep_all = TRUE)%>%
+                            gather(characteristic, first_last, 2:3)
+
+
+  #{(test$newdate %>% {as.character((10*as.integer(as.numeric(format(., '%Y')/ 10))))} %>% paste0("01") %>% as.Date("%Y%m%d"))}
+
+coverage_manifesto_count<- coverage_elections %>%
+  #{mutate(., count = {count(.,as.Date(decade, format = "%Y"), wt_var = countryname)})}
+  # mutate(decade = (as.character((10*as.integer(as.numeric(as.character(year))/ 10)+5))) %>% paste0("0101") %>% as.Date("%Y%m%d"))%>%
+  # mutate(election = paste(countryname, year, sep = " ")) %>%
+  # mutate(count = {count(. , election)})
+  group_by(countryname, decade) %>%
+  summarize(n_mpds= n()) %>%
+  left_join(coverage_elections %>% 
+    filter(!is.na(manifesto_id)) %>%
+    group_by(countryname, decade) %>%
+    summarize(n_machine_readable = n())
+    ) %>%
+  left_join(coverage_elections %>% 
+    filter(annotations==TRUE) %>%
+    group_by(countryname, decade) %>%
+    summarize(n_with_annotations = n())
+    ) %>%
+  mutate(share_machine_readable = n_machine_readable/n_mpds,
+         share_annotations = n_with_annotations/n_mpds,
+         share_machine_readable = ifelse(is.na(share_machine_readable),0,share_machine_readable),
+         share_annotations = ifelse(is.na(share_annotations),0,share_annotations)) %>%
+  arrange(desc(countryname)) %>% filter(!is.na(countryname))
+
+ #test<- left_join(coverage_elections, coverage_manifesto_count, by = "countryname")
+
+
+test <- coverage_manifesto_count %>%
+  ggplot(aes(x = decade, y = fct_reorder(countryname,decade,.desc = TRUE))) +
+  geom_tile(aes(alpha=share_machine_readable)) +
+  #coord_cartesian(xlim=as.Date(c("1915-12-01", "2020-04-01")))+
+  scale_alpha_continuous(name = "share")+
+  scale_fill_discrete(guide = "none")+
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y", limits = (c(1916, 2020) %>% paste0("0101") %>% as.Date("%Y%m%d"))) +
+  labs(title="Coverage of the Manifesto Corpus", caption="coverage as relative share to the number of documents covered by the Main Dataset", x="", y="")
+print(test)
+```
+
+
+
+```{r coverage-corpus}
+#mpds %>% attach_year() %>% group_by(countryname) %>% distinct(countryname,year) %>%
+#  ggplot(aes(x = year, y = countryname)) + geom_bar()
+library(forcats)
+ 
+  
+  # ggplot() + 
+ # geom_linerange(data = combined_coverage %>% 
+ #                  filter(covtype=="machine_readable" & countryname!="NA") %>%
+#                    mutate(countryname=as.factor(.$countryname)),
+ #                aes(x=fct_reorder(countryname,year_min,.desc = TRUE),ymin=year_min,ymax=year_max)) +
+  #   geom_linerange(data = combined_coverage %>% 
+  #                  filter(covtype=="mpds" & countryname!="NA") %>%
+  #                   mutate(countryname=as.factor(.$countryname)),
+  #                aes(x=fct_reorder(countryname,year_min,.desc = TRUE),ymin=year_min,ymax=year_max)) +
+  # coord_flip()  +
+  # scale_y_continuous(breaks=c(1910,1920,1930,1940,1950,1960,1970,1980,1990,2000,2010,2020)) + 
+  # xlab("") + xlab("") + labs(title="Coverage of the Manifesto Corpus")
+  
+#knitr::kable(combined_coverage)
+
+```
+
 ## Access
 
 The Corpus is stored in an online database. It can be accessed in four different ways: 
@@ -239,7 +372,6 @@ The Corpus is stored in an online database. It can be accessed in four different
 * __[Access using manifestata](https://manifesto-project.wzb.eu/information/documents/manifestata)__: We offer a stata add-on that facilitates downloading and processing the Manifesto Corpus. It allows bulk downloading several documents at once. You need an API-key to be able to download documents with manifestoR. Login and create the key on your profile page. 
 * __[Access via API](https://manifesto-project.wzb.eu/information/documents/api)__: You are a programmer and would like to have direct access to our database? Our API returns all data in our database in a standardised JSON format. You need an API-key to be able to use the API. Login and create the key on your profile page. 
 
-These options are more 
 
 # Further resources 
 
