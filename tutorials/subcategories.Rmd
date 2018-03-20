@@ -94,7 +94,8 @@ The Manifesto Corpus contains the codes as they were assigned by the coders at t
 To illustrate this, the following table shows the codes before and after applying the recode_v5_to_v4` function to a text snippet. The recode functions can be applied to a ManifestoCorpus object, to a ManifestoDocument object or to a vector of codes (see the manifestoR introduction for more information on these objects.)
 
 ```{r aggregation, message=FALSE, warning=FALSE}
-de_corp <- mp_corpus(countryname == "Germany" & date == 201709) %>% 
+
+de_corp %>% 
   as.data.frame()  %>%
   mutate(recode_v5_to_v4 = recode_v5_to_v4(codes(de_corp))) %>% 
   head() %>% 
@@ -105,16 +106,39 @@ de_corp <- mp_corpus(countryname == "Germany" & date == 201709) %>%
 
 ```
 
-
-
-
-
-
 ## The eu_code column in the Manifesto Corpus
 
+Usually all quasi-sentences are assigned to one and only on code. In the Manifesto Corpus and the coded documents these codes can be found in the cmp_code column. However, in some former versions of the coding instructions, there was one exception to this rule: If a quasi-sentence was somehow related to the European Union or European community and to another category covered by the coding scheme it could be coded as positive or negative mentions of the european community/union (codes 108 and 110) and be assigned to another code. This practice was abandoned roughly when MARPOR took over the coding in 2009. The Manifesto Corpus provides meta information for each annotated document whether whether it contains this kind of eu_codes or not. The following snippet illustrates how these codes are dealt with in the Manifesto Corpus. NB: For the counting of the code frequencies for the main dataset, these codes were treated equally to the codes 108 and 110 that were coded in the cmp_code column. 
 
-For more information on the different version of the coding instructions
-and coding schemes, please consult the [website where one can find all
-versions of the coding instructions](https://manifesto-project.wzb.eu/information/documents/handbooks) and a document that highlights the
-most important changes between them.
+```{r eu-code-snippet, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+greens_corpus %>%
+  as.data.frame() %>% 
+  filter(pos %in% 426:428) %>% 
+  select(-pos) %>% 
+  pander()
+
+```
+
+Unfortunately, for documents that are not digitally available, we do not always have the information whether the "double"-coding with eu categories was allowed and practised by the coder expert or not. The following graph illustrates the share of coded documents per election for which eu-double coding was allowed. However, this graph is restricted to documents that are digitally annotated only. 
+
+```{r coverage eu codes, message=FALSE, warning=FALSE, paged.print=FALSE}
+corpus_metadata %>% 
+  filter(annotations==TRUE) %>% 
+  add_year() %>% 
+  mutate(year = as.numeric(year),
+         country = country_from_party(party)
+         ) %>%
+  left_join(mpds %>% distinct(countryname,country)) %>%
+  filter(!is.na(countryname)) %>%
+  group_by(countryname,year) %>% 
+  summarize(eu_codes = mean(has_eu_code)) %>% 
+    ggplot(aes(x=year,y=reorder(countryname,desc(countryname)),color=eu_codes)) +
+    geom_point()
+
+```
+
+----
+
+For more information on the different versions of the coding instructions and coding schemes, please consult the [website where one can find all versions of the coding instructions](https://manifesto-project.wzb.eu/information/documents/handbooks) and a document that highlights the most important changes between them.
 
