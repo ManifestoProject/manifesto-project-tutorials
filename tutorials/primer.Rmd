@@ -12,26 +12,9 @@ knitr::opts_chunk$set(
 	message = FALSE,
 	warning = FALSE
 )
-library(tibble)
-library(manifestoR)
-library(ggplot2)
-library(tidytext)
-library(SnowballC)
-library(manifestorita)
-library(labelled)
-library(haven)
-library(shiny)
-library(DT)
-library(labelled)
-library(readxl)
 
-mp_setapikey("manifesto_apikey.txt")
+source("../tutorials/run_before_tutorial.R")
 
-corpus_version <- "2017-2"
-mpds_version <- "2017b"
-
-mp_use_corpus_version(corpus_version)
-mpds <- mp_maindataset(version = mpds_version)
 
 de <- mp_corpus(countryname == "Germany" & date == 201309)
 
@@ -186,7 +169,7 @@ The Manifesto Project Main Dataset was first published in 2001 with the book Map
 - **The variables party and date jointly uniquely identify every row in the dataset.**
 
 
-See below for a simplified version of the dataset with the most important variables. _Country_ and _countryname_ as well as _edate_ and _date_ identify the specific country and election in and for which the manifesto was published. The variable _party_ is an identifier variable. _partyname_ is a party's name in English. The total variable indicates the number of quasi-sentences in the manifesto. The per-variables indicate the share of quasi-sentences related to eacht code. A value of 0.586 for the variable per101 for the manifesto of the Democratic Party means that 0.57% of quasi-sentences were coded as 101 (positive mentionings about a party's foreign Relationships with a specific country). The peruncod indicates the share of sentences that were coded with the code 000 that is applied to quasi-sentences were no other code fits.
+See below for a simplified version of the dataset with the most important variables. _Country_ and _countryname_ as well as _edate_ and _date_ identify the specific country and election in and for which the manifesto was published. The variable _party_ is an identifier variable. _partyname_ is a party's name in English. The total variable indicates the number of quasi-sentences in the manifesto. The per-variables indicate the share of quasi-sentences related to eacht code. A value of 0.586 for the variable per101 for the manifesto of the Democratic Party means that 0.59% of quasi-sentences were coded as 101 (positive mentionings about a party's foreign Relationships with a specific country). The peruncod indicates the share of sentences that were coded with the code 000 that is applied to quasi-sentences were no other code fits.
 
 ```{r message=FALSE, warning=FALSE, paged.print=TRUE}
 
@@ -277,6 +260,9 @@ dem_doc %>% as.data.frame() %>% select(pos,text,cmp_code,-eu_code) %>%
 One can see that the two first quasi-sentences do not have codes, that is because these are the title of the document and a headline. The number of rows in this document slightly differs from the value in the total column in the Main Dataset table above because for the total variable in the Main Dataset we only count sentences with codes (including 0 codes).
 
 ## Coverage
+
+Due to the history of the Manifesot Project, not all manifestos are available in a machine-readable format. The following graph illustrates the coverage of the Manifesto Corpus relative to the coverage of the Main Dataset (see figure above). 
+
 
 ```{r, echo = FALSE, fig.cap = 'Coverage of the Manifesto Project Dataset'}
 coverage_elections <- meta_for_coverage %>% 

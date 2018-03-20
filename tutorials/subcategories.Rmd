@@ -1,0 +1,120 @@
+---
+title: "Subcategories in the coding scheme"
+author: "Manifesto Project Team, manifesto-communication@wzb.eu"
+date: "14 3 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+source("../tutorials/run_before_tutorial.R")
+```
+
+The main dataset contains three sets of content analytical variables. 
+
+- The three-digit main categories (*per101 -- 706*)
+- The 4-digits CEE-subcategories (*per1011 -- 7062*)
+- The 3+1 digit subcategories since version 5 of the coding instructions (*per103_1 -- 703_2*)
+
+All variables have in common that they indicate the share of quasi-sentences in the respective category calculated as a fraction of the overall number of allocated codes per document. A value of 5 within a cell in the column per501 indicates that 5% of allocated codes (the number of quasi-sentences) were coded with the code 501 (Positive mentions about the protection of the environment). This tutorial explains the existence, generation and usage of the different type subcategories and their relation to the main categories in the main dataset.
+
+
+## The main categories: *per101 -- 706*
+
+The three digit variables *(per101 –- per706)* are the main categories of the coding scheme. For most of analyses these are the most relevant categories and they can be used without any precaution and without knowing anything about sub-categories at all. Data on the main categories is available for all countries and all elections covered by the dataset.
+
+## The CEE-subcategories: *per1011 -- 7062*
+
+The four digit variables *(per1011 -- per7062)* are sub-categories mostly addressing issues in transitional democracies in (mostly) Central and Eastern European countries. However, they were introduced in version 1 of the coding instructions and were gradually abandoned in most of the countries as the issues could also be coded into the three digit main categories. Currently, the share of these categories is not included in the main categories. If analysts use observations from CEE countries for which the CEE codes were used and want to compare them to manifestos without CEE codes then they should aggregate such CEE codes into the main categories. For example per7062 should be added to per706. ~~manifestoR can easily do this by using the function `aggregate_cee_codes` on the main dataset.~~
+
+The following graph shows the elections were CEE categories were used. 
+
+```{r cee-cats}
+
+cee_cats <- colnames(mpds) %>% str_subset("^(per\\d{3})\\d$") 
+
+mpds$cee <- rowSums(mpds[cee_cats],na.rm=TRUE) > 0
+
+library(manifestorita)
+countries_elections_cee <- mpds %>% 
+  group_by(country,countryname,edate,date) %>% 
+  summarize(cee_country = mean(cee) > 0) %>% 
+  #filter(cee_country==TRUE) %>% 
+  add_year() %>% mutate(year = as.numeric(year))
+
+ggplot(countries_elections_cee,aes(x=year,y=reorder(countryname,desc(countryname)),color=cee_country)) +
+  geom_point() + 
+  ylab("")
+
+```
+
+
+## The manual_5-subcategories: *per103_1 -- 703_2* 
+
+The four digit variables *with underscore (per103_1 -- 703_2)* are new categories introduced with version 5 of the coding instructions. The new subcategories are coded instead of their respective main category. So, from version 5 of the coding instructions, coders cannot code the main categories anymore. If a category does contain new subcategories, coders have to choose one of the new subcategories. Eg a coder cannot assign the code 608 anymore, but has to choose between the subcategories 608_1, 608_2, and 608_3. To ensure over-time comparability of the main categories with data coded with earlier versions of the coding instructions, the new categories can be aggregated into the respective main categories. When compared with old data, sentences coded with 608_1 for example can be recoded to 608 to make the data comparable over time. The only exception to this aggregation are categories 202_2, 605_2 and 703_2, which have to be added to the uncoded sentences (peruncod), as such issues were not covered in the handbook4 category scheme. The following indicates all the aggregation rules:
+
+
+```{r}
+library(pander)
+without_first <- lapply(1:length(v5_v4_aggregation_relations()), function(x) {
+  v5_v4_aggregation_relations()[[x]][-1]
+  }
+)  
+names(without_first) <- names(v5_v4_aggregation_relations())
+pander(without_first)
+```
+
+As most scholars require longer time series, we decided to conduct this aggregation already for the main dataset. 
+So, scholars interested in long-time series can simply continue to use the existing main categories (per101-706, including e.g. the rile) as they did in the past and ignore the new categories. Scholars interested in the new categories should be aware that the respective main categories of the new sub- categories are aggregates of the new categories (i.e. if one uses the main categories together with the new subcategories the per-variables will likely add up to more than 100%).
+
+```{r}
+
+library(manifestorita)
+hb5_data <- mpds %>% 
+  group_by(countryname,date) %>% 
+  summarize(hb5 = mean(manual == 5)) %>% 
+  #filter(cee_country==TRUE) %>% 
+  add_year() %>% mutate(year = as.numeric(year))
+
+ggplot(hb5_data,aes(x=year,y=reorder(countryname,desc(countryname)),color=hb5)) +
+  geom_point() + 
+  ylab("")
+
+```
+
+
+# Subcategories in the Manifesto Corpus
+
+The Manifesto Corpus contains the codes as they were assigned by the coders at the time of coding with the coding instructions used at that time. So, in the original coding this data is not always directly comparable as some documents eg contain 608 codes and others contain the codings of the different subcategories of 608. The same is true for coding from CEE countries in the past. When looking at individual elections where there are no differences in the version of the coding instructions that were used, eg. when looking at data from one election in one country, there is usually no need to recode the codes. In other cases, if scholars want to make their data maximally comparable over time and across country it is best to recode both types of subcategory codes. With manifestoR this can easily be done with two functions. `recode_cee_codes` recodes the four digit cee codes to their respective main categories. `recode_v5_to_v4` does the same for the subcategories introduced with version 5 of the coding instructions and implements the recoding exceptions mentioned above. 
+
+To illustrate this, the following table shows the codes before and after applying the recode_v5_to_v4` function to a text snippet. The recode functions can be applied to a ManifestoCorpus object, to a ManifestoDocument object or to a vector of codes (see the manifestoR introduction for more information on these objects.)
+
+```{r aggregation, message=FALSE, warning=FALSE}
+de_corp <- mp_corpus(countryname == "Germany" & date == 201709) %>% 
+  as.data.frame()  %>%
+  mutate(recode_v5_to_v4 = recode_v5_to_v4(codes(de_corp))) %>% 
+  head() %>% 
+  filter(cmp_code != "H") %>%
+  select(text,cmp_code,recode_v5_to_v4) %>% 
+  pander()
+
+
+```
+
+
+
+
+
+
+## The eu_code column in the Manifesto Corpus
+
+
+For more information on the different version of the coding instructions
+and coding schemes, please consult the [website where one can find all
+versions of the coding instructions](https://manifesto-project.wzb.eu/information/documents/handbooks) and a document that highlights the
+most important changes between them.
+

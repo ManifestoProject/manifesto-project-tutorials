@@ -1,21 +1,47 @@
 ---
-title: "Working with the Main Dataset"
+title: "Using the Manifesto Project Dataset to scale party preferences"
 output:
   rmdformats::html_clean:
     highlight: kate
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(tibble)
+library(manifestoR)
+library(DT)
+library(pander)
+
+mp_setapikey("manifesto_apikey.txt")
+
+corpus_version <- "2017-2"
+mpds_version <- "2017b"
+
+mpds <- mp_maindataset(version = mpds_version)
+
+
 ```
 
-# the main dataset
+# Introduction
 
-```{r message=FALSE, warning=FALSE, paged.print=TRUE}
+This tutorial explains the structure and variables of the Manifesto Project Dataset. The goal of this tutorial is that users learn how to use the Manifesto Project Dataset to scale and visualize differences in party preferences over time and between parties.
+
+
+## Example Dataset
+
+
+Each row in the dataset represents one electoral program. **The variables party and date uniquely identify every row in the dataset.**
+
+
+```{r, message=FALSE, warning=FALSE, paged.print=TRUE}
 
 cmp_cats <- paste("per",v4_categories(),sep="")
 
-mp_maindataset() %>% filter(countryname=="United States" & date == 201211) %>%
+mpds %>% filter(countryname=="United States" & date == 201211) %>%
   DT::datatable(caption="Extract Main Dataset", rownames=FALSE, options = list(scrollX = TRUE)) %>%
   formatStyle(c('country','countryname','oecdmember','eumember'), color='white',backgroundColor = 'blue', fontWeight = 'bold') %>%
   formatStyle(c('edate','date'), color='white', backgroundColor = 'green', fontWeight = 'bold') %>%
@@ -24,16 +50,78 @@ mp_maindataset() %>% filter(countryname=="United States" & date == 201211) %>%
   formatStyle(c('pervote','voteest','presvote','absseat','totseats'), color='black', backgroundColor = 'yellow', fontWeight = 'bold') 
 ```
 
-## individual categories
 
-## left-right
 
-## manifestoR measures (nicheness)
+## Country and election variables
+
+
+
+| variable | description |
+|---|-------------|
+| *country* | A 2 or 3 digit code that identifies the country. |
+| *countryname* | indicates the name of the country as a character variable. |
+| *date* | is a six-digit number that indicates the year and month of the respective national election in the format YYYYMM, e.g. 201102 indicates an election in February 2011.|
+| *party* | variable is a 5 or 6 digit code that identifies every party in the dataset. The two (three) first equal the country variable. |
+| *partyname* | is the (translated) English name of the party. |
+| *parfam* | indicates the party family of the party. See the dataset codebook for the exact coding of these.  |
+| *pervote* | variable indicates the *per*centage of votes the *party* gained at the election that took place in *country* at *edate*. |
+
+## Content analytical categories
+
+
+
+
+
+## Using specific categories
+
+for now we just use the standard three-digit content analytical categories. See the tutorial on subcategories for how to use the other per-categories.
+
+
+```{r}
+library(ggplot2)
+
+mpds %>% filter(countryname=="United States" & date == 201211) %>% select(countryname,date,partyname,per107) %>% pander()
+
+ggplot(mpds %>% filter(countryname=="United States" & date > 198000) %>% select(countryname,date,partyname,per501)) +
+  geom_line(aes(x=date,y=per501,z=partyname))
+```
+
+## Ready-made indices: Left-right positions
+
+rile
+
+other measures
+
+## More measures: Nicheness
+
+
+nicheness measure
+
+
+
+party family
+
+
+clarity, 
+
+## create your own scale
+
+average across parties
+
+
+
+
+
+
 
 ## save as dta and open in Stata or Excel
 
-## own measures
+
+
+
 
 ## bootstrap
 
+some documents are very short
 
+good way to ...
