@@ -47,16 +47,13 @@ In this case, we look for documents that come closest to electoral programmes by
 These substitute documents can for example be a prominent speech by a party leader or a detailed leaflet laying out a party's policy plan. New parties sometimes do not publish a program specifically for one election, but run for an election on their general program.
 You can find a [list](/datasets) of coded documents on the download site of the main dataset. Moreover, the [primary documents dataset](/datasets/mppdds) provides additional information on the comparability of the coded documents.
 
-#### Critique: Document Selection
-
-* The Danish part of the manifesto document collection is problematic because it is based on many substitute documents of varying length [@hansen2008]
-* The use of substitute documents instead of electoral programs is problematic  [@gemenis2012]. Responses: [@benoit2012;@budge2012].
-
 ## Coding
 
 Despite the long history of the project, the general coding methodology has only slightly changed over time. The [current version of the coding instructions](https://manifesto-project.wzb.eu/information/documents/handbooks) can be found on the website. The website also provides a [document with changes of the coding instructions over time](https://manifesto-project.wzb.eu/down/papers/Evolution_of_the_Manifesto_Coding_Instructions_and_the_Category_Scheme.pdf).
 
-The following discusses the coding unit, the coding scheme and the coding training. Finally, the methodological in regard to the coding process is briefly reviewed.
+The following discusses the digitalization of the documents, the coding unit, the coding scheme and the coder training. 
+
+### Digitalization 
 
 ### Coding unit
 
@@ -74,11 +71,6 @@ The extract shows the text before the unitization process. The next extract illu
 > [...] `r paste(dems_extract$text, sep="//", collapse=" __//__ ")` [...]
 >
 > --- Democratic Party (US), Extract from 2012 Electoral Platform
-
-
-
-
-
 
 In the coding process, each quasi-sentence is allocated one category from a coding scheme encompassing a large variety of policy and issue categories. 
 In a next step the text is transformed into a table where each row contains one quasi-sentence. Each quasi-sentence is then allocated one of the categories of the coding scheme. 
@@ -140,11 +132,6 @@ reference to variable
 
 
 
-### critique - methodological discussion - Coding and Category Scheme
-
-* The coding of natural sentences instead of quasi-sentences is equally reliable [@daubler2012] 
-* Misclassification of codes is a serious and systemic problem with the current CMP data set and coding process [@mikhaylov2012]
-* zulianello
 
 ## Scaling
 
@@ -167,80 +154,5 @@ ggplot(dems_2012,aes(x=reorder(category,categ_num),y=share)) +
 ```
 
 
-### Left-Right Positions
-
-#### Left-Right Positions
-* rile
-* [@klingemann1995]
-* factor analysis [@gabel2000]
-* laver garry
-* kim fording
-* lowe logratio
-* Using different procedures to calculate left-right positions can produce substantively different results [@dinas2010]
-* Categories can be better classified more fine-grained than dichotomously into left and right [@jahn2011]
-* The different procedures of calculating left-right scores are based on different underlying assumptions [@franzmann2013]
-* response by jahn [@jahn2014]
-* Left-right positions according to the rile are not appropriate in Central and Eastern European countries [@molder2013]
-* A naive iterative methodology to calculate left-right positions that puts emphasis on the importance of selecting the right (and left) categories [@prosser2014]
-* elff
-* mpp3
-
-### Issue emphasis
-
-
-
-#### Uncertainty estimates
-
-* Scholars should acknowledge measurement error in manifesto data and should use bootstrapped confidence intervals around estimates based on Manifesto Project Data [@benoit2009]
-* Error estimates for the Manifesto Project Data can be calculated based on parties trajectories and some assumptions about parties behavior [@mcdonald2014]
-* Uncertainty estimates based on two different approaches produce very similar results [@meyer2013]
-
-
-#### The Methodological Debate
-
-
-* Summary of the methodological debate on Manifesto Project Data [@gemenis2013]
-* Manifestos are expressions of a party's identity as well as of a party's image because they address voters and members alike [@harmel2016]
-* Bayesian methods are superior to structural equation modeling when combining several sources of left-right positions to a common estimate [@bakker2009]
-* continous measure of partisanship of government based on goverment composition data and manifesto data [@kim2002]
-* median voter voter ideology [@kim2002]; continued by [@neve2011]
-* The Manifesto Corpus is a new resource for research on political parties [@merz2016]
-* strengths and weaknesses [@volkens2007]
-* party positions based on manifesto data are highly valid [@budge2001]
-* bara 2009 (social historical research)
-
-
-
-
-## Validity 
-Comparison with other measures
-
-### Comparisons of manifesto data and expert surveys
-* There is some agreement but also numerous inconsistencies between expert survey data and manifesto data [@benoit2007-1]
-* The associations between election rules and ideological congruence are relatively robust to various measurement approaches -- including Manifesto Project Data and expert surveys [@powell2009]
-* Party positions based on expert surveys and manifestos are correlated [@hooghe2010]
-* Using esimates based on different methodologies produces different results [@keman2007]
-* Manifesto measures are error-prone for parties that are internally divided [@marks2007]
-* Manifesto Project Data show more variance over time within parties than expert surveys [@mcdonald2007]
-* Salience measures of european integration used in the Manifesto Project, European Election, and Expert surveys have a common structure. [@netjes2007]
-* Substantive research results on EU politics are dependent on the choice of measurement indicators [@ray2007]
-
-
-### Comparisons of Manifesto Project Data and Computerized Scores
-
-* budge pennings [@budge2007]
-* response: [@benoit2007]
-* re-response [@budge2007-2]
-* Wordscores and Manifesto Project Data produce largely comparable data [@klemmensen2007].
-* Computer coding can be used to locate weaknesses of Manifesto Project Data and the other way round [@pennings2011]
-* Wordfish produces more plausible estimates for Japanese parties as the Manifesto Project Data because the documents are proxy documents [@proksch2011]
-
-
-### Comparisons with Media Data
-
-* Issue positions of manifesto correlate with positions based on media data, but issue emphasis does not correlate [@helbling2011]
-* There is an association between issue emphasis in media coverage and manifestos [@merz2016-1]
-
-### Scaling Preferences
 
 

@@ -1,4 +1,12 @@
-# Scholarly Usage {#usage}
+# Scholarly Debate & Usage {#usage}
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, results='asis'}
+library(RefManageR)
+bib <- ReadZotero(group = "340777", .params=list())
+WriteBib(bib, file="refs2.bib",note.replace.field="extra")
+
+PrintBibliography(bib, .opts = list(style="markdown",bib.style="authoryear"))
+```
 
 
 This section presents a selection of scholarly work that made use of the manifesto dataset.
@@ -9,7 +17,100 @@ In a second step the research is categorized according to more specific topics. 
 
 NB: If you think that your research is missing here, please send me a link to your published article or chapter and attach your study as pdf document. You can also make a suggestion for the summarizing sentence. Please have in mind that we only review published studies here. 
 
-## ... as dependent variable
+
+
+
+
+
+
+## The Methodological Debate
+
+
+* Summary of the methodological debate on Manifesto Project Data [@gemenis2013]
+* Manifestos are expressions of a party's identity as well as of a party's image because they address voters and members alike [@harmel2016]
+* Bayesian methods are superior to structural equation modeling when combining several sources of left-right positions to a common estimate [@bakker2009]
+* continous measure of partisanship of government based on goverment composition data and manifesto data [@kim2002]
+* median voter voter ideology [@kim2002]; continued by [@neve2011]
+* The Manifesto Corpus is a new resource for research on political parties [@merz2016]
+* strengths and weaknesses [@volkens2007]
+* party positions based on manifesto data are highly valid [@budge2001]
+* bara 2009 (social historical research)
+
+
+
+### Critique: Document Selection
+
+* The Danish part of the manifesto document collection is problematic because it is based on many substitute documents of varying length [@hansen2008]
+* The use of substitute documents instead of electoral programs is problematic  [@gemenis2012]. Responses: [@benoit2012;@budge2012].
+
+
+### critique - methodological discussion - Coding and Category Scheme
+
+* The coding of natural sentences instead of quasi-sentences is equally reliable [@daubler2012] 
+* Misclassification of codes is a serious and systemic problem with the current CMP data set and coding process [@mikhaylov2012]
+* zulianello
+
+### Scaling
+
+#### Left-Right Positions
+* rile
+* [@klingemann1995]
+* factor analysis [@gabel2000]
+* laver garry
+* kim fording
+* lowe logratio
+* Using different procedures to calculate left-right positions can produce substantively different results [@dinas2010]
+* Categories can be better classified more fine-grained than dichotomously into left and right [@jahn2011]
+* The different procedures of calculating left-right scores are based on different underlying assumptions [@franzmann2013]
+* response by jahn [@jahn2014]
+* Left-right positions according to the rile are not appropriate in Central and Eastern European countries [@molder2013]
+* A naive iterative methodology to calculate left-right positions that puts emphasis on the importance of selecting the right (and left) categories [@prosser2014]
+* elff
+* mpp3
+
+#### Issue emphasis
+
+
+#### Uncertainty estimates
+
+* Scholars should acknowledge measurement error in manifesto data and should use bootstrapped confidence intervals around estimates based on Manifesto Project Data [@benoit2009]
+* Error estimates for the Manifesto Project Data can be calculated based on parties trajectories and some assumptions about parties behavior [@mcdonald2014]
+* Uncertainty estimates based on two different approaches produce very similar results [@meyer2013]
+
+
+
+### Validity 
+Comparison with other measures
+
+#### Comparisons of manifesto data and expert surveys
+* There is some agreement but also numerous inconsistencies between expert survey data and manifesto data [@benoit2007-1]
+* The associations between election rules and ideological congruence are relatively robust to various measurement approaches -- including Manifesto Project Data and expert surveys [@powell2009]
+* Party positions based on expert surveys and manifestos are correlated [@hooghe2010]
+* Using esimates based on different methodologies produces different results [@keman2007]
+* Manifesto measures are error-prone for parties that are internally divided [@marks2007]
+* Manifesto Project Data show more variance over time within parties than expert surveys [@mcdonald2007]
+* Salience measures of european integration used in the Manifesto Project, European Election, and Expert surveys have a common structure. [@netjes2007]
+* Substantive research results on EU politics are dependent on the choice of measurement indicators [@ray2007]
+
+
+#### Comparisons of Manifesto Project Data and Computerized Scores
+
+* budge pennings [@budge2007]
+* response: [@benoit2007]
+* re-response [@budge2007-2]
+* Wordscores and Manifesto Project Data produce largely comparable data [@klemmensen2007].
+* Computer coding can be used to locate weaknesses of Manifesto Project Data and the other way round [@pennings2011]
+* Wordfish produces more plausible estimates for Japanese parties as the Manifesto Project Data because the documents are proxy documents [@proksch2011]
+
+
+
+#### Comparisons with Media Data
+
+* Issue positions of manifesto correlate with positions based on media data, but issue emphasis does not correlate [@helbling2011]
+* There is an association between issue emphasis in media coverage and manifestos [@merz2016-1]
+
+
+## Manifestos as dependent variable
 
 
 ### Public opinion
@@ -62,7 +163,7 @@ How have party strategies evolved over time?
 ### Party competition
 * When the number of parties in the system increases, the dispersion of parties also increases, but only up to a point [@andrews2009]
 
-## ... as independent variable
+## Manifestos as independent variable
 
 ### Wage share of GDP
 * When ideological centre in parliament shifts to the right, the wage share of GDP decreases [@wood2016]
@@ -124,3 +225,5 @@ How have party strategies evolved over time?
 * Parties that emphasize concepts related to militarism relative to anti-militarism and pacifism are more likely to initiate conflicts [@heffington2016]
 * Government ideology has no effect on establishment/strength of diplomatic relationships with North Korea [@onderco2015]
 * Partisanship has no effect on participation in air strikes against IS [@haesebrouck2016-1]
+
+\nocite{*}

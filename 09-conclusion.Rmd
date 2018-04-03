@@ -1,10 +1,14 @@
+---
+csl: apa-bibliography.csl
+---
+
 # Further Readings and Ressources {#further-readings}
 
 This book makes an attempt to provide an overview of the Manifesto Project Data. Therefore, many aspects touched here are dealt elsewhere in much more detail. The following structured list should provide some guidance on where to find more information on certain aspects of the Manifesto Project. There are similar lists that recommend further readings at the end of every chapter. 
 
 Books published by the MRG, CMP and MARPOR:
 
-
+@molder_which_2017
 
 [@budge1987]
 

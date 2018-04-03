@@ -1,15 +1,17 @@
 --- 
 title: "An Introduction to the Manifesto Project (Data)"
-author: "Nicolas Merz"
+author: "Nicolas Merz, ..."
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
-bibliography: [marpor.bib,book.bib, packages.bib]
+bibliography: ["refs.bib"]
 biblio-style: apalike
 link-citations: yes
 github-repo: ManifestoProject/manifesto-introduction
 description: "This book provides an introduction and overview of the Manifesto Project Data."
+always_allow_html: yes
+new_session: yes
 ---
 
 # Preface {-}

@@ -4,7 +4,42 @@
 
 ## ... using manifestoR {#manifestoR}
 
+corpus structure
+
+metadata on documents
+
+documents
+
+
+
+ids
+
+
+
 ### tm corpus format
+
+
+
+
+### saving to xlsx
+
+
+library(manifestoR)
+library(xlsx)
+mp_setapikey("secrets/manifesto_apikey.txt")
+
+mp_use_corpus_version("20171211135550")
+
+corpus_de2017 <- mp_corpus(countryname=="Germany" & date == 201709) 
+  
+df_de2017 <-  as.data.frame(corpus_de2017,with.meta=TRUE) 
+
+write.xlsx(df_de2017,"de2017.xlsx")
+
+
+
+
+
 
 ### quanteda corpus format
 

@@ -17,12 +17,12 @@ The Manifesto Project Dataset can be accessed in different ways:
 
 ## Data set structure and variables
 
-Each row in the dataset represents one electoral program. 
+Each row in the dataset represents one electoral program. **The variables party and date uniquely identify every row in the dataset.**
 
 
 ### Identification variables
 
-The country variable is 2 or 3 digit code that identifies the country. The codes follow a loose systematic where:
+The *country* variable is 2 or 3 digit code that identifies the country. The codes follow a loose systematic where:
 
 * 1x: Nordic countries (11 Sweden, 12, Norway, 13 Denmark, 14, Finland, 15 Iceland)
 * 2x: Benelux countries (21 Belgium, 22, Netherlands, 23 Luxembourg)
@@ -32,26 +32,37 @@ The country variable is 2 or 3 digit code that identifies the country. The codes
 * 6x: English speaking countries oversea (61 United States, 62 Canada, 63 Australia, 64 New Zealand)
 * 7x,8x,9x,1xx: other (mostly) OECD and Central/Eastern European countries (71 Japan, 72 Israel, 73 Sri Lanka, 74, Turkey, 75 Albania, 76 Armenia, 77 Azerbaijan, 78 Belarus, 79 Bosnia-Herzegovina, 80 Bulgaria, 81, Croatia, 82 Czech Republic, 83, Estonia, 84 Georgia, 85 Germand Democratic Republic, 86 Hungary, 87 Latvia, 88 Lithuania, 89 Macedonia, 90 Moldova, 91 Montenegro, 92 Poland, 93 Romania, 94 Russia, 95 Serbia, 96 Slovakia, 97 Slovenia, 98 Ukraine, 113 South Korea, 171 Mexico)
 
-countryname
+The *countryname* indicates the name of the country as a character variable.
 
-oecdmember
+The variables *oecdmember* and *eumember* indicate whether a country was a full member (coded as 10) of the OECD or of the EU at the time of the election, not a member at all (coded as 0) or (in case of the EU) an applicant  (20). 
 
-eumember
+*edate* contains information on the day of the election encoded in the specific date-time format.
 
-
-edate 
-
-date
+*date* is a six-digit number that indicates the year and month of the respective national election in the format YYYYMM, e.g. 201102 indicates an election in February 2011.
 
 The *party* variable is a 5 or 6 digit code that identifies every party in the dataset.
 
-partyname
+*partyname* is the (translated) English name of the party.
 
-partyabbrev
+*partyabbrev* is the original language abbreviation of the party (in latin alphabet) as long as there is an official or popular abbreviation.
 
-parfam
+*parfam* indicates the party family of the 
 
-**The variables party and date uniquely identify every row in the dataset.**
+| code | party family |
+|------|--------------|
+| 10 | Ecological parties|
+| 20 | Socialist parties |
+| 30 | Social democratic parties |
+| 40 | Liberal parties| 
+| 50 | Christian democratic parties |
+| 60 | Conservative parties |
+| 70 | Nationalist parties |
+| 80 | Agrarian parties | 
+| 90 | Ethnic and regional parties |
+| 95 | Special issue parties |
+| 98 | Electoral alliances of diverse origin without dominant party |
+| 999 | Missing information|
+
 
 The dataset contains four variables related to the coding process. 
 
@@ -64,10 +75,10 @@ The *testresult* variable indicates the result of the reliability score of the [
 The *testeditsim* is another measure of reliability of the coders' entry test result. 
 
 
-
 ### electoral statistics
 
-* pervote 
+*pervote* variable indicates the 
+
 * voteest
 * presvote
 * absseat
@@ -77,15 +88,26 @@ The *testeditsim* is another measure of reliability of the coders' entry test re
 
 ### Manifesto variables
 
+In a perfect world, each party would publish a manifesto for every election. Unfortunately, that is not always the case as sometimes parties do not publish a manifesto at all, or publish a joint manifesto together with other parties, etc. The *progtype* tries to capture the diversity with the source documents.
 
-estimates
-missing programs
+
+- *1: Program of a single party*. As a rule, each party issues one program for each election. 
+- *2: Program of two or more parties*. In a number of countries, parties compete as programmatic coalitions by issuing joint programs. In these cases, the joint program were assigned to every party in the programmatic
+coalition.
+- *3: Missing program with approximated data*. Missing election programs were approximated on the basis of available programs. Estimates were derived either by computing averages between two adjacent programs or by duplicating programmatic data
+- *4: Program taken from main party of electoral coalition*. In CEE countries parties often compete as electoral coalitions in which blocs of parties receive joint votes and seats even though parties in the bloc still issue separate programs. When the electoral coalition is dominated by one strong party, the program of the main coalition party was used to measure positions of the ‘electoral coalition’ as a whole. 
+- *5: Average of all members of an electoral coalition*. When the electoral coalition consists of equally strong parties the average of platforms from all coalition parties was used to measure positions of the electoral coalition as a whole
+- *6: General program*. Some parties did not issue separate election programs but took part in elections with their general programs.
+- *8: Party bloc program. Some party blocs issue joint programs. As opposed to type 2 programs, electoral statistics are given for the party bloc as a whole, not for the single parties comprising the bloc.
+- *9: Other program type.* Other types of programs not specified by types 1 to 8.
+- *99: Missing program (not approximated by other data).* In cases where it was impossible to find a manifesto from the respective party or in cases where content-analytical data from this party is still missing, but will be added soon.
+
 
 datasetorigin
 
 corpusversion
 
-### Coding variables
+### Coding variables (per*-variables)
 
 The *total* variable indicates the total number of quasi-sentences in the manifesto. 
 
@@ -99,6 +121,8 @@ For more information on the different version of the coding instructions
 and coding schemes, please consult the [website where one can find all
 versions of the coding instructions](https://manifesto-project.wzb.eu/information/documents/handbooks) and a document that highlights the
 most important changes between them.
+
+
 
 ### Aggregate indices
 

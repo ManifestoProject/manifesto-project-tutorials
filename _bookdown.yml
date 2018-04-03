@@ -3,3 +3,4 @@ language:
   ui:
     chapter_name: "Chapter "
 before_chapter_script: ["before-script.R"]
+
