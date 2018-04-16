@@ -23,3 +23,10 @@ mpds <- mp_maindataset(version = mpds_version)
 de_corp <- mp_corpus(countryname == "Germany" & date == 201709)
 greens_corpus <- mp_corpus(countryname=="Germany" & date == 200509 & party == 41113)
 corpus_metadata <- mp_metadata(TRUE)
+
+codebook <- read_excel("codebook.xlsx")
+
+cmp_labels <- codebook %>% filter(type=="main") %>% select(code,title,description_md)
+cee_labels <- codebook %>% filter(type=="cee")  %>% select(code,title,description_md)
+hb5_labels <- codebook %>% filter(type=="hb5") %>% select(code,title,description_md)
+

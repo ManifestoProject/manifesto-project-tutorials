@@ -1,0 +1,118 @@
+---
+title: "Using the Manifesto Project Dataset to scale party preferences"
+always_allow_html: yes
+output: 
+  md_document:
+    variant: markdown_strict
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(tibble)
+library(manifestoR)
+library(DT)
+library(pander)
+
+mp_setapikey("manifesto_apikey.txt")
+
+corpus_version <- "2017-2"
+mpds_version <- "2017b"
+
+mpds <- mp_maindataset(version = mpds_version)
+
+
+```
+
+# Introduction
+
+This tutorial explains the structure and variables of the Manifesto Project Dataset. The goal of this tutorial is that users learn how to use the Manifesto Project Dataset to scale and visualize differences in party preferences over time and between parties.
+
+
+## Example Dataset
+
+
+Each row in the dataset represents one electoral program. **The variables party and date uniquely identify every row in the dataset.**
+
+
+```{r, message=FALSE, warning=FALSE, paged.print=TRUE}
+
+cmp_cats <- paste("per",v4_categories(),sep="")
+
+mpds %>% filter(countryname=="United States" & date == 201211) %>%
+  DT::datatable(caption="Extract Main Dataset", rownames=FALSE, options = list(scrollX = TRUE)) %>%
+  formatStyle(c('country','countryname','oecdmember','eumember'), color='white',backgroundColor = 'blue', fontWeight = 'bold') %>%
+  formatStyle(c('edate','date'), color='white', backgroundColor = 'green', fontWeight = 'bold') %>%
+  formatStyle(c('party','partyname','partyabbrev','parfam'), color='white', backgroundColor = 'red', fontWeight = 'bold') %>%
+  formatStyle(c('coderid','manual','coderyear','testresult','testeditsim'), color='white', backgroundColor = 'orange', fontWeight = 'bold') %>%
+  formatStyle(c('pervote','voteest','presvote','absseat','totseats'), color='black', backgroundColor = 'yellow', fontWeight = 'bold') 
+```
+
+
+
+## Country and election variables
+
+
+
+## Content analytical categories
+
+
+
+
+
+## Using specific categories
+
+for now we just use the standard three-digit content analytical categories. See the tutorial on subcategories for how to use the other per-categories.
+
+
+```{r}
+library(ggplot2)
+
+mpds %>% filter(countryname=="United States" & date == 201211) %>% select(countryname,date,partyname,per107) %>% pander()
+
+ggplot(mpds %>% filter(countryname=="United States" & date > 198000) %>% select(countryname,date,partyname,per501)) +
+  geom_line(aes(x=date,y=per501,z=partyname))
+```
+
+## Ready-made indices: Left-right positions
+
+rile
+
+other measures
+
+## More measures: Nicheness
+
+
+nicheness measure
+
+
+
+party family
+
+
+clarity, 
+
+## create your own scale
+
+average across parties
+
+
+
+
+
+
+
+## save as dta and open in Stata or Excel
+
+
+
+
+
+## bootstrap
+
+some documents are very short
+
+good way to ...

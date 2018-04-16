@@ -87,6 +87,10 @@ ggplot(hb5_data,aes(x=year,y=reorder(countryname,desc(countryname)),color=hb5)) 
 ```
 
 
+# The Manifesto Project: South America dataset
+
+The Manifesto Project Dataset: South America has a slightly different structure than the Main Dataset - in particular in regard to the dealing of subcategories. While the Main Dataset already provides aggregations of the new subcategories to make past and current data comparable, the South America Dataset does not so. The reason is that all data coded for the South American Dataset was coded with version 5 of the coding instructions. Then, the codes with underscores eg. 601_1 should be treated as every other category. Note that the South America dataset does not contain the three digit categories of codes where there are new subcategories. Eg there is no variable per601 in the South America Dataset. If you would like to merge the main dataset with the South America Dataset it is necessary to aggregate the new subcategories into the three-digit main categories in the South America dataset (eg by using manifestoR's function `aggregate_pers`).
+
 # Subcategories in the Manifesto Corpus
 
 The Manifesto Corpus contains the codes as they were assigned by the coders at the time of coding with the coding instructions used at that time. So, in the original coding this data is not always directly comparable as some documents eg contain 608 codes and others contain the codings of the different subcategories of 608. The same is true for coding from CEE countries in the past. When looking at individual elections where there are no differences in the version of the coding instructions that were used, eg. when looking at data from one election in one country, there is usually no need to recode the codes. In other cases, if scholars want to make their data maximally comparable over time and across country it is best to recode both types of subcategory codes. With manifestoR this can easily be done with two functions. `recode_cee_codes` recodes the four digit cee codes to their respective main categories. `recode_v5_to_v4` does the same for the subcategories introduced with version 5 of the coding instructions and implements the recoding exceptions mentioned above. 
@@ -120,7 +124,7 @@ greens_corpus %>%
 
 ```
 
-Unfortunately, for documents that are not digitally available, we do not always have the information whether the "double"-coding with eu categories was allowed and practised by the coder expert or not. The following graph illustrates the share of coded documents per election for which eu-double coding was allowed. However, this graph is restricted to documents that are digitally annotated only. 
+Unfortunately, for documents that are not digitally available, we do not always have the information whether the "double"-coding with eu categories was allowed and practised by the coder or not. The following graph illustrates the share of coded documents per election for which eu-double coding was allowed. However, this graph is restricted to documents that are digitally annotated only. 
 
 ```{r coverage eu codes, message=FALSE, warning=FALSE, paged.print=FALSE}
 corpus_metadata %>% 

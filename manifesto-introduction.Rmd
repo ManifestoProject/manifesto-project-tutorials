@@ -1,0 +1,233 @@
+--- 
+title: "An Introduction to the Manifesto Project (Data)"
+author: "Nicolas Merz, ..."
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+bibliography: ["refs.bib"]
+biblio-style: apalike
+link-citations: yes
+github-repo: ManifestoProject/manifesto-introduction
+description: "This book provides an introduction and overview of the Manifesto Project Data."
+always_allow_html: yes
+new_session: yes
+---
+```{r include=FALSE, cache=FALSE}
+library(tibble)
+library(manifestoR)
+library(ggplot2)
+library(tidytext)
+library(SnowballC)
+library(manifestorita)
+library(labelled)
+library(haven)
+library(shiny)
+library(DT)
+library(labelled)
+
+mp_setapikey("manifesto_apikey.txt")
+mp_use_corpus_version("2016-6")
+
+mpds <- mp_maindataset(version ="2016b")
+
+de <- mp_corpus(countryname == "Germany" & date == 201309)
+
+all_labels <- read_dta(mp_maindataset(download_format="dta")) %>%
+  var_label() %>%
+  unlist() %>%
+  as_data_frame() %>%
+  rownames_to_column(var = "variable")
+
+cmp_labels <- all_labels %>% filter(str_detect(variable, "per\\d{3}$")) %>% mutate(
+  pername = str_sub(variable,start=-3,end=-1)
+)
+
+cee_labels <- all_labels %>% filter(str_detect(variable, "per\\d{4}$")) %>% mutate(
+  pername = str_sub(variable,start=-4,end=-1)
+)
+
+hb5_labels <- all_labels %>% filter(str_detect(variable, "per\\d{3}_")) %>% mutate(
+   pername = str_sub(variable,start=-4,end=-1)
+  )
+
+dems_extract <- mp_corpus(countryname == "United States" & date == 201211 & party == 61320)[[1]] %>%
+  as_data_frame() %>% filter(pos > 275 & pos < 281)
+```
+
+# Preface {-}
+
+You can cite this document: 
+
+Merz,  Nicolas (2017): An Introduction to the Manifesto Project. Available online:  https://manifesto-project.wzb.eu/manifesto-introduction, Version from `r Sys.Date()`
+
+<!--chapter:end:index.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+library(tibble)
+library(manifestoR)
+library(ggplot2)
+library(tidytext)
+library(SnowballC)
+library(manifestorita)
+library(labelled)
+library(haven)
+library(shiny)
+library(DT)
+library(labelled)
+
+mp_setapikey("manifesto_apikey.txt")
+mp_use_corpus_version("2016-6")
+
+mpds <- mp_maindataset(version ="2016b")
+
+de <- mp_corpus(countryname == "Germany" & date == 201309)
+
+all_labels <- read_dta(mp_maindataset(download_format="dta")) %>%
+  var_label() %>%
+  unlist() %>%
+  as_data_frame() %>%
+  rownames_to_column(var = "variable")
+
+cmp_labels <- all_labels %>% filter(str_detect(variable, "per\\d{3}$")) %>% mutate(
+  pername = str_sub(variable,start=-3,end=-1)
+)
+
+cee_labels <- all_labels %>% filter(str_detect(variable, "per\\d{4}$")) %>% mutate(
+  pername = str_sub(variable,start=-4,end=-1)
+)
+
+hb5_labels <- all_labels %>% filter(str_detect(variable, "per\\d{3}_")) %>% mutate(
+   pername = str_sub(variable,start=-4,end=-1)
+  )
+
+dems_extract <- mp_corpus(countryname == "United States" & date == 201211 & party == 61320)[[1]] %>%
+  as_data_frame() %>% filter(pos > 275 & pos < 281)
+```
+# The Manifesto Project API {#api}
+
+... under construction ...
+
+<!--chapter:end:07-API.Rmd-->
+
+---
+csl: apa-bibliography.csl
+---
+```{r include=FALSE, cache=FALSE}
+library(tibble)
+library(manifestoR)
+library(ggplot2)
+library(tidytext)
+library(SnowballC)
+library(manifestorita)
+library(labelled)
+library(haven)
+library(shiny)
+library(DT)
+library(labelled)
+
+mp_setapikey("manifesto_apikey.txt")
+mp_use_corpus_version("2016-6")
+
+mpds <- mp_maindataset(version ="2016b")
+
+de <- mp_corpus(countryname == "Germany" & date == 201309)
+
+all_labels <- read_dta(mp_maindataset(download_format="dta")) %>%
+  var_label() %>%
+  unlist() %>%
+  as_data_frame() %>%
+  rownames_to_column(var = "variable")
+
+cmp_labels <- all_labels %>% filter(str_detect(variable, "per\\d{3}$")) %>% mutate(
+  pername = str_sub(variable,start=-3,end=-1)
+)
+
+cee_labels <- all_labels %>% filter(str_detect(variable, "per\\d{4}$")) %>% mutate(
+  pername = str_sub(variable,start=-4,end=-1)
+)
+
+hb5_labels <- all_labels %>% filter(str_detect(variable, "per\\d{3}_")) %>% mutate(
+   pername = str_sub(variable,start=-4,end=-1)
+  )
+
+dems_extract <- mp_corpus(countryname == "United States" & date == 201211 & party == 61320)[[1]] %>%
+  as_data_frame() %>% filter(pos > 275 & pos < 281)
+```
+
+# Further Readings and Ressources {#further-readings}
+
+This book makes an attempt to provide an overview of the Manifesto Project Data. Therefore, many aspects touched here are dealt elsewhere in much more detail. The following structured list should provide some guidance on where to find more information on certain aspects of the Manifesto Project. There are similar lists that recommend further readings at the end of every chapter. 
+
+Books published by the MRG, CMP and MARPOR:
+
+@molder_which_2017
+
+[@budge1987]
+
+The three books of Mapping Policy Preferences series [@budge2001-1; @klingemann2006]
+
+[@volkens2013]
+
+Other useful documents
+
+
+[Coding Instructions](https://manifesto-project.wzb.eu/information/documents/handbooks)
+[Variable Codebook of the Dataset](https://manifesto-project.wzb.eu/down/data/2016b/codebooks/codebook_MPDataset_MPDS2016b.pdf)
+[Release Notes of the Dataset indicating all the changes](https://manifesto-project.wzb.eu/down/data/2016b/codebooks/release_notes_2016b.pdf)
+
+Documentation:
+Codebook, Coding Instructions
+
+
+Website: 
+
+[manifestoproject.wzb.eu](http://manifestoproject.wzb.eu)
+
+<!--chapter:end:09-conclusion.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+library(tibble)
+library(manifestoR)
+library(ggplot2)
+library(tidytext)
+library(SnowballC)
+library(manifestorita)
+library(labelled)
+library(haven)
+library(shiny)
+library(DT)
+library(labelled)
+
+mp_setapikey("manifesto_apikey.txt")
+mp_use_corpus_version("2016-6")
+
+mpds <- mp_maindataset(version ="2016b")
+
+de <- mp_corpus(countryname == "Germany" & date == 201309)
+
+all_labels <- read_dta(mp_maindataset(download_format="dta")) %>%
+  var_label() %>%
+  unlist() %>%
+  as_data_frame() %>%
+  rownames_to_column(var = "variable")
+
+cmp_labels <- all_labels %>% filter(str_detect(variable, "per\\d{3}$")) %>% mutate(
+  pername = str_sub(variable,start=-3,end=-1)
+)
+
+cee_labels <- all_labels %>% filter(str_detect(variable, "per\\d{4}$")) %>% mutate(
+  pername = str_sub(variable,start=-4,end=-1)
+)
+
+hb5_labels <- all_labels %>% filter(str_detect(variable, "per\\d{3}_")) %>% mutate(
+   pername = str_sub(variable,start=-4,end=-1)
+  )
+
+dems_extract <- mp_corpus(countryname == "United States" & date == 201211 & party == 61320)[[1]] %>%
+  as_data_frame() %>% filter(pos > 275 & pos < 281)
+```
+`r if (knitr:::is_html_output()) '# References {-}'`
+
+<!--chapter:end:10-references.Rmd-->
+

@@ -18,11 +18,6 @@ source("../tutorials/run_before_tutorial.R")
 
 de <- mp_corpus(countryname == "Germany" & date == 201309)
 
-codebook <- read_excel("codebook.xlsx")
-
-cmp_labels <- codebook %>% filter(type=="main") %>% select(code,title,description_md)
-cee_labels <- codebook %>% filter(type=="cee")  %>% select(code,title,description_md)
-hb5_labels <- codebook %>% filter(type=="hb5") %>% select(code,title,description_md)
 
 dems_extract <- mp_corpus(countryname == "United States" & date == 201211 & party == 61320)[[1]] %>%
   as_data_frame() %>% filter(pos > 275 & pos < 281)
@@ -369,13 +364,13 @@ Dataset documentation:
 
 Recommended project publications: 
 
-- Merz, N., Regel, S., & Lewandowski, J. (2016). The Manifesto Corpus: A new resource for research on political parties and quantitative text analysis. Research & Politics, 3(2), 2053168016643346. : [doi-link](http://dx.doi.org/10.1177/2053168016643346) _(This article announced the Manifesto Corpus. It explains its structure and illustrates potential use cases.)_
+- Merz, N., Regel, S., & Lewandowski, J. (2016). The Manifesto Corpus: A new resource for research on political parties and quantitative text analysis. Research & Politics, 3(2): [doi-link](http://dx.doi.org/10.1177/2053168016643346) _(This article announced the Manifesto Corpus. It explains its structure and illustrates potential use cases.)_
 
 - Volkens, A., Bara, J., Budge, I., McDonald, M. D., & Klingemann, H.-D. (Eds.). (2013). Mapping Policy Preferences from Texts. Statistical Solutions for Manifesto Analysts. Oxford: Oxford University Press. _(The latest book in the Mapping Policy Preferences series mostly addressed methodological questions such as scaling, document selection and measurement error.)_
 
-- Klingemann, H.-D., Volkens, A., Bara, J., Budge, I., and McDonald, M. (2006). Mapping Policy Preferences II: Estimates for Parties, Electors, and Governments in Eastern Europe, European Union and OECD 1990-2003. Oxford: Oxford University Press. _("MPP2" - as this book is often abbreviated - came with an extended data collection including data from countries in Central and Eastern Europe)._
+- Klingemann, H.-D., Volkens, A., Bara, J., Budge, I., & McDonald, M. (2006). Mapping Policy Preferences II: Estimates for Parties, Electors, and Governments in Eastern Europe, European Union and OECD 1990-2003. Oxford: Oxford University Press. _("MPP2" - as this book is often abbreviated - came with an extended data collection including data from countries in Central and Eastern Europe)._
 
-- Budge, I., Klingemann, H.-D., Volkens, A., Bara, J., and Tanenbaum, E. (2001). Mapping Policy Preferences. Estimates for Parties, Electors, and Governments 1945-1998. Oxford: Oxford University Press. _(This was the first book published by the Comparative Manifestos Project. The book was accompanied with a CD-ROM - the first release of the Main Dataset.)_
+- Budge, I., Klingemann, H.-D., Volkens, A., Bara, J., & Tanenbaum, E. (2001). Mapping Policy Preferences. Estimates for Parties, Electors, and Governments 1945-1998. Oxford: Oxford University Press. _(This was the first book published by the Comparative Manifestos Project. The book was accompanied with a CD-ROM - the first release of the Main Dataset.)_
 
 - Budge, I., Robertson, D., Hearl, D. (Eds.). (1987). Ideology, strategy and party change: spatial analyses of post-war election programmes in 19 democracies. Cambridge: Cambridge University Press. _(As this was the first book published by the Manifesto Research Group it discussed many aspects in a detailed manner such as the document selection.)_
 
