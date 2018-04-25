@@ -1,5 +1,6 @@
 ---
 title: "A short primer on the Manifesto Project and its methodology"
+author: "Manifesto Project Team, manifesto-communication@wzb.eu"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   rmdformats::html_clean:
@@ -185,7 +186,7 @@ Note also that the dataset files for Stata and SPSS contain labels for variables
 
 ## Coverage
 
-The Manifesto Project Main Dataset covers `r `elections from 
+The Manifesto Project Main Dataset covers `r mpds %>% nrow()` manifestos issued at `r mpds %>% distinct(country,date) %>% nrow()` elections in `r mpds %>% distinct(country)  %>% nrow()` countries. 
 
 ```{r coverage}
 #mpds %>% attach_year() %>% group_by(countryname) %>% distinct(countryname,year) %>%
@@ -256,7 +257,7 @@ One can see that the two first quasi-sentences do not have codes, that is becaus
 
 ## Coverage
 
-Due to the history of the Manifesot Project, not all manifestos are available in a machine-readable format. The following graph illustrates the coverage of the Manifesto Corpus relative to the coverage of the Main Dataset (see figure above). 
+Due to the history of the Manifesto Project, not all manifestos are available in a machine-readable format with digital codings. The following graphs illustrates the coverage of the Manifesto Corpus relative to the coverage of the Main Dataset (see figure above) in regard to whether documents are available in machine-readable format and whether documents are digitally annotated. 
 
 
 ```{r, echo = FALSE, fig.cap = 'Coverage of the Manifesto Project Dataset'}
@@ -307,15 +308,25 @@ coverage_manifesto_count<- coverage_elections %>%
  #test<- left_join(coverage_elections, coverage_manifesto_count, by = "countryname")
 
 
-test <- coverage_manifesto_count %>%
+readable <- coverage_manifesto_count %>%
   ggplot(aes(x = decade, y = fct_reorder(countryname,decade,.desc = TRUE))) +
   geom_tile(aes(alpha=share_machine_readable)) +
   #coord_cartesian(xlim=as.Date(c("1915-12-01", "2020-04-01")))+
   scale_alpha_continuous(name = "share")+
-  scale_fill_discrete(guide = "none")+
+  #scale_fill_discrete(guide = "none")+
   scale_x_date(date_breaks = "10 years", date_labels = "%Y", limits = (c(1916, 2020) %>% paste0("0101") %>% as.Date("%Y%m%d"))) +
-  labs(title="Coverage of the Manifesto Corpus", caption="coverage as relative share to the number of documents covered by the Main Dataset", x="", y="")
-print(test)
+  labs(title="Machine-readable documents of the Manifesto Corpus", caption="Share of machine-readable documents relative to the number of documents covered by the Main Dataset", x="", y="")
+print(readable)
+
+annotated <- coverage_manifesto_count %>%
+  ggplot(aes(x = decade, y = fct_reorder(countryname,decade,.desc = TRUE))) +
+  geom_tile(aes(alpha=share_annotations)) +
+  #coord_cartesian(xlim=as.Date(c("1915-12-01", "2020-04-01")))+
+  scale_alpha_continuous(name = "share")+
+  #scale_fill_discrete(guide = "none")+
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y", limits = (c(1916, 2020) %>% paste0("0101") %>% as.Date("%Y%m%d"))) +
+  labs(title="Share of annotated documents in the Manifesto Corpus", caption="Share of annotated documents relative to the number of documents covered by the Main Dataset", x="", y="")
+print(annotated)
 ```
 
 

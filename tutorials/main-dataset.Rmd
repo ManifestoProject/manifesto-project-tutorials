@@ -1,9 +1,11 @@
 ---
-title: "Using the Manifesto Project Dataset to scale party preferences"
+title: "Working with the Manifesto Project Dataset (Main Dataset)"
+author: "Manifesto Project Team, manifesto-communication@wzb.eu"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   rmdformats::html_clean:
     highlight: kate
-bibliography: https://cloud.wzb.eu/index.php/s/aG4Q8ww2CN13nfj/download
+bibliography: marpor_intro_bibliography.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -22,19 +24,17 @@ source("../tutorials/run_before_tutorial.R")
 
 ```
 
-_This tutorial assumes that you have already read "A short primer on the Manifesto Project and its methodology"_
+_This tutorial assumes that you have already read [A short primer on the Manifesto Project and its methodology](https://manifesto-project.wzb.eu/tutorials/primer)_
 
 
-This tutorial explains the structure and variables of the Manifesto Project Dataset. The goal of this tutorial is that users learn how to use the Manifesto Project Dataset to scale and visualize differences in party preferences over time and between parties.
-@merz2018
+This tutorial explains the structure and variables of the Manifesto Project Dataset [@volkens2017] (also often just called Main Dataset - in contrast to the Manifesto Corpus and other minor datasets published by the Manifesto Project). The goal of this tutorial is that you learn how to use the Manifesto Project Dataset to scale and visualize differences in party preferences over time and between parties.
 
 ## The structure of the Manifesto Project Dataset
 
 Recall from the primer that 
 
-
-* __Each row in the dataset represents one electoral program.__
-* __The variables party and date jointly uniquely identify every row in the dataset.__
+* __Each row in the Manifesto Project Dataset represents one electoral program.__
+* __The variables__ party __and__ date __jointly uniquely identify every row in the dataset.__
 * __The perXXX variables indicate the share (per-centage) of quasi-sentences related to the focal category.__
 
 The following shows an extract of two rows from the dataset. The first row represents the 2012 platform of the US Democratic Party. The second row represents data on the 2012 platform of the Republican party. Variables in blue are on the country level. Variables in green are about the election date. Red variables are related to the political party that issued the manifesto. Variables that contain information about the coding process are shown in orange and information on a party's electoral result is shown in yellow.  
@@ -55,22 +55,23 @@ mpds %>% filter(countryname=="United States" & date == 201211) %>%
 
 
 
-## Most important variables
+## Main Dataset variables
 
-The following table lists the most important variables in the dataset next to the content analytical variables.
+Besides information on the content of the dataset stored in the content-analytical variables (per101-per706), the dataset contains many more variables that provide information on the manifesto, the party that published the manifesto, the coding process, etc. 
 
+**country** (a 2 or 3 digit identifier) and **countryname** provide information on the country in which a manifestos was published. **date** (YYYYMM format) and **edate** (date format) indicate the election date for which the manifesto was published. **party** (5 or 6 digit identifier), **partyname** (in English) as well as **partyabbrev** (the party's abbreviation) give information on a the party that published the manifesto. The variable **parfam** indicates to which so-called party family the party that published the manifesto belongs. Party families are ideologically similar groups of parties: for example social-democratic parties, green parties, or conservative parties.  
 
+The dataset also provides information about a parties electoral result in terms of voteshare (**pervote** and whether this is approximated or not indicated by **voteest**) and seats in parliament (**absseat**) as well as the total number of seats in parliament (**totseat**). 
 
-| variable | description |
-|---|-------------|
-| *country* | A 2 or 3 digit code that identifies the country. |
-| *countryname* | indicates the name of the country as a character variable. |
-| *date* | is a six-digit number that indicates the year and month of the respective national election in the format YYYYMM, e.g. 201102 indicates an election in February 2011.|
-| *party* | variable is a 5 or 6 digit code that identifies every party in the dataset. The two (three) first equal the country variable. |
-| *partyname* | is the (translated) English name of the party. |
-| *parfam* | indicates the party family of the party. See the dataset codebook for the exact coding of these.  |
-| *pervote* | variable indicates the *per*centage of votes the *party* gained at the election that took place in *country* at *edate*. |
-| *progtype* | program type |
+Besides the party-related variables, the dataset also contains information on the coding process such as a coder identification number (**coderid**), information on which version of the coding instructions was used (**manual**), the year in which the coding took place (**coderyear**), and the test result of the reliability test of the coder (**testresult** and **testeditsim**). 
+
+The **progtype** variables stores information on the type of document that was coded. For example whether the document was a "real" manifesto (progtype = 1) or a substitute document. An important thing to know here is that a few observations are not based on manifestos for that specific election, but are imputed from adjacent observations for the same party. These are coded as progtype = 3 (estimate). 
+
+**datasetorigin** indicate with which version of the dataset the content analytical data was last entered (or last edited) and **corpusversion** names the version of the Manifesto Corpus on which the content analytical data is based on. 
+
+**total** describes the total number of allocated codes (~ the total number of quasi-sentences). It is sometimes used a proxy for the length of a document. **peruncod** indicates the share of uncoded quasi-sentences (000 codes).
+
+A complete and more detailed explanation of all variables can be found for each version of the dataset in the _[dataset codebook](https://manifesto-project.wzb.eu/datasets)_.
 
 
 ## Using the content analytical variables (per101-per706)
@@ -106,7 +107,7 @@ ggplot(mpds %>% filter(party %in% c(22951,22110,22521) & date > 1980) %>% select
 One of the most popular applications of the Manifesto Project Dataset and probably the reason for its popularity is the possibility to calculate general left-right positions for political parties. 
 The general idea behind the calculation of left-right positions based on manifesto data is simple: we define some categories of the coding scheme as left and other as right. We then assume that left parties talk more about left-wing issues and right parties talk more about right-wing issues. By measuring how much a party talks about left or right issues, one can measure how right or left a party is. 
 
-A widely used method to measure left-right positions is the "rile"-index - an index of *ri*ght-*le*ft positions of parties. The index was developed by Laver and Budge (1992) for (mostly) west european countries. The categories were theoretically derived and empirically tested by  factor analysis. Twelve categories from the coding scheme are defined as right-wing and another set of twelve categories are defined as left-wing categories. The following table shows the categories defined as left and right according to the rile index. 
+A widely used method to measure left-right positions is the "rile"-index - an index of *ri*ght-*le*ft positions of parties. The index was developed by @laver1992 for (mostly) west european countries. The categories were theoretically derived and empirically confirmed by a factor analysis. Twelve categories from the coding scheme are defined as right-wing and another twelve categories are defined as left-wing categories. The following table shows the categories defined as left and right according to the rile index. 
 
 ```{r rile-cats}
 left_codes <- tibble(code=as.character(rile_l())) %>% 
@@ -128,55 +129,62 @@ The formula to aggregate the scores of the 24 categores to a common scores is ve
 
 $$rile = R - L$$
 
-where R is the sum of per-variables considered right-wing issues and L the sum of per-variables considered as left-wing issues (see table above). The rile index is theoretically bounded by -100 (if a party only mentions left-wing issues in its program) and +100 (if a party only talks about right-wing issues). However, these theoretically minimum and maxium are empirically rare as most parties talk about left and right issues (however to different degrees) and most parties also mention "neutral" issues that are neither considered as left nor as right in the rile index. 
-
-The rile index is very widely used and already pre-computed in the dataset as "rile"-variable. However, the rile index is also criticized for certain characteristics. First, its validity is lower in Central and Eastern European countries than in West European democracies (Mölder 2016). Second, the definition of categories as left and right is universal (the same) across all countries. However, what is defined as left in one country might not be considered as left in another country (Franzmann & Kaiser 2006). Moreover, the aggregation function was criticzed as the presence of neutral sentences squeezes left-right positions to the political center.  
-
-advantages: simple, transparent and in many cases high face validity. 
-
-In general, measuring parties' left-right positions consists of three steps:
-
-- defining which categories are left and right (and eventually weighting them)
-- aggregating the variables to a single left-right score per manifesto
+where R is the sum of per-variables considered right-wing issues and L the sum of per-variables considered as left-wing issues (see table above). The rile index is theoretically bounded by -100 (if a party only mentions left-wing issues in its program) and +100 (if a party only talks about right-wing issues). However, these theoretically minimum and maxium are empirically rare as most parties talk about both -- left and right issues (however to different degrees) -- and most parties also mention "neutral" issues that are neither considered as left nor as right in the rile index. 
 
 
+The following figure shows an application of the rile-index for the UK Labour party and the UK Conservative Party. The blue line represents the rile values of the Labour Party, the red line indicates the values for the Conservative Party. The empirical minima and maxima are far away from -100 and +100, but signficantly larger/smaller. However, one can clearly see that the Conservative Party has constantly higher values (more rightist position) than the Labour Party. Moreover, in 1998 the Labour Party (under Tony Blair) significantly shifted its position towards the Conservative party. 
 
-franz mann kaiser
+```{r}
+uk_parties <- mpds %>% filter(party %in% c(51320,51620) & date > 197000)  %>% select(edate,partyabbrev,rile)
 
+ggplot(uk_parties,aes(y=rile,x=edate,color=partyabbrev)) + 
+  geom_point() +
+  geom_line() +
+  labs(title="Left-Right Positons of Labour and Conservative Party (UK)",
+       x = "Date",
+       y = "rile (Left-Right Position)")
+```
 
+The rile index is very widely used and already pre-computed in the dataset as **rile**-variable. The rile has several advantages: it is easy to calculate and thereby hihgly transparent. It is easy to understand and communicate. Moreover, rile values are calculated row-wise in the dataset and its calculation for one manifesto does not change when adding new data. However, the rile index is also criticized for certain characteristics. First, the definition of categories as left and right according to the rile is assumed to be the same across all countries. However, some scholars argue that what is defined as left in one country might not be considered as left in another country [@franzmann2006;@jahn2011]. 
 
-log ratio scaling
+Second, the aggregation function was criticzed for having a lower external validity (measured by correlation with expert survey data) or a low construct validity arguing that large amounts of neutral sentences bias the estimates toward the political centre. @kim2002 suggested another formula where positions are independent of the amount of neutral sentences:
 
-## More measures: Nicheness
+$$position = \frac{R - L}{R + L}$$
 
+This formula makes the positions of parties independent of the emphasis of left and right issues. If parties speak very little about left issues, but even less about right issues, they will have a leftist positions. In the rile index, this would result in a position towards the political centre.
+@lowe2011 suggested to calculate the log of the ratio of left and right positions. They argue that "the marginal effect of one more sentence is decreasing in the amount that has already been said on the topic" [@lowe2011] 
 
-nicheness measure
+$$position = log\frac{R}{L}$$
 
-```{r nicheness}
-#g <- mp_nicheness(data = mpds, method="bischof")
+Although the theoretical and underlying ideas might differ, for measures that use large sets of variables (such as a left-right index) the three aggregation functions often produce similar results. See below a comparison of the rile index with the log-ratio based left-right measure using the rile-categories:
+
+```{r correl}
+ uk_parties_corrs <- mpds %>% filter(party %in% c(51320,51620) & date > 195000)  %>% 
+    mutate(logitrile = logit_rile(.)) 
+  
+ ggplot(uk_parties_corrs, aes(x=rile, y=logitrile, color=partyabbrev)) +
+  geom_point()
+
+rile_corr <- cor(uk_parties_corrs$rile,uk_parties_corrs$logitrile) 
 
 ```
 
-party family
+Third, the construct validity of rile was found to be lower in Central and Eastern European countries than in Western Europe [@moelder2016], likely because its original calculation and validation was based on western democracies [@laver1992]. 
+
+The rile measure is a good starting point for many analyses, but depending on the research question and the sample of countries, there might be better ways to measure left-right positions. Various scholars made many useful alternative suggestionsto calculate left-right positions: @franzmann2006 proposed that the definition of left and right changes over time and might differ between countries and made several other adjustments. @jahn2011 made a similar suggestion pinning left and right issues down to a theoretical core plus a dynamic component. More complex and sophisticated measures were proposed by @elff2013 and @koenig2013. 
+
+## Version & Citation
+
+The Manifesto Project Dataset is updated about twice a year. New versions of the dataset contain new content analytical data on recent elections, as well as corrections of errors in previous versions. If you register on our website, we will inform you via email about new versions of the dataset. Consult the [release notes of the dataset](https://manifesto-project.wzb.eu/datasets) for changes between the different versions. To ensure reproducibility of your work, always make sure to correctly cite not only the dataset in general, but also to name the specific version that you used for your analysis. For example like the following: 
+
+* `r mp_cite(core_versions="MPDS2017b") %>% filter(data=="dataset") %>% select(citation) %>% pull(citation)`
 
 
 
-## create your own scale
-
-average across parties
 
 
 
-
-## bootstrap
-
-some documents are very short
-
-good way to ...
 
 # Bibliography
 
-Laver, M., & Budge, I. (1992). Party Policy and Government Coalitions. New York: St. Martins Press.
-
-Mölder, Martin. (2016). “The Validity of the RILE Left–right Index as a Measure of Party Policy.” Party Politics 22(1): 37–48.
 
