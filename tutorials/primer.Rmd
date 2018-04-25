@@ -152,13 +152,13 @@ dems_extract %>%
 One code is allocated to each quasi-sentence that reflects the policy goal or issue mentioned in the statement.
 In essence, the coding methodology has only slightly changed since the begin of the Manifesto Project in 1979. A major change is that since 2009 the coding of quasi-sentences is done on the computer instead of on printed copies of the documents. 
 
-# Manifesto Project Main Dataset 
+# Manifesto Project Dataset (Main Dataset)
 
 The Manifesto Project Main Dataset was first published in 2001 with the book Mapping Policy Preferences I (Budge et al. 2001). Since 2009 the dataset is available online. 
 
 
 
-## Structure 
+## Structure of the Main Dataset
 
 - **Each row in the dataset represents one electoral program. **
 - **The perXXX variables indicate the share (per-centage) of quasi-sentences related to the focal category.**
@@ -184,7 +184,7 @@ Note that you can scroll the table above horizontally. Please also be aware that
 Note also that the dataset files for Stata and SPSS contain labels for variables and values whenever this is reasonable and therefore might look slightly different than shown here. A following tutorial will deal with the question how the Manifesto Project Main Dataest can be used to measure parties' political preferences. 
 
 
-## Coverage
+## Coverage of the Main Dataset
 
 The Manifesto Project Main Dataset covers `r mpds %>% nrow()` manifestos issued at `r mpds %>% distinct(country,date) %>% nrow()` elections in `r mpds %>% distinct(country)  %>% nrow()` countries. 
 
@@ -203,7 +203,7 @@ combined_coverage %>% filter(covtype=="mpds" & countryname!="NA") %>%
 ```
 
 
-## Access
+## Access to the Main Dataset
 
 The Manifesto Project Main Dataset can be accessed in different ways:
 
@@ -225,12 +225,12 @@ The Manifesto Project Main Dataset can be accessed in different ways:
 
 
 
-## Structure
+## Structure of the Manifesto Corpus
 
 The coverage of the Manifesto Corpus and the Manifesto Project Main Dataset are not exacly congruent. As in the past, the coding was done on printed copies, not all manifestos are available as digital texts. In particular, the codings are not always available digitally in the Manifesto Corpus. The Manifesto Corpus contains different types of documents:
 
 - machine-readable electoral programs, or
-- machine-readable electoral programs parsed into quasi-sentences and accompanied by codes (see coding scheme above)
+- annotated documents (machine-readable electoral programs parsed into quasi-sentences and accompanied by codes)
 
 Moreover, the meta-data of each document contain links to the pdf on our server to the scanned or downloaded copies of the original programs. The following shows a simplified version of the meta-data table for all manifestos of the Republican party in the US since 1980. The party variable indicates a party identifier (the same that is used in the Main dataset). The language refers to the language of the column. This can be useful for filtering documents for one or specific languages. The column annotation indicates whether a document is parsed into quasi-sentences and contains annotations or not. The "source" column refers to the project by which the document was collected.[^7]
 
@@ -255,12 +255,12 @@ dem_doc %>% as.data.frame() %>% select(pos,text,cmp_code,-eu_code) %>%
 ```
 One can see that the two first quasi-sentences do not have codes, that is because these are the title of the document and a headline. The number of rows in this document slightly differs from the value in the total column in the Main Dataset table above because for the total variable in the Main Dataset we only count sentences with codes (including 0 codes).
 
-## Coverage
+## Coverage of the Manifesto Corpus
 
 Due to the history of the Manifesto Project, not all manifestos are available in a machine-readable format with digital codings. The following graphs illustrates the coverage of the Manifesto Corpus relative to the coverage of the Main Dataset (see figure above) in regard to whether documents are available in machine-readable format and whether documents are digitally annotated. 
 
 
-```{r, echo = FALSE, fig.cap = 'Coverage of the Manifesto Project Dataset'}
+```{r, echo = FALSE, fig.cap = 'Annotated and machine-readable documents (relative to the coverage of Main Dataset)'}
 coverage_elections <- meta_for_coverage %>% 
 # coverage_elections<-mpds %>%
   attach_year() %>%
@@ -315,7 +315,7 @@ readable <- coverage_manifesto_count %>%
   scale_alpha_continuous(name = "share")+
   #scale_fill_discrete(guide = "none")+
   scale_x_date(date_breaks = "10 years", date_labels = "%Y", limits = (c(1916, 2020) %>% paste0("0101") %>% as.Date("%Y%m%d"))) +
-  labs(title="Machine-readable documents of the Manifesto Corpus", caption="Share of machine-readable documents relative to the number of documents covered by the Main Dataset", x="", y="")
+  labs(title="Machine-readable documents", caption="Share relative to coverage of the Main Dataset", x="", y="")
 print(readable)
 
 annotated <- coverage_manifesto_count %>%
@@ -325,36 +325,14 @@ annotated <- coverage_manifesto_count %>%
   scale_alpha_continuous(name = "share")+
   #scale_fill_discrete(guide = "none")+
   scale_x_date(date_breaks = "10 years", date_labels = "%Y", limits = (c(1916, 2020) %>% paste0("0101") %>% as.Date("%Y%m%d"))) +
-  labs(title="Share of annotated documents in the Manifesto Corpus", caption="Share of annotated documents relative to the number of documents covered by the Main Dataset", x="", y="")
+  labs(title="Digitally annotated documents", caption="Share relative to coverage of the Main Dataset", x="", y="")
 print(annotated)
 ```
 
 
 
-```{r coverage-corpus}
-#mpds %>% attach_year() %>% group_by(countryname) %>% distinct(countryname,year) %>%
-#  ggplot(aes(x = year, y = countryname)) + geom_bar()
-library(forcats)
- 
-  
-  # ggplot() + 
- # geom_linerange(data = combined_coverage %>% 
- #                  filter(covtype=="machine_readable" & countryname!="NA") %>%
-#                    mutate(countryname=as.factor(.$countryname)),
- #                aes(x=fct_reorder(countryname,year_min,.desc = TRUE),ymin=year_min,ymax=year_max)) +
-  #   geom_linerange(data = combined_coverage %>% 
-  #                  filter(covtype=="mpds" & countryname!="NA") %>%
-  #                   mutate(countryname=as.factor(.$countryname)),
-  #                aes(x=fct_reorder(countryname,year_min,.desc = TRUE),ymin=year_min,ymax=year_max)) +
-  # coord_flip()  +
-  # scale_y_continuous(breaks=c(1910,1920,1930,1940,1950,1960,1970,1980,1990,2000,2010,2020)) + 
-  # xlab("") + xlab("") + labs(title="Coverage of the Manifesto Corpus")
-  
-#knitr::kable(combined_coverage)
 
-```
-
-## Access
+## Access to the Manifesto Corpus
 
 The Corpus is stored in an online database. It can be accessed in four different ways:  
 
