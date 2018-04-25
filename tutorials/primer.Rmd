@@ -356,7 +356,7 @@ library(forcats)
 
 ## Access
 
-The Corpus is stored in an online database. It can be accessed in four different ways: 
+The Corpus is stored in an online database. It can be accessed in four different ways:  
 
 * __Explore online__: Browse the corpus online in your browser [by document](https://visuals.manifesto-project.wzb.eu/mpdb-shiny/cmp_dashboard_corpus_doc/) or [by keyword](https://visuals.manifesto-project.wzb.eu/mpdb-shiny/cmp_dashboard_corpus/).
 * __[Download csv documents](https://visuals.manifesto-project.wzb.eu/mpdb-shiny/cmp_dashboard_dataset/)__: Download individual electoral programmes in .csv format. These are encoded in [UTF-8](https://en.wikipedia.org/wiki/UTF-8). Make sure to import them correctly. You need to login (or register) to be able to download documents. 
