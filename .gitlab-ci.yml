@@ -19,7 +19,15 @@ push_to_website:
   only:
     - master
 
+push_tutorials_to_website:
+  stage: deploy_tutorials
+  script:
+    - cp tutorials/*.html /srv/manifesto-project.wzb.eu/public/down/tutorials/
+  only:
+    - master
+    - tutorials
+
 stages:
   - build
   - deploy
-
+  - deploy_tutorials
