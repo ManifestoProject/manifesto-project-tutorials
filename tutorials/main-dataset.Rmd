@@ -27,7 +27,7 @@ source("../tutorials/run_before_tutorial.R")
 _This tutorial assumes that you have already read [A short primer on the Manifesto Project and its methodology](https://manifesto-project.wzb.eu/tutorials/primer)_
 
 
-This tutorial explains the structure and variables of the Manifesto Project Dataset [@volkens2017] (also often just called Main Dataset - in contrast to the Manifesto Corpus and other minor datasets published by the Manifesto Project). The goal of this tutorial is that you learn how to use the Manifesto Project Dataset to scale and visualize differences in party preferences over time and between parties.
+This tutorial explains the structure and variables of the Manifesto Project Dataset [@volkens2017] (also often just called Main Dataset - in contrast to the Manifesto Corpus and other minor datasets published by the Manifesto Project). The goal of this tutorial is to that you get to know the structure of the  Manifesto Project and learn how to scale and interpret left-right positions based on the dataset. 
 
 ## The structure of the Manifesto Project Dataset
 
