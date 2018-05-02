@@ -1,8 +1,10 @@
 ---
-title: "Subcategories in the coding scheme"
+title: "Subcategories in the Manifesto Coding Scheme"
 author: "Manifesto Project Team, manifesto-communication@wzb.eu"
-date: "14 3 2018"
-output: html_document
+date: "2 May 2018"
+output:
+  rmdformats::html_clean:
+    highlight: kate
 ---
 
 ```{r setup, include=FALSE}
@@ -17,10 +19,10 @@ source("../tutorials/run_before_tutorial.R")
 The main dataset contains three sets of content analytical variables. 
 
 - The three-digit main categories (*per101 -- 706*)
-- The 4-digits CEE-subcategories (*per1011 -- 7062*)
+- The 4-digits Central and Eastern European (CEE)-subcategories (*per1011 -- 7062*)
 - The 3+1 digit subcategories since version 5 of the coding instructions (*per103_1 -- 703_2*)
 
-All variables have in common that they indicate the share of quasi-sentences in the respective category calculated as a fraction of the overall number of allocated codes per document. A value of 5 within a cell in the column per501 indicates that 5% of allocated codes (the number of quasi-sentences) were coded with the code 501 (Positive mentions about the protection of the environment). This tutorial explains the existence, generation and usage of the different type subcategories and their relation to the main categories in the main dataset.
+All variables have in common that they indicate the share of quasi-sentences in the respective category calculated as a fraction of the overall number of allocated codes per document. A value of 5 within a cell in the column per501 indicates that 5% of allocated codes (the number of quasi-sentences) were coded with the code 501 (Positive mentions about the protection of the environment). This tutorial explains the existence, generation and usage of the different type of subcategories and their relation to the main categories in the main dataset, the South America dataset and the Manifesto Corpus.
 
 
 ## The main categories: *per101 -- 706*
@@ -29,7 +31,7 @@ The three digit variables *(per101 –- per706)* are the main categories of the 
 
 ## The CEE-subcategories: *per1011 -- 7062*
 
-The four digit variables *(per1011 -- per7062)* are sub-categories mostly addressing issues in transitional democracies in (mostly) Central and Eastern European countries. However, they were introduced in version 1 of the coding instructions and were gradually abandoned in most of the countries as the issues could also be coded into the three digit main categories. Currently, the share of these categories is not included in the main categories. If analysts use observations from CEE countries for which the CEE codes were used and want to compare them to manifestos without CEE codes then they should aggregate such CEE codes into the main categories. For example per7062 should be added to per706. ~~manifestoR can easily do this by using the function `aggregate_cee_codes` on the main dataset.~~
+The four digit variables *(per1011 -- per7062)* are sub-categories mostly addressing issues in transitional democracies in (mostly) Central and Eastern European countries. However, they were introduced in version 1 of the coding instructions and were gradually abandoned in most of the countries as the issues could also be coded into the three digit main categories. Currently, the share of these categories is not included in the main categories. If analysts use observations from CEE countries for which the CEE codes were used and want to compare them to manifestos without CEE codes then they should aggregate such CEE codes into the main categories. For example per7062 should be added to per706. Our [R package manifestoR](https://manifesto-project.wzb.eu/information/documents/manifestoR) can easily do this by using the function `aggregate_pers_cee` on the main dataset. 
 
 The following graph shows the elections were CEE categories were used. 
 
@@ -37,7 +39,7 @@ The following graph shows the elections were CEE categories were used.
 
 cee_cats <- colnames(mpds) %>% str_subset("^(per\\d{3})\\d$") 
 
-mpds$cee <- rowSums(mpds[cee_cats],na.rm=TRUE) > 0
+mpds$cee <- rowSums(mpds[cee_cats], na.rm = TRUE) > 0
 
 library(manifestorita)
 countries_elections_cee <- mpds %>% 
@@ -48,7 +50,7 @@ countries_elections_cee <- mpds %>%
 
 ggplot(countries_elections_cee,aes(x=year,y=reorder(countryname,desc(countryname)),color=cee_country)) +
   geom_point() + 
-  ylab("")
+  labs(y = "", color="CEE codes used")
 
 ```
 
@@ -69,7 +71,7 @@ pander(without_first)
 ```
 
 As most scholars require longer time series, we decided to conduct this aggregation already for the main dataset. 
-So, scholars interested in long-time series can simply continue to use the existing main categories (per101-706, including e.g. the rile) as they did in the past and ignore the new categories. Scholars interested in the new categories should be aware that the respective main categories of the new sub- categories are aggregates of the new categories (i.e. if one uses the main categories together with the new subcategories the per-variables will likely add up to more than 100%).
+So, scholars interested in long-time series can simply continue to use the existing main categories (per101-706, including e.g. the rile) as they did in the past and ignore the new categories. Scholars interested in the new categories should be aware that the respective main categories of the new sub- categories are aggregates of the new categories (i.e. if one uses the main categories together with the new subcategories the per-variables will likely add up to more than 100%). To see whether the these categories were used or not, you can filter on the manual (==5) variable in the Main Dataset.
 
 ```{r}
 
@@ -87,15 +89,15 @@ ggplot(hb5_data,aes(x=year,y=reorder(countryname,desc(countryname)),color=hb5)) 
 ```
 
 
-# The Manifesto Project: South America dataset
+## The Manifesto Project: South America dataset
 
 The Manifesto Project Dataset: South America has a slightly different structure than the Main Dataset - in particular in regard to the dealing of subcategories. While the Main Dataset already provides aggregations of the new subcategories to make past and current data comparable, the South America Dataset does not so. The reason is that all data coded for the South American Dataset was coded with version 5 of the coding instructions. Then, the codes with underscores eg. 601_1 should be treated as every other category. Note that the South America dataset does not contain the three digit categories of codes where there are new subcategories. Eg there is no variable per601 in the South America Dataset. If you would like to merge the main dataset with the South America Dataset it is necessary to aggregate the new subcategories into the three-digit main categories in the South America dataset (eg by using manifestoR's function `aggregate_pers`).
 
-# Subcategories in the Manifesto Corpus
+## Subcategories in the Manifesto Corpus
 
 The Manifesto Corpus contains the codes as they were assigned by the coders at the time of coding with the coding instructions used at that time. So, in the original coding this data is not always directly comparable as some documents eg contain 608 codes and others contain the codings of the different subcategories of 608. The same is true for coding from CEE countries in the past. When looking at individual elections where there are no differences in the version of the coding instructions that were used, eg. when looking at data from one election in one country, there is usually no need to recode the codes. In other cases, if scholars want to make their data maximally comparable over time and across country it is best to recode both types of subcategory codes. With manifestoR this can easily be done with two functions. `recode_cee_codes` recodes the four digit cee codes to their respective main categories. `recode_v5_to_v4` does the same for the subcategories introduced with version 5 of the coding instructions and implements the recoding exceptions mentioned above. 
 
-To illustrate this, the following table shows the codes before and after applying the recode_v5_to_v4` function to a text snippet. The recode functions can be applied to a ManifestoCorpus object, to a ManifestoDocument object or to a vector of codes (see the manifestoR introduction for more information on these objects.)
+To illustrate this, the following table shows the codes before and after applying the `recode_v5_to_v4` function to a text snippet. The recode functions can be applied to a ManifestoCorpus object, to a ManifestoDocument object or to a vector of codes (see the manifestoR introduction for more information on these objects.)
 
 ```{r aggregation, message=FALSE, warning=FALSE}
 
@@ -112,7 +114,7 @@ de_corp %>%
 
 ## The eu_code column in the Manifesto Corpus
 
-Usually all quasi-sentences are assigned to one and only on code. In the Manifesto Corpus and the coded documents these codes can be found in the cmp_code column. However, in some former versions of the coding instructions, there was one exception to this rule: If a quasi-sentence was somehow related to the European Union or European community and to another category covered by the coding scheme it could be coded as positive or negative mentions of the european community/union (codes 108 and 110) and be assigned to another code. This practice was abandoned roughly when MARPOR took over the coding in 2009. The Manifesto Corpus provides meta information for each annotated document whether whether it contains this kind of eu_codes or not. The following snippet illustrates how these codes are dealt with in the Manifesto Corpus. NB: For the counting of the code frequencies for the main dataset, these codes were treated equally to the codes 108 and 110 that were coded in the cmp_code column. 
+Usually all quasi-sentences are assigned to one and only on code. In the Manifesto Corpus and the coded documents these codes can be found in the cmp_code column. However, in some former versions of the coding instructions, there was one exception to this rule: If a quasi-sentence was somehow related to the European Union/European community *and* to another category covered by the coding scheme it could be coded as positive or negative mentions of the european community/union (codes 108 and 110) *and* be assigned to another code. This practice was abandoned roughly when MARPOR took over the coding in 2009. The Manifesto Corpus provides meta information for each annotated document whether whether it contains this kind of eu_codes or not. The following snippet illustrates how these codes are dealt with in the Manifesto Corpus. NB: For the counting of the code frequencies for the main dataset, these codes were treated equally to the codes 108 and 110 that were coded in the cmp_code column. 
 
 ```{r eu-code-snippet, message=FALSE, warning=FALSE, paged.print=FALSE}
 
@@ -138,11 +140,14 @@ corpus_metadata %>%
   group_by(countryname,year) %>% 
   summarize(eu_codes = mean(has_eu_code)) %>% 
     ggplot(aes(x=year,y=reorder(countryname,desc(countryname)),color=eu_codes)) +
-    geom_point()
+    geom_point() +
+    ylab("")
 
 ```
 
-----
+## More information
 
-For more information on the different versions of the coding instructions and coding schemes, please consult the [website where one can find all versions of the coding instructions](https://manifesto-project.wzb.eu/information/documents/handbooks) and a document that highlights the most important changes between them.
+* [List of all versions of the Manifesto Coding Instructions](https://manifesto-project.wzb.eu/information/documents/handbooks)
+* [Evolution of the Manifesto Coding Instructions and the Category Scheme)](https://manifesto-project.wzb.eu/down/papers/Evolution_of_the_Manifesto_Coding_Instructions_and_the_Category_Scheme.pdf)
+
 
