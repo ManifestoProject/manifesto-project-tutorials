@@ -11,7 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In this tutorial, we will show how to use the functions of the tidytext package to convert the Manifesto Corpus into a tidy text format. 
+In this tutorial, we will show how to use the tidytext package to convert the Manifesto Corpus into a tidy text format. 
 
 # Tidy data and tidytext
 
@@ -21,7 +21,7 @@ The tidy text format is inspired by the tidy data format (Wickham 2014). Data is
 - each observation is a row
 - each type of observational unit is a table
 
-In other context, tidy data is also known as "long" format Tidy data is also sometimes known as "long" format. 
+In other context, tidy data is also known as "long" format.
 
 The [tidy text format](https://www.tidytextmining.com/) picks up three principles of tidy data. Tidy text is a format where information is stored in "a table with one-token-per-row"" (Silge and Robinson 2016). This is in contrast to the idea of term-document-matrices or document-feature matrices that are commonly used in text analysis.
 
@@ -31,6 +31,8 @@ The tidytext package provides functions to transform several other text data for
 
 # tidytext package
 
+If you have not installed the manifestoR or tidytext package, you need to install them first with `install.packages("manifestoR")` and/or  `install.packages("tidytext")`. As every sesions using the Manifesto Corpus, you need to set your api-key. To learn more about the api-key and manifestoR, see the tutorial "First steps with manifestoR". 
+
 ```{r, message=FALSE, warning=FALSE }
 library(manifestoR)
 library(tidytext)
@@ -39,7 +41,6 @@ library(ggplot2)
 mp_setapikey(key.file="manifesto_apikey.txt")
 ```
 
-If you have not installed the manifestoR or tidytext package, you need to install them first with `install.packages("manifestoR")` and/or  `install.packages("tidytext")`. To learn more about the api-key and manifestoR, see the tutorial "First steps with manifestoR". 
 
 The `mp_corpus` returns a ManifestoCorpus object in the Corpus format of the tm-package (see the "First steps..." tutorial for more information). We use the manifestos of the Irish 2016 election as exemplary case here.  
 
@@ -98,20 +99,25 @@ tidy_without_stopwords %>% select(manifesto_id, word) %>% head(10)
 
 # Term frequencies and Tf-Idf
 
-From the tidy format, using the `count' function, it is very easy to obtain term frequencies of the corpus under investigation. 
+Using the `count` function on the tidied data, it is very easy to obtain term frequencies of the corpus under investigation. 
 
 ```{r}
 tidy_without_stopwords %>%
   count(word, sort = TRUE) %>% head(10)
 ```
 
-We use the Manifesto Project Dataset to replace the little meaningful party id with the full party name. 
+General term frequencies (even when calculated per document) are often not very meaningful as they do not differ very much across documents. Many applications therefore calculate the tf-idf score (term-frequency inverse-document-frequency). This detects words that appear often within one document, but rarely in other documents. Tfidf identifies words that are on the one hand frequent, but on the other hand also distinct. tidytext has a function `bind_tfidf` that adds the tfidf-score to a data frame containing term frequencies and document meta data. 
+
+Before calculating the tfidf score, we get nicer document names based on the party names stored in the Manifesto Project Dataset. 
 
 ```{r}
 irish_partynames <- mp_maindataset() %>% filter(countryname == "Ireland" & date == 201602) %>% select(party, partyname) 
 ```
 
-General term frequencies (even when calculated per document) are often not very meaningful as they do not differentiatediffery very much between across documents. Many applications therefore calculate the tf-idf score (term-frequency inverse-document-frequency). This detects words that appear often within one document, but rarely in other documents. The scores are often interpreted as detecting words that are on the one hand frequent, but on the other hand also distinct. tidytext has a function `bind_tfidf` that adds the tfidf-score to a data frame containing term frequencies and document meta data. The following shows how to calculate tf-idf socres and plot the 5 highest scoring terms for each manifesto. For more information on tf-idf scores, have a look at the [respective chapter in the tidy text text](https://www.tidytextmining.com/tfidf.html). 
+
+The following shows how to calculate tf-idf socres and plot the 5 highest scoring terms for each manifesto. For more information on tf-idf scores, have a look at the [respective chapter in the tidy text text](https://www.tidytextmining.com/tfidf.html). 
+
+
 ```{r}
 
 tidy_without_stopwords %>%
@@ -132,6 +138,7 @@ tidy_without_stopwords %>%
 
 ```
 
+One can see that the terms with high tf-idf scores differ across parties. Not surprisingly, the parties' names or parts thereof appear often in these lists (as they are often used by the party, and rarely by other parties). 
 
 # Make use of the codings (annotations)
 
