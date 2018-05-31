@@ -1,5 +1,5 @@
 ---
-title: "Manifesto Corpus with tidytext"
+title: "Using the Manifesto Corpus with the tidytext package"
 author: "Nicolas Merz, nicolas.merz@wzb.eu"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
