@@ -11,7 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In this tutorial, we will show how to use the tidytext package to convert the Manifesto Corpus into a tidy text format. 
+In this tutorial, we will show how to use the tidytext package to convert the Manifesto Corpus into a tidy text format. We assume that you have already read the tutorial on the [First steps with manifestoR](https://manifesto-project.wzb.eu/tutorials/firststepsmanifestoR).
 
 # Tidy data and tidytext
 
