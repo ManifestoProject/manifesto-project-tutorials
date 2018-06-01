@@ -29,6 +29,4 @@ push_tutorials_to_website:
     - tutorials
 
 stages:
-  - build
-  - deploy
   - deploy_tutorials
