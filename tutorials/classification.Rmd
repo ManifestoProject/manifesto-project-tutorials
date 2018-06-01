@@ -10,6 +10,114 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Classification
 
 
+```{r}
+
+library(manifestoR)
+library(fastrtext)
+library(stringr)
+library(readxl)
+
+mp_setapikey("manifesto_apikey.txt")
+
+issue_scheme <- manifestoR:::bischof_issue_groups() %>% 
+  unlist() %>% 
+  as.data.frame(optional=TRUE, stringsAsFactors=FALSE, col.names=c("category")) %>%
+  rownames_to_column("issue") %>%
+  setNames(c("issue","cmp_code")) %>%
+  mutate(
+    cmp_code = as.character(str_sub(cmp_code, 4,6)),
+    issue = ifelse(issue != "agrarian", str_sub(issue,1,-2),"agrarian"),
+    issue = str_to_upper(issue)
+  )
+
+issue_scheme_agg <- read_xlsx("issue-scheme-simple.xlsx") %>%
+  mutate(cmp_code = as.character(cmp_code))
+
+tmp_file_model <- "tempfile_model"
+
+sentences <- mp_availability(countryname == "Germany") %>% 
+  filter(annotations==TRUE) %>%
+  mp_corpus() %>%
+  recode_v5_to_v4() %>% 
+  as.data.frame(with.meta=TRUE) %>%
+  mutate(
+    testtrain = ifelse(date < 201700, "train","test")
+  ) %>%
+  filter(!(testtrain == "train" & cmp_code == "NA")) %>%
+left_join(issue_scheme_agg) %>%
+  mutate(
+    label = paste0("__label__",issue),
+    lower_text = tolower(text),
+    labelplustext = paste(label, lower_text),
+    true_label = issue
+  ) %>%
+  select(text,cmp_code,pos,manifesto_id,party,date,testtrain,label,issue,labelplustext,true_label)
+
+train_tmp_file_txt <- "train_file.txt"
+
+sentences %>%
+  filter(testtrain == "train") %>%
+  filter(label != "H") %>%
+  pull(labelplustext) %>%
+  writeLines(con = train_tmp_file_txt)
+
+# lear model
+execute(commands = c("supervised", "-input", train_tmp_file_txt, "-output", tmp_file_model, "-dim", 20, "-lr", 1, "-epoch", 60, "-wordNgrams", "1:2", "-verbose", 1))
+
+model <- load_model(tmp_file_model)
+
+#model_pretrained <- load_model(path = "C:/Users/merz/Desktop/cc.de.300.bin")
+
+testsentences <- sentences %>%
+  filter(text != "") %>%
+  filter(testtrain == "test") %>%
+  filter(true_label != "H") %>%
+  pull(labelplustext)
+
+
+predictions <- map(testsentences, function(x) 
+    try(predict(model, sentences = x, simplify=TRUE))
+  ) %>% unlist()
+
+preds <- tibble(issue = names(predictions), prob = predictions) %>%
+  bind_cols(
+    sentences %>%  
+      filter(text != "") %>% 
+      filter(true_label != "H") %>%
+      filter(testtrain == "test")
+    ) %>% 
+  rename(pred_label = issue) %>%
+  mutate(
+        issue1 = ifelse(is.na(issue1),"NA",issue1),
+        correct = true_label == pred_label
+        )
+
+predictions3 <- map(testsentences, function(x) 
+    try(predict(model, k = 3, sentences = x))
+  ) 
+
+
+df <- data.frame(matrix(names(unlist(predictions3)), nrow=14880, byrow=TRUE))
+
+preds %>% bind_cols(df)  %>%
+  mutate(
+    X1 = as.character(X1),
+    X2 = as.character(X2),
+    X3 = as.character(X3),
+    corr3 = X1 == true_label
+  ) %>%
+  pull(corr3) %>%
+  mean()
+  
+  
+  
+
+
+
+
+```
+
+
 
 ## quanteda
 

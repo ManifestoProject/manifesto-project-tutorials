@@ -62,7 +62,7 @@ This introduction should give a brief overview of the Manifesto Project methodol
 
 [^1]: This tutorial was generated based on version `r mpds_version` of the Manifesto Project Main Dataset and version `r corpus_version` of the Manifesto Corpus
 
-The Manifesto Project collects and analyzes parties' electoral programs (manifestos). It's data collection is publicly available and forms the basis for many [publications in political science and other disciplines](https://manifesto-project.wzb.eu/publications/all). Since 2009, the Manifesto Project is funded by the German Research Foundation under the name Manifesto Research on Political Representation (MARPOR) and is located the WZB Berlin Social Science Center. MARPOR continues the work and data collection of the Comparative Manifestos Project and the Manifesto Research Group that go back until 1979. 
+The Manifesto Project collects and analyzes parties' electoral programs (manifestos). Its data collection is publicly available and forms the basis for many [publications in political science and other disciplines](https://manifesto-project.wzb.eu/publications/all). Since 2009, the Manifesto Project is funded by the German Research Foundation under the name Manifesto Research on Political Representation (MARPOR) and is located the WZB Berlin Social Science Center. MARPOR continues the work and data collection of the Comparative Manifestos Project (CMP) and the Manifesto Research Group (MRG) that go back until 1979. 
 
 
 # Methodology
