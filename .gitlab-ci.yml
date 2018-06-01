@@ -1,24 +1,3 @@
-build_book:
-  stage: build
-  script:
-  - echo $MANIFESTO_APIKEY > manifesto_apikey.txt
-  - R -e "library(withr); with_libpaths('~/.Rlib', source('buildscript.R', local = TRUE, echo = TRUE))"
-  artifacts:
-    paths:
-    - _book/
-  only:
-   - master
-
-push_to_website:
-  stage: deploy
-  script:
-    - rm -rf /srv/manifesto-project.wzb.eu/public/manifesto-introduction/manifesto-introduction_files
-    - rm -rf /srv/manifesto-project.wzb.eu/public/manifesto-introduction/libs
-    - rm -f /srv/manifesto-project.wzb.eu/public/manifesto-introduction/*
-    - cp -r _book/* /srv/manifesto-project.wzb.eu/public/manifesto-introduction/
-  only:
-    - master
-
 push_tutorials_to_website:
   stage: deploy_tutorials
   script:
@@ -29,4 +8,6 @@ push_tutorials_to_website:
     - tutorials
 
 stages:
+  - build
+  - deploy
   - deploy_tutorials
