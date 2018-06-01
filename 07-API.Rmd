@@ -1,3 +1,0 @@
-# The Manifesto Project API {#api}
-
-... under construction ...

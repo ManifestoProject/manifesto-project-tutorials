@@ -1,0 +1,193 @@
+---
+title: "Using the Manifesto Corpus with the tidytext package"
+author: "Nicolas Merz, nicolas.merz@wzb.eu"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  rmdformats::html_clean:
+    highlight: kate
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this tutorial, we will show how to use the tidytext package to convert the Manifesto Corpus into a tidy text format. We assume that you have already read the tutorial on the [First steps with manifestoR](https://manifesto-project.wzb.eu/tutorials/firststepsmanifestoR).
+
+# Tidy data and tidytext
+
+The tidy text format is inspired by the tidy data format (Wickham 2014). Data is tidy if
+
+- each variable is a column
+- each observation is a row
+- each type of observational unit is a table
+
+In other context, tidy data is also known as "long" format.
+
+The [tidy text format](https://www.tidytextmining.com/) picks up three principles of tidy data. Tidy text is a format where information is stored in "a table with one-token-per-row"" (Silge and Robinson 2016). This is in contrast to the idea of term-document-matrices or document-feature matrices that are commonly used in text analysis.
+
+The advantage of the tidytext format is that it allows the use of functions many users are familiar with from managing and cleaning "normal" data sets. 
+
+The tidytext package provides functions to transform several other text data formats into a tidy text format. These functions can also be applied to the Manifesto Corpus format. In the following, we will show how to use the functions of the tidytext package to convert the Manifesto Corpus into a tidy text format. 
+
+# tidytext package
+
+If you have not installed the manifestoR or tidytext package, you need to install them first with `install.packages("manifestoR")` and/or  `install.packages("tidytext")`. As every sesions using the Manifesto Corpus, you need to set your api-key. To learn more about the api-key and manifestoR, see the tutorial "First steps with manifestoR". 
+
+```{r, message=FALSE, warning=FALSE }
+library(manifestoR)
+library(tidytext)
+library(dplyr)
+library(ggplot2)
+mp_setapikey(key.file="manifesto_apikey.txt")
+```
+
+
+The `mp_corpus` returns a ManifestoCorpus object in the Corpus format of the tm-package (see the "First steps..." tutorial for more information). We use the manifestos of the Irish 2016 election as exemplary case here.  
+
+
+
+
+```{r include=FALSE}
+mp_corpus(countryname=="Ireland" & date == 201602) 
+```
+
+```{r}
+ireland2016_corpus <- mp_corpus(countryname=="Ireland" & date == 201602) 
+ireland2016_corpus
+```
+
+The `tidy()`function transforms the ManifestoCorpus into a data frame where each row represents one document. Variables are the meta-information from the corpus as well as an additional variable named "text" that contains the whole text for each document.
+
+```{r}
+tidied_corpus <- ireland2016_corpus %>% tidy() 
+tidied_corpus
+```
+
+The most important function of the tidytext package is the `unnest_tokens` function. It tokenizes the `text` variable into words (or other tokens) and creates one row per token - making the data frame tidy. The unnest_token function by default transforms all characters to lower case. 
+
+```{r}
+tidy_df <- tidied_corpus %>% 
+  unnest_tokens(word,text) 
+
+tidy_df %>% select(manifesto_id, word) %>% head(15)
+``` 
+
+
+
+
+# Cleaning and preprocessing
+
+The tidy format allows to make use of the [dplyr](https://dplyr.tidyverse.org/) grammar to preprocess and clean the data. To delete stopwords we make us of a stop word collection that comes with the tidytext package. The argument here is a tidytext function that returns a dataframe with a list of stopwords (frequent but little meaningful words).
+
+```{r}
+get_stopwords()
+```
+
+
+
+Anti_join here will only keep words that do not appear in the list dataframe provided as argument.  Another advantage of the tidytext format is one can easily filter for certain characteristics. Here, we show how one can easily filter for tokens that are numbers only. The expression `is.na(as.numeric(word))`filters for words that can not be transformed to numeric values. This filters out all words that are just containing numbers (such as the "2016" in the example above).
+
+```{r, warning = FALSE, message = FALSE}
+tidy_without_stopwords <- tidy_df %>% 
+  anti_join(get_stopwords()) %>% 
+  filter(is.na(as.numeric(word))) 
+
+tidy_without_stopwords %>% select(manifesto_id, word) %>% head(10)
+
+```
+
+
+# Term frequencies and Tf-Idf
+
+Using the `count` function on the tidied data, it is very easy to obtain term frequencies of the corpus under investigation. 
+
+```{r}
+tidy_without_stopwords %>%
+  count(word, sort = TRUE) %>% head(10)
+```
+
+General term frequencies (even when calculated per document) are often not very meaningful as they do not differ very much across documents. Many applications therefore calculate the tf-idf score (term-frequency inverse-document-frequency). This detects words that appear often within one document, but rarely in other documents. Tfidf identifies words that are on the one hand frequent, but on the other hand also distinct. tidytext has a function `bind_tfidf` that adds the tfidf-score to a data frame containing term frequencies and document meta data. 
+
+Before calculating the tfidf score, we get nicer document names based on the party names stored in the Manifesto Project Dataset. 
+
+```{r}
+irish_partynames <- mp_maindataset() %>% filter(countryname == "Ireland" & date == 201602) %>% select(party, partyname) 
+```
+
+
+The following shows how to calculate tf-idf socres and plot the 5 highest scoring terms for each manifesto. For more information on tf-idf scores, have a look at the [respective chapter in the tidy text text](https://www.tidytextmining.com/tfidf.html). 
+
+
+```{r}
+
+tidy_without_stopwords %>%
+  count(party, word, sort = TRUE) %>%
+  bind_tf_idf(word,party,n = n) %>%
+  arrange(desc(party,tf_idf)) %>%
+ # mutate(word = factor(word, levels = rev(unique(word)), ordered=T)) %>% 
+  group_by(party) %>% 
+  top_n(5) %>% 
+  ungroup %>%
+  left_join(irish_partynames, by="party") %>%
+  ggplot(aes(x = reorder(word, tf_idf) , y = tf_idf, fill = partyname)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~partyname, ncol = 2, scales = "free") +
+  coord_flip()
+
+
+```
+
+One can see that the terms with high tf-idf scores differ across parties. Not surprisingly, the parties' names or parts thereof appear often in these lists (as they are often used by the party, and rarely by other parties). 
+
+# Make use of the codings (annotations)
+
+The previous analyses did just make use of the machine-readable texts, but did not exploit the digital codings/annotations of the Manifesto Corpus. In this section, we will show how to use the tidytext package in conjunction with the annotations/codings of the Manifesto Corpus. 
+In order to keep the codes for further analysis, it is necessary to first convert the ManifestoCorpus object to a data.frame and then use the unnest_tokens function (instead of using the `tidy` function which will drop the codes). The `pos` variable in the returned data frame comes from the content object of the Manifesto Corpus and indicates the position of the quasi-sentence within a ManifestoDocument. The following extract shows the quasi-sentences 50 to 51 in the Green Party manifesto (party id == 53110). For better readability, we did not remove stopwords here. One can see that quasi-sentence 50 was coded as 107 (Internationalism: positive), while the following quasi-sentence was coded as 501 (environmental protection: positive). 
+
+```{r}
+words_and_codes <- mp_corpus(countryname=="Ireland" & date == 201602) %>% 
+  as.data.frame(with.meta=TRUE) %>% 
+  unnest_tokens(word,text) 
+  
+words_and_codes %>% select(party, word,pos, cmp_code) %>% filter(party == 53110 & between(pos,50,51))
+```
+
+Now, we can simply filter based on the cmp_code, eg to either exclude some of the word occurencies from the analysis. One can also use the coding information to calculate tf-idf scores based on the different coding categories instead of based on the different documents. This should get us terms that are distinct and meaningful for the given categories. We first use remove stopwords and purely numeric values from the word list shown above and drop sentences coded as headlines (H), non-coded quasi-sentences or quasi-sentences coded as "0" (no particular meaning, cannot be coded). To reduce the complexity, we recode the categories coded according to version 5 of the coding instructions to the less complex coding scheme of version 4 (this aggregates several subcategories to the main categories - see the subcategories tutorial for more information). Then, we count and calculate tf-idf scores based on the word frequencies per coding category (instead of based on the frequencies per document). 
+
+```{r, warning = FALSE, message = FALSE}
+tfidf_codes <- words_and_codes %>%
+  anti_join(get_stopwords()) %>%
+  filter(is.na(as.numeric(word))) %>%
+  filter(!(cmp_code %in% c("H","","0","000",NA))) %>%
+  mutate(cmp_code = recode_v5_to_v4(cmp_code)) %>%
+  count(cmp_code, word) %>%
+  bind_tf_idf(word, cmp_code,n) 
+``` 
+
+For illustrative purposes, we restrict the dataset to four codes: decentralisation (301), technology & infrastructure (411), environmental protection (501),  and culture (502).  We can see that the terms with high tf-idf scores seem very reasonable and make intuitive sense for the categories here (certainly, otherwise we wouldn't have chosen this example...). 
+
+```{r, warning = FALSE, message = FALSE}
+
+tfidf_codes %>%
+  filter(cmp_code %in% c("501","502","301","411")) %>%
+  mutate(cmp_code = factor(cmp_code, labels = c("Decentralisation","Technology & Infrastructure","Environmental Protection","Culture"))) %>%
+  group_by(cmp_code) %>%
+  top_n(10, tf_idf) %>% 
+  ggplot(aes(x = reorder(word, tf_idf) , y = tf_idf, fill = cmp_code)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~cmp_code, ncol = 2, scales = "free") +
+  coord_flip()
+
+```
+
+Tidytext provides many functions to convert to and from other text packages such as `quanteda` or `tm`. 
+This was just a primer on how to use tidytext package (and philosophy) to use with the Manifesto Corpus. If you want to dig deeper into tidy text mining, we recommend the book [Text Mining with R: A Tidy Approach" by Julia Silge and David Robinson](https://www.tidytextmining.com).
+
+
+# Bibliography 
+
+Wickham, Hadley. 2014. “Tidy Data.” Journal of Statistical Software 59 (10). doi:10.18637/jss.v059.i10 .
+
+Silge, Julia, and David Robinson. 2016. “Tidytext: Text Mining and Analysis Using Tidy Data Principles in R.” The Journal of Open Source Software 1 (3). doi:10.21105/joss.00037.

@@ -1,0 +1,8 @@
+{
+        "A short primer": "primer",
+        "Working with the main dataset": "main-dataset",
+        "Subcategories": "subcategories",
+        "First steps with manifestoR": "firststepsmanifestoR",
+        "Using the Manifesto Corpus with the tidytext package": "tidymanifestocorpus",
+        "... more to come": "HEADER"
+}
