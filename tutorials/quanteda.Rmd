@@ -1,0 +1,247 @@
+---
+title: "Using the Manifesto Corpus with quanteda"
+author: "Nicolas Merz <nicolas.merz@wzb.eu>"
+date: "XX XXXX 2018"
+output:
+  rmdformats::html_clean:
+    highlight: kate
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+```
+
+In this tutorial, we will show how to use the quanteda package to analyze the Manifesto Corpus. We assume that you have already read [First steps with manifestoR](https://manifesto-project.wzb.eu/tutorials/firststepsmanifestoR) (at least until "Downloading documents from the Manifesto Corpus") and that you are familiar with the [pipe %>% operator](http://magrittr.tidyverse.org/).
+
+# Grammar and logic of quanteda
+
+[Quanteda (Benoit et al. 2018)](https://quanteda.io/) is a comprehensive powerful text analysis R package. It is [well](https://tutorials.quanteda.io) [documented](http://docs.quanteda.io/reference/), [fast](https://quanteda.io/performance/) and [versatile](http://docs.quanteda.io/articles/pkgdown/comparison.html).  
+
+
+Quanteda has three main objects. 
+
+- Corpora (created with the `corpus()`). These contain the texts() and document meta information in form of `docvars()`.
+- tokens objects (created with `tokens()`). The `tokens` function tokenizes corpora into tokens. Tokens can be of different kind, such as words, paragraphs, or ngrams.
+- Document-feature matrices (created with `dfm()`). `dfm`s are matrices where each row represents one document. Columns represent features (mostly tokens) and cells contain information about the occurence of features within documents. Features are mostly tokens (eg words or n-grams). `dfm` is the starting point for most types of analyses that draw inferences from the frequency of tokens. 
+
+Most quanteda functions take on of these three as an input and somehow transform it. The functions are consistently and intuitively named, eg. `dfm_group` groups a document-feature matrix, `tokens_remove` removes tokens from a tokens object, etc. 
+
+# manifestoR and Quanteda
+
+We first use the usual "header" of a manifestoR script: loading packages, setting the api-key and fixing the corpus version (to ensure reproducibility). 
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(manifestoR)
+library(quanteda)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+mp_setapikey(key.file="manifesto_apikey.txt")
+mp_use_corpus_version("2017-2")
+mp_corpus(countryname == "Germany" & date == 201709)
+```
+
+```{r echo = TRUE, eval = FALSE}
+library(manifestoR)
+library(quanteda)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+mp_setapikey(key.file="manifesto_apikey.txt")
+mp_use_corpus_version("2017-2")
+
+```
+
+Before working with the Manifesto Corpus with Quanteda, it is important to think about the level of analysis (level of aggregation). Many operations on Quanteda are meant to happen on the document level. For example documents have metalevel information, while a smaller unit cannot have separate meta-information. Different documents however can have the same meta information (for example the party code or the same language). Depending on the research question it might sometimes be more appropriate to treat manifestos as documents and in other cases it might be better to treat individual quasi-sentences as documents. 
+
+Quanteda can directly import corpora from the manifestoR corpus format applying the `corpus` function to a normal `ManifestoCorpus` object that one can get with the `mp_corpus` function (which is a kind of `tm` corpus, see the First Steps with manifestoR tutorial). 
+We use `mp_availability` to check the availability of documents for the 2012 US elections. We save the object and use it as input for the `mp_corpus` function. Alternatively, we could have also used the same expression for `mp_corpus` that we used for `mp_availability`. 
+
+```{r paged.print=FALSE}
+available_us2012 <- mp_availability(countryname == "United States" & date == 201211 & partyname %in% c("Democratic Party","Republican Party"))
+available_us2012
+tm_corpus <- mp_corpus(available_us2012)
+tm_corpus
+```
+
+We queried for two documents of which both are "Coded document" - documents with annotations. When converting this to a Quanteda corpus, however this results in 3188 documents as every quasi-sentence is considered an individual document. 
+
+
+```{r}
+quanteda_corpus <- corpus(tm_corpus) ## quanteda's corpus function
+quanteda_corpus
+```
+
+The meta data information from the Manifesto Corpus is stored in the docvars and is available for each quasi-sentence.
+
+```{r}
+quanteda_corpus %>% docvars() %>% names()
+```
+
+When using manifestos that were coded with different versions of the coding instructions (see the tutorial on subcategories), it might be a good idea to first recode version 5 codes to version 4 using manifestoR `recode_v5_to_v4` function before transforming it into the quanteda corpus format. 
+
+```{r}
+mp_corpus(countryname == "Germany" & date == 201709) %>% 
+  corpus %>% 
+  docvars(field = "cmp_code") %>% 
+  head(10)
+mp_corpus(countryname == "Germany" & date == 201709) %>% 
+  recode_v5_to_v4() %>% 
+  corpus %>% 
+  docvars(field = "cmp_code") %>% 
+  head(10)
+```
+
+By default, digitally annotated quasi-sentences will be treated as separate documents by quanteda (one document equals one quasi-sentence), while documents that have no annotations will be treated as a single document (one document equals one manifesto). The following snippet illustrates this difference. Instead of querying for the 2004 documents that are annotated, we query the manifestos from the 2000 election that are not annotated. The converted quanteda corpus then contains only two documents (including the whole texts of both manifestos):
+
+```{r}
+us_not_annotated <- mp_availability(countryname == "United States" & date %in% c(200011))
+us_not_annotated
+
+mp_corpus(us_not_annotated) %>% corpus()
+```
+
+If you want to use a set of manifestos where one part of the set is available as annotated and the other as non-annotated documents, it might be reasonable to first transform them to a similar aggregation level. One possibility would be to separately download the non-annotated manifestos and segment them using `corpus_segment()` into sentences and then combine them with a corpus that is already parsed into quasi-sentences. If the level of analysis is anyway the manifesto level, then one can also later group the document-feature matrix based on the manifesto id using `dfm_group`. 
+
+# Subsetting the corpus
+
+Quanteda can easily subset the corpus based on document level variables. The following code snippets subset the corpus based on the party code or based on the cmp_code. 
+
+```{r}
+quanteda_corpus %>% corpus_subset(party == 61620) %>% texts() %>% head(5)
+quanteda_corpus %>% corpus_subset(cmp_code == 501) %>% texts() %>% head(5)
+```
+
+# Tokenization with `tokens()` 
+
+The `tokens()` function in quanteda tokenizes the documents. Tokens can be words, characters, sentences or ngrams. The function provides many arguments to facilitate the cleaning and preprocessing.
+
+```{r}
+
+quanteda_corpus %>% tokens(what = "word") %>% head(2)
+```
+
+One could also tokenize the same document into bi-grams using the ngram argument. By using ngrams = 1:2, quanteda tokenizes into uni-grams and bi-grams. 
+
+```{r}
+quanteda_corpus %>% tokens(ngram = 1:2) %>% head(2)
+```
+
+Tokenization is particularly important for pre-processing and cleaning the texts. One can easily remove nubmers, punctuation or stopwords. Moreover, it is simple to transform all text to lower case or stem words. 
+
+```{r}
+quanteda_corpus %>% tokens(what = "word", remove_punct = TRUE, remove_numbers = TRUE) %>%
+  tokens_tolower() %>%
+  tokens_remove(stopwords("english")) %>% 
+  tokens_wordstem() %>%
+  head(4)
+  
+  
+```
+
+
+# Constructing a document-feature-matrix with `dfm`
+
+The construction of a document feature matrix is at the core of most automatic text analyses workflows. `dfm` is quanteda's powerful command to construct a document-feature matrix. In many cases, one can skip the step to generate `tokens` from a corpus, but directly use `dfm` on a corpus as the dfm command passes on most arguments to `tokens`. To get a "standard" preprocessed document feature matrix with lower casing, removed punctuation and numbers as well as stemmed words from a corpus, one would add the following arguments to dfm:
+
+```{r}
+quanteda_corpus %>% dfm(
+  tolower = TRUE, 
+  stem = TRUE, 
+  remove = stopwords("english"), 
+  remove_punct = TRUE, 
+  remove_numbers = TRUE
+)
+```
+
+You can modify a dfm by using various functions such as `dfm_trim`, `dfm_select`, `dfm_weight`, `dfm_keep`, `dfm_lookup`, `dfm_sample`, and many more. 
+In particular the `dfm_group` function is handy as it allows to concatenate documents based on document variables such as codings, party ids or election dates. Quanteda allows to calculate term-frequency inverse document frequency scores with the function `dfm_tfidf`. Tfidf scores are often used to identify words that are frequent and distinct for a given set of documents. We replicate here the example that we also used in the tidytext tutorial and calculate tfidf scores for different code categories for the Irish manifestos of 2016. 
+
+```{r}
+quanteda_irish <- mp_corpus(countryname=="Ireland" & date == 201602) %>%
+  recode_v5_to_v4() %>%
+  corpus() %>%
+  dfm(tolower=TRUE, remove_punct = TRUE, remove = stopwords("english")) %>%
+  dfm_subset(!(cmp_code %in% c("H","","0","000",NA))) %>%
+  dfm_group("cmp_code") %>%
+  dfm_tfidf() %>%
+  dfm_subset(cmp_code %in% c("501","502","301","411")) %>%
+  dfm_sort() %>%
+  dfm_trim(25)
+  
+quanteda_irish %>% 
+  convert(to = "data.frame") %>%
+  gather(word, tfidfscore, -document) %>%
+  rename(cmp_code = document) %>%
+  group_by(cmp_code) %>%
+  top_n(10, tfidfscore) %>% 
+  ggplot(aes(x = reorder(word, tfidfscore) , y = tfidfscore, fill = cmp_code)) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = "tf-idf") +
+  facet_wrap(~cmp_code, ncol = 2, scales = "free") +
+  coord_flip()
+
+```
+
+
+# Keyword in context search
+
+Quanteda also provides a nice way to view text passages based on certain key words. The `kwic` (for keyword in context) allows you to use for a text string or pattern. The window indicates how many word around the keyword should be shown in the output. The following is a keyword search for the term "arms" based on the US party platforms. 
+
+```{r}
+kwic(quanteda_corpus,phrase("arms"),window = 10) %>%
+  DT::datatable(caption="Keywords in context", rownames=FALSE, options = list(scrollX = TRUE,pageLength = 5, lengthMenu = c(5, 10, 15, 20)))
+```
+
+
+
+# Multi-word expressions
+
+Multi-word expressions can pose a problem to automatic text analysis. The expression "New York" stands for something different than the two separate words "new" and "York". Quanteda offers a simple way to identify such multi-word expressions based on collocations using the `textstat_collocations` function. The following shows an association measure for word pairs. The list contains many expressions that may be better (or even should) be treated as one expression in automatic analysis, such as "United States", "President Obama"... 
+
+```{r}
+quanteda_corpus %>% 
+  tokens() %>% 
+  tokens_remove(stopwords("english")) %>% 
+  textstat_collocations(method = "lambda", size = 2) %>% 
+  arrange(-lambda) %>%  
+  top_n(20)
+```
+
+
+# Targeted sentiment analysis
+
+Quanteda facilitates dictionary based searchs. The following example illustrates how to conduct a targeted sentiment analysis. 
+We use the corpus created above based on US party platforms of 2012 and tokenize it into words. We then keep only tokens that include the word "President" as well as the ten words before and after every occurence of "President".  
+
+
+
+
+```{r}
+pres_tokens <- tokens(quanteda_corpus) %>% 
+  tokens_select("President", selection = "keep", window = 10, padding = FALSE, verbose = TRUE)
+```
+
+Quanteda has integrated a sentiment dictionary constructed by Young & Soroka (2012) stored in `data_dictionary_LSD2015`. The dictionary contains thousands of positive and negative words or word stems.  
+
+```{r}
+data_dictionary_LSD2015[[1]] %>% head(10)
+```
+
+We then use the the sentiment dictionary to count positive and negative words among the surrounding words of "President" to analyze which party speaks more positively or negatively about the president. We "group" by party to get frequencies of positive and negative words aggregated to the party level. The ratio of positive to negative words is much higher for the Democratic Party (61320) than for the Republican Party (61620) when speaking about the "President". This is little surprising as in 2012, the incumbent President was a Democrat.
+
+```{r}
+pres_dfm <- dfm(pres_tokens, dictionary= data_dictionary_LSD2015[1:2] , group = c("party"))
+pres_dfm 
+```
+
+Quanteda has many more functions. In particular the `textstat_*` functions are powerful and can well applied to manifestos. 
+
+
+# References
+
+Benoit, Kenneth et al. (2018). "quanteda: Quantitative Analysis of Textual Data."" doi: 10.5281/zenodo.1004683, R package version 1.3.0, http://quanteda.io. 
+
+Young, Lori and Stuart Soroka. (2012). "Affective News: The Automated Coding of Sentiment in Political Texts." Political Communication 29(2): 205-231.
