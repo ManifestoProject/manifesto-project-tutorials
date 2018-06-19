@@ -61,7 +61,7 @@ Before working with the Manifesto Corpus with Quanteda, it is important to think
 Quanteda can directly import corpora from the manifestoR corpus format applying the `corpus` function to a normal `ManifestoCorpus` object that one can get with the `mp_corpus` function (which is a kind of `tm` corpus, see the First Steps with manifestoR tutorial). 
 We use `mp_availability` to check the availability of documents for the 2012 US elections. We save the object and use it as input for the `mp_corpus` function. Alternatively, we could have also used the same expression for `mp_corpus` that we used for `mp_availability`. 
 
-```{r paged.print=FALSE}
+```{r}
 available_us2012 <- mp_availability(countryname == "United States" & date == 201211 & partyname %in% c("Democratic Party","Republican Party"))
 available_us2012
 tm_corpus <- mp_corpus(available_us2012)
