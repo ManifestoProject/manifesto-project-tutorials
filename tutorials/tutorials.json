@@ -4,5 +4,6 @@
         "Subcategories": "subcategories",
         "First steps with manifestoR": "firststepsmanifestoR",
         "Using the Manifesto Corpus with the tidytext package": "tidymanifestocorpus",
+        "Using the Manifesto Corpus with quanteda": "quanteda",
         "... more to come": "HEADER"
 }
