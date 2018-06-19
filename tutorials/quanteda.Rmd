@@ -1,7 +1,7 @@
 ---
 title: "Using the Manifesto Corpus with quanteda"
 author: "Nicolas Merz <nicolas.merz@wzb.eu>"
-date: "XX XXXX 2018"
+date: "19 June 2018"
 output:
   rmdformats::html_clean:
     highlight: kate
