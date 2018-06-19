@@ -31,7 +31,7 @@ The tidytext package provides functions to transform several other text data for
 
 # tidytext package
 
-If you have not installed the manifestoR or tidytext package, you need to install them first with `install.packages("manifestoR")` and/or  `install.packages("tidytext")`. As every sesions using the Manifesto Corpus, you need to set your api-key. To learn more about the api-key and manifestoR, see the tutorial "First steps with manifestoR". 
+If you have not installed the manifestoR or tidytext package, you need to install them first with `install.packages("manifestoR")` and/or  `install.packages("tidytext")`. As every sesions using the Manifesto Corpus, you need to set your api-key. To learn more about the api-key and manifestoR, see the tutorial "First steps with manifestoR". Moreover, we fix the corpus version using the `mp_use_corpus_version` function. This ensure that the script does not break if a new corpus version is published as by default the latest corpus version is used.
 
 ```{r, message=FALSE, warning=FALSE }
 library(manifestoR)
@@ -39,6 +39,7 @@ library(tidytext)
 library(dplyr)
 library(ggplot2)
 mp_setapikey(key.file="manifesto_apikey.txt")
+mp_use_corpus_version("2017-2")
 ```
 
 
