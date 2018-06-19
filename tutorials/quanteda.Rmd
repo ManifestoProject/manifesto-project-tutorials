@@ -36,6 +36,7 @@ library(quanteda)
 library(dplyr)
 library(ggplot2)
 library(tidyr)
+library(stringr)
 
 mp_setapikey(key.file="manifesto_apikey.txt")
 mp_use_corpus_version("2017-2")
@@ -48,6 +49,7 @@ library(quanteda)
 library(dplyr)
 library(ggplot2)
 library(tidyr)
+library(stringr)
 
 mp_setapikey(key.file="manifesto_apikey.txt")
 mp_use_corpus_version("2017-2")
@@ -157,7 +159,7 @@ quanteda_corpus %>% dfm(
 ```
 
 You can modify a dfm by using various functions such as `dfm_trim`, `dfm_select`, `dfm_weight`, `dfm_keep`, `dfm_lookup`, `dfm_sample`, and many more. 
-In particular the `dfm_group` function is handy as it allows to concatenate documents based on document variables such as codings, party ids or election dates. Quanteda allows to calculate term-frequency inverse document frequency scores with the function `dfm_tfidf`. Tfidf scores are often used to identify words that are frequent and distinct for a given set of documents. We replicate here the example that we also used in the tidytext tutorial and calculate tfidf scores for different code categories for the Irish manifestos of 2016. 
+In particular the `dfm_group` function is handy as it allows to concatenate documents based on document variables such as codings, party ids or election dates. Quanteda allows to calculate term-frequency inverse document frequency scores with the function `dfm_tfidf`. Tfidf scores are often used to identify words that are frequent and distinct for a given set of documents. We replicate here the example that we also used in the tidytext tutorial and calculate tfidf scores for different code categories for the Irish manifestos of 2016. The `topfeatures()` function returns the features with the highest tfidf-score.  
 
 ```{r}
 quanteda_irish <- mp_corpus(countryname=="Ireland" & date == 201602) %>%
@@ -168,16 +170,23 @@ quanteda_irish <- mp_corpus(countryname=="Ireland" & date == 201602) %>%
   dfm_group("cmp_code") %>%
   dfm_tfidf() %>%
   dfm_subset(cmp_code %in% c("501","502","301","411")) %>%
-  dfm_sort() %>%
-  dfm_trim(25)
-  
+  dfm_sort() %>% 
+  topfeatures(groups = "cmp_code")
+
+quanteda_irish
+
 quanteda_irish %>% 
-  convert(to = "data.frame") %>%
-  gather(word, tfidfscore, -document) %>%
-  rename(cmp_code = document) %>%
+  unlist() %>%
+  as_tibble() %>%
+  rownames_to_column(var = "row") %>%
+  mutate(
+    cmp_code = str_sub(row, start = 1, end = 3),
+    term = str_sub(row, start = 5, end = -1)
+  ) %>%
+  mutate(cmp_code = factor(cmp_code, labels = c("Decentralisation","Technology & Infrastructure","Environmental Protection","Culture"))) %>%
   group_by(cmp_code) %>%
-  top_n(10, tfidfscore) %>% 
-  ggplot(aes(x = reorder(word, tfidfscore) , y = tfidfscore, fill = cmp_code)) +
+  top_n(10, value) %>% 
+  ggplot(aes(x = reorder(term, value) , y = value, fill = cmp_code)) +
   geom_col(show.legend = FALSE) +
   labs(x = NULL, y = "tf-idf") +
   facet_wrap(~cmp_code, ncol = 2, scales = "free") +
@@ -185,6 +194,7 @@ quanteda_irish %>%
 
 ```
 
+The scores derived here differ in magnitude from the scores shown in the tidytext tutorial as the [tfidf calculation is different](https://stackoverflow.com/questions/48806699/tidytext-quanteda-and-tm-returning-different-tf-idf-scores).
 
 # Keyword in context search
 
