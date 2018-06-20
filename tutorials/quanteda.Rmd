@@ -159,7 +159,7 @@ quanteda_corpus %>% dfm(
 ```
 
 You can modify a dfm by using various functions such as `dfm_trim`, `dfm_select`, `dfm_weight`, `dfm_keep`, `dfm_lookup`, `dfm_sample`, and many more. 
-In particular the `dfm_group` function is handy as it allows to concatenate documents based on document variables such as codings, party ids or election dates. Quanteda allows to calculate term-frequency inverse document frequency scores with the function `dfm_tfidf`. Tfidf scores are often used to identify words that are frequent and distinct for a given set of documents. We replicate here the example that we also used in the tidytext tutorial and calculate tfidf scores for different code categories for the Irish manifestos of 2016. The `topfeatures()` function returns the features with the highest tfidf-score.  
+In the following example, we download Irish manifestos from the 2016 election, do some standard preprocessing, drop all quasi-sentences with headline codes ("H"), uncoded ("0","000") and with codes missing (NA). We use the `dfm_group` here to combine all quasi-sentences coded with the same code to one document.Standard cell entries in a dfm are counts of features per document. Term frequencies can be transformed using the `dfm_weight` function. Here, we use it to calculate the proportion of words per document (`scheme = "prop"`). We then subset the dfm for four features of four specific codes.
 
 ```{r}
 quanteda_irish <- mp_corpus(countryname=="Ireland" & date == 201602) %>%
@@ -168,33 +168,31 @@ quanteda_irish <- mp_corpus(countryname=="Ireland" & date == 201602) %>%
   dfm(tolower=TRUE, remove_punct = TRUE, remove = stopwords("english")) %>%
   dfm_subset(!(cmp_code %in% c("H","","0","000",NA))) %>%
   dfm_group("cmp_code") %>%
-  dfm_tfidf() %>%
-  dfm_subset(cmp_code %in% c("501","502","301","411")) %>%
-  dfm_sort() %>% 
-  topfeatures(groups = "cmp_code")
+  dfm_weight(scheme = "prop") %>%
+  dfm_subset(cmp_code %in% c("501","502","301","411")) 
 
 quanteda_irish
 
-quanteda_irish %>% 
-  unlist() %>%
-  as_tibble() %>%
-  rownames_to_column(var = "row") %>%
-  mutate(
-    cmp_code = str_sub(row, start = 1, end = 3),
-    term = str_sub(row, start = 5, end = -1)
-  ) %>%
-  mutate(cmp_code = factor(cmp_code, labels = c("Decentralisation","Technology & Infrastructure","Environmental Protection","Culture"))) %>%
-  group_by(cmp_code) %>%
-  top_n(10, value) %>% 
-  ggplot(aes(x = reorder(term, value) , y = value, fill = cmp_code)) +
+```
+
+To plot the most frequent terms, we use the `textstat_frequency()` function. It extracts the most frequent terms (here grouped by cmp_code) and converts these summary statistics to a data.frame. Such a data.frame servers as perfect input for a ggplot. 
+
+
+```{r}
+
+feature_frequencies_categories <- quanteda_irish %>%  textstat_frequency(n = 10, group = "cmp_code") 
+
+feature_frequencies_categories %>%
+  mutate(cmp_code = factor(group, labels = c("Decentralisation","Technology & Infrastructure","Environmental Protection","Culture"))) %>%
+  ggplot(aes(x = reorder(feature, frequency) , y = frequency, fill = cmp_code)) +
   geom_col(show.legend = FALSE) +
-  labs(x = NULL, y = "tf-idf") +
+  labs(x = NULL, y = "share of words per category") +
   facet_wrap(~cmp_code, ncol = 2, scales = "free") +
   coord_flip()
 
 ```
 
-The scores derived here differ in magnitude from the scores shown in the tidytext tutorial as the [tfidf calculation is different](https://stackoverflow.com/questions/48806699/tidytext-quanteda-and-tm-returning-different-tf-idf-scores).
+Certainly, similar to tidytext, quanteda also allows the calculation of term-frequency inverse-document frequency (tfidf) scores with `dfm_tfidf`.
 
 # Keyword in context search
 
