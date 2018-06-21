@@ -1,0 +1,164 @@
+---
+title: "Merging Marpor Data: An Example using Cabinet Data from ParlGov"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+### Marpor and third party data
+
+Along with our policy-codings, our dataset encompasses a number of useful metadata, such as the voteshare (_pervote_), partyname and -abbreviation, or codes that identify eu- and oecd-membership. However, a majority of research questions demand for more information and a broader dataset. Thus, enhancing the marpor-dataset is necessary. In this brief tutorial, we would like to demonstrate you how our data can be expanded by merging it with the popular database ParlGov. 
+
+
+
+### Getting the data
+
+One of the main advantages of __R__ is that it allows users to assign multiple datasets to objects within one session. In this step, we load the Marpor maindataset (using __manifestoR__), as well as ParlGov's data (see https://dataverse.harvard.edu/dataverse/holger-doering) into our environment.
+
+
+```{r, collapse= T ,warning=FALSE, message = F }
+rm(list=ls())
+
+library(manifestoR)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+
+
+# Loading the Marpor-Maindataset (Version 2017a)
+mp_setapikey(key.file="manifesto_apikey.txt")
+mp_coreversions()
+mp.data <- mp_maindataset(version = "MPDS2017a")
+
+# Loading various forms of ParlGov data (csv-files originated from their dataverse)
+pg.cab <- read.csv("cabinet.csv"  )
+pg.part <- read.csv("party.csv") 
+pg.elec <- read.csv("election.csv") 
+
+```
+
+From the readme-files, we can extract more detailed information on the content of each ParlGov-table:
+
+> view_cabinet - Cabinet and opposition parties in parliament with their seat strength at each instance of government formation. (main view)     
+> view_election - Election results for national and European Parliament elections. (main view)       
+> view_party - Party information and merge table for various external data sets on party positions.
+
+
+### Merging and working with the data
+
+So lets start merging our data with data from ParlGov. To keep things simple, we focus on two subsequent elections in a single country: Germany 2005 and 2009. We want to investigate the change in ideological positions of the cabinet.
+
+To accomplish this task, we have to go through a couple of steps:
+1. We need to subset the German data for both datasets
+2. We need to merge these datasets
+3. We need to calculate weighted positions for the cabinet
+4. We want to graph the ideological change
+
+
+#### Subsetting
+``` {r}
+mp.germany <- dplyr::filter(mp.data, countryname == "Germany" & date %in% c(200509, 200909))
+
+pg.germany <- dplyr::filter(pg.cab, country_name == "Germany" & election_date %in% c("2005-09-18", "2009-09-27"))
+```
+
+
+#### Merging
+
+Merging can be a complicated process, especially if the two datasets are not of equal length or do not share a common identifier. For more insights and different merging-options, we recommend http://stat545.com/bit001_dplyr-cheatsheet.html and the package __dplyr__.
+
+In our case, we receive two subsets of equal length  (10 observations, i.e. 5 parties for each election). Sometimes, this is not the case and it is even more important to check how your chosen "join-type" will affect the data (again, take a look at the cheatsheet for dplyr join functions). Now the challenge is to merge both subsamples, using unique identifiers in both sets. These identifiers can be dates, unique codes, or a multitude of them.
+
+As in reality, we encounter the problem that a lot of these identifiers are not standardized. You can see that the date formats, party codes, or abbreviations are not exactly the same in ParlGov and Marpor. To merge datasets succesfully, identifiers of both sets have to be perfectly equal. 
+
+Here, only the "seats" variable is exactly equal between both datasets and moreover unique for each party within the time period. But be aware, that this is only the case because we work with a very small sample. But if we would use this variable when merging large chunks of data, we would likely run into problems.
+
+Therefore, we use identifiers that are specific enough to work also with larger datasets: __CMP code__ and __year__. To obtain these values for the ParlGov dataset, we first need to merge it with the "ParlGov Parties dataset":
+
+```{r}
+
+cmp.pgov.id <- select(pg.part, party_id, cmp)
+join.parlgov <- left_join(pg.germany, cmp.pgov.id, by = "party_id") # adding the cmp-codes to the parlgov-data on germany
+
+# harmonizing date-variable with lubridate-package
+join.parlgov$year <- year(as.Date(as.Date(join.parlgov$election_date),"%Y/%m/%d"))
+mp.germany$year   <- year(as.Date(as.Date(mp.germany$edate),"%Y/%m/%d"))
+
+# renaming party ID variable in marpor so that it equals to name in parlgov
+names(mp.germany)[names(mp.germany) == 'party'] <- 'cmp'
+# Harmonizing party name and codeS
+mp.germany$partyabbrev[mp.germany$partyabbrev == "L-PDS"] <-"LINKE"
+mp.germany$cmp[mp.germany$cmp %in% 41222:41223] <-41221
+
+
+
+# joining by cmp (marpor party ID) and year
+join.germany <- left_join(mp.germany, join.parlgov, by = c("cmp", "year"))
+```
+
+### Calculating and graphing ideological development, conditioned on cabinet status
+
+We have succesfully merged our info on party manifestos with data by parlgov on voteshare and cabinet status. Now we would like to investigate the dynamics of ideological change by the cabinet parties, and also calculate a weighted mean of the overall cabinet positions.
+
+To get a brief overview of the developments in Germany between 2005 and 2009, we graph the ideological positions of the parties (according to marpors rile), as well as their cabinet status.
+
+``` {r}
+
+
+# How to plot a two-level plot, where the first level is a line plot grouped by party(abbrev) and in the second layer, points are highlightet if cabinet_party=1 ?
+ggplot(data=join.germany, aes(edate, rile), group = partyabbrev) +
+  geom_line(aes(colour =  partyabbrev)) +
+  geom_point(aes( shape = as.factor(cabinet_party),colour =  partyabbrev, size=1)) 
+
+```
+ 
+ 
+Now we create a new variable called __cab_rile__, which reflects the ideological positon of a cabinet. We decide to use a weighted mean, which means that the variable is constructed as the mean position of all cabinet members, weighted by their amount of seats in parliament relative to all seats obtained by cabinet parties.
+
+``` {r}
+
+# Creating new variable: Sum of seats held by cabinet 
+parties_cabinfo <- join.germany %>%
+  group_by(edate, cabinet_party) %>%
+  mutate(
+    block_seats = ifelse( cabinet_party==1, sum(absseat), NA),
+    cab_size = absseat / block_seats,
+    cab_number = ifelse( cabinet_party==1, n(), NA)
+    )
+  
+
+# Creating weighted cabinet variable:
+weighted_positions <- parties_cabinfo %>%
+  mutate(cab_rile = sum(rile * cab_size )) %>% ungroup()%>%
+  gather(rile_type, value, cab_rile, rile) %>%
+  filter (value != 0 ) 
+
+
+for (i in 1:nrow(weighted_positions)){
+ if (weighted_positions$rile_type[i] == "cab_rile") {
+  number <- ifelse(as.character(weighted_positions$year[i])=="2005", "2005", "2009")
+  weighted_positions$partyabbrev[i] <- paste("Cabinet", number)
+  }}
+
+
+       
+# Plotting the results, where the red points show the weighted position of the cabinet
+
+ggplot(weighted_positions, aes(x=date, y=value)) +
+  geom_line( aes(colour = partyabbrev)) + 
+  geom_point (data= weighted_positions[1:4,], aes(date, value), colour = "red", size = 3) +
+  geom_text(data= weighted_positions[1:4,], aes(label=partyabbrev),hjust= 0, vjust=1.5) +
+    xlim(NA, 201000)
+``` 
+
+### Interpretation of the results and plot
+
+We see an interesting development. On first sight, we would expect that the 2009 cabinet would be much more conservative than it's predecessor, since the social democrats (SPD) have been replaced by the liberals (FDP) as the "junior" coalition partner of the christian democrats (CDU/CSU). However, this is not what the data tells us. We can clearly see that the new cabinet has moved to the centre (it became less rightist) and the plotted party developments tell us the reason why:      
+Both right parties (CDU/CSU and FDP) have moved significantly to the left between 2005 and 2009. Thus, our weighted average measurement of cabinets reflects these movements.
+
+
+We have to keep in mind, that these findings are exemplary and based on assumptions that can and should be discussed critically. However, we wanted to briefly show how our dataset can be combined with external data in order to address new and interesting questions.
