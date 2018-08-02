@@ -1,164 +1,160 @@
 ---
-title: "Merging Marpor Data: An Example using Cabinet Data from ParlGov"
-output: html_document
+title: "Adding Parties' Government/Opposition Status to the Manifesto Project Dataset using ParlGov Data"
+author: "Nicolas Merz & Fabio Ellger <manifesto-communication@wzb.eu>"
+output:
+  rmdformats::html_clean:
+    highlight: kate
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE, self.contained = TRUE)
 ```
 
-### Marpor and third party data
+In this tutorial, we will show how to merge the Manifesto Project Dataset with data on cabinet compositions from [parlgov.org](https://www.parlgov.org). We assume that you have already read the [Short primer on the Manifesto Project and its methodology](https://manifesto-project.wzb.eu/tutorials/primer) and [First steps with manifestoR](https://manifesto-project.wzb.eu/tutorials/firststepsmanifestoR). Moreover, you should be familiar with the %>% operator and the dplyr package and grammar. 
 
-Along with our policy-codings, our dataset encompasses a number of useful metadata, such as the voteshare (_pervote_), partyname and -abbreviation, or codes that identify eu- and oecd-membership. However, a majority of research questions demand for more information and a broader dataset. Thus, enhancing the marpor-dataset is necessary. In this brief tutorial, we would like to demonstrate you how our data can be expanded by merging it with the popular database ParlGov. 
+## parlgov.org data 
 
+Along with our policy-codings, our dataset encompasses a number of useful metadata, such as the voteshare (_pervote_), partyname and -abbreviation, or codes that identify eu- and oecd-membership. However, a majority of research questions demand for more information and a broader dataset. Thus, combining the Manifesto Project Dataset with other datasets is often necessary to answer many research questions. In this brief tutorial, we will show how our data can be expanded by merging it with the popular database ParlGov (Döring & Manow 2018). Parlgov provides information on parties, cabinets and elections for 37 countries (EU and OECD). This can be useful if for example one would like to distinguish strategies of opposiiton and government parties, analyze whether some parties or strategies are associated with gaining or loosing office, or when calculating the position of whole cabinets (in contrast to party positions). 
 
+## Downloading data
 
-### Getting the data
-
-One of the main advantages of __R__ is that it allows users to assign multiple datasets to objects within one session. In this step, we load the Marpor maindataset (using __manifestoR__), as well as ParlGov's data (see https://dataverse.harvard.edu/dataverse/holger-doering) into our environment.
-
+We first download the Manifesto Project Dataset using manifestoR (see the tutorial [First steps with manifestoR](https://manifesto-project.wzb.eu/tutorials/firststepsmanifestoR)  for a more detailed explanation of this step): we load manifestoR, set the apikey and download the current version of the Manifesto Project Dataset. 
 
 ```{r, collapse= T ,warning=FALSE, message = F }
-rm(list=ls())
-
-library(manifestoR)
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-library(lubridate)
+library(manifestoR) # to access the Manifesto Project Dataset
+library(ggplot2) # for plots
+library(dplyr) # for data wrangling
+library(tidyr) # for data wrangling, too
+library(lubridate) # for handling date variables
 
 
-# Loading the Marpor-Maindataset (Version 2017a)
-mp_setapikey(key.file="manifesto_apikey.txt")
-mp_coreversions()
-mp.data <- mp_maindataset(version = "MPDS2017a")
-
-# Loading various forms of ParlGov data (csv-files originated from their dataverse)
-pg.cab <- read.csv("cabinet.csv"  )
-pg.part <- read.csv("party.csv") 
-pg.elec <- read.csv("election.csv") 
-
+# Loading the Manifesto Project Dataset (Version 2018a)
+mp_setapikey(key.file = "manifesto_apikey.txt")
+mpds <- mp_maindataset(version = "MPDS2018a")
 ```
 
-From the readme-files, we can extract more detailed information on the content of each ParlGov-table:
+Parlgov provides three main table views of its database:
 
-> view_cabinet - Cabinet and opposition parties in parliament with their seat strength at each instance of government formation. (main view)     
-> view_election - Election results for national and European Parliament elections. (main view)       
-> view_party - Party information and merge table for various external data sets on party positions.
+> [view_party](http://www.parlgov.org/data/table/view_party/) - Party information and merge table for various external data sets on party positions.
+> [view_cabinet](http://www.parlgov.org/data/table/view_cabinet/) - Cabinet and opposition parties in parliament with their seat strength at each instance of government formation. (main view)     
+> [view_election](http://www.parlgov.org/data/table/view_election/) - Electoral results for national and EP elections. 
+
+For our task here, we use the party and cabinet data. For the goal of easy replication of this tutorial, we read the data directly from the parlgov website within R, but it might be a good idea to save the raw data on your computer, too. We use the read_csv function from the readr package. This slightly differs from read.csv because it has different default settings: it does not convert characters to factors by default, and it encodes in UTF-8. Moreover, it automatically detects dates as dates and returns a clean `tibble` instead of a "normal" data.frame. 
+
+```{r, warning=FALSE, message = FALSE}
+# Loading information on cabinets and parties from ParlGov data
+library(readr)
+pg_cabinets <- read_csv("http://www.parlgov.org/static/data/development-utf-8/view_cabinet.csv")
+pg_cabinets
+```
+
+The cabinet composition data includes information on which parties within a country formed a cabinet. Rows are the most relevant parties within a country. `election_date` indicates the date of the last election. `cabinet_name` is the name of the cabinet (the prime minister + a Roman number), the variable `cabinet_party` indicates whether a party was part of a cabinet or not. For more information on the precise meaning and coding of the variables, see the parlgov website. 
+
+```{r, warning=FALSE, message = FALSE}
+pg_parties <- read_csv("http://www.parlgov.org/static/data/development-utf-8/view_party.csv")
+pg_parties
+```
+
 
 
 ### Merging and working with the data
 
-So lets start merging our data with data from ParlGov. To keep things simple, we focus on two subsequent elections in a single country: Germany 2005 and 2009. We want to investigate the change in ideological positions of the cabinet.
+In the following, we will illustrate how to merge the Manifesto Project Data with parlgov data. For illustrative purposes, we will do this on German governments since 1950 only, but the shown procedure should work similarly for other countries. 
 
-To accomplish this task, we have to go through a couple of steps:
-1. We need to subset the German data for both datasets
-2. We need to merge these datasets
-3. We need to calculate weighted positions for the cabinet
-4. We want to graph the ideological change
+### Subsetting
 
+We subset the the three data sources to electoral programs issued by German parties since 1960, German governments since 1960 and German parties. 
 
-#### Subsetting
-``` {r}
-mp.germany <- dplyr::filter(mp.data, countryname == "Germany" & date %in% c(200509, 200909))
-
-pg.germany <- dplyr::filter(pg.cab, country_name == "Germany" & election_date %in% c("2005-09-18", "2009-09-27"))
+```{r}
+mpds_germany <- filter(mpds, countryname == "Germany" & date > 196000)
+pg_cabinets_germany <- filter(pg_cabinets, country_name == "Germany" & election_date > "1960-01-01")
+pg_parties_germany <- filter(pg_parties, country_name == "Germany")
 ```
 
 
 #### Merging
 
-Merging can be a complicated process, especially if the two datasets are not of equal length or do not share a common identifier. For more insights and different merging-options, we recommend http://stat545.com/bit001_dplyr-cheatsheet.html and the package __dplyr__.
+ParlGov data is easy to merge with the Manifesto Project Data because the party view tables contain the party identifier from the Manifesto Project (often called CMP party code). To be able to calculate government position based on the positions of electoral programs of parties that form a government, we first merge the parlgov party information with the cabinet information, so that the cabinet information also contains the party identifier. 
 
-In our case, we receive two subsets of equal length  (10 observations, i.e. 5 parties for each election). Sometimes, this is not the case and it is even more important to check how your chosen "join-type" will affect the data (again, take a look at the cheatsheet for dplyr join functions). Now the challenge is to merge both subsamples, using unique identifiers in both sets. These identifiers can be dates, unique codes, or a multitude of them.
-
-As in reality, we encounter the problem that a lot of these identifiers are not standardized. You can see that the date formats, party codes, or abbreviations are not exactly the same in ParlGov and Marpor. To merge datasets succesfully, identifiers of both sets have to be perfectly equal. 
-
-Here, only the "seats" variable is exactly equal between both datasets and moreover unique for each party within the time period. But be aware, that this is only the case because we work with a very small sample. But if we would use this variable when merging large chunks of data, we would likely run into problems.
-
-Therefore, we use identifiers that are specific enough to work also with larger datasets: __CMP code__ and __year__. To obtain these values for the ParlGov dataset, we first need to merge it with the "ParlGov Parties dataset":
+We first create a simple link table from the parlgov party view that only includes the parlgov party id , the cmp variable (the Manifesto Project party id) and the party name.
 
 ```{r}
-
-cmp.pgov.id <- select(pg.part, party_id, cmp)
-join.parlgov <- left_join(pg.germany, cmp.pgov.id, by = "party_id") # adding the cmp-codes to the parlgov-data on germany
-
-# harmonizing date-variable with lubridate-package
-join.parlgov$year <- year(as.Date(as.Date(join.parlgov$election_date),"%Y/%m/%d"))
-mp.germany$year   <- year(as.Date(as.Date(mp.germany$edate),"%Y/%m/%d"))
-
-# renaming party ID variable in marpor so that it equals to name in parlgov
-names(mp.germany)[names(mp.germany) == 'party'] <- 'cmp'
-# Harmonizing party name and codeS
-mp.germany$partyabbrev[mp.germany$partyabbrev == "L-PDS"] <-"LINKE"
-mp.germany$cmp[mp.germany$cmp %in% 41222:41223] <-41221
-
-
-
-# joining by cmp (marpor party ID) and year
-join.germany <- left_join(mp.germany, join.parlgov, by = c("cmp", "year"))
+pg_mpds_link_table <- pg_parties_germany %>% 
+  select(party_id, cmp, party_name) %>%
+  mutate(cmp = ifelse(party_id == 255, 41113, cmp))
+         
+pg_mpds_link_table
 ```
 
-### Calculating and graphing ideological development, conditioned on cabinet status
+While this link tables from parlgov are relatively complete, they are sometimes not up-to-date. Here, we eg add the cmp party code for the Alternative für Deutschland yet.
 
-We have succesfully merged our info on party manifestos with data by parlgov on voteshare and cabinet status. Now we would like to investigate the dynamics of ideological change by the cabinet parties, and also calculate a weighted mean of the overall cabinet positions.
-
-To get a brief overview of the developments in Germany between 2005 and 2009, we graph the ideological positions of the parties (according to marpors rile), as well as their cabinet status.
-
-``` {r}
-
-
-# How to plot a two-level plot, where the first level is a line plot grouped by party(abbrev) and in the second layer, points are highlightet if cabinet_party=1 ?
-ggplot(data=join.germany, aes(edate, rile), group = partyabbrev) +
-  geom_line(aes(colour =  partyabbrev)) +
-  geom_point(aes( shape = as.factor(cabinet_party),colour =  partyabbrev, size=1)) 
-
+```{r}
+pg_mpds_link_table <- pg_mpds_link_table %>%
+  mutate(cmp = ifelse(party_name == "Alternative für Deutschland", 41953, cmp))
 ```
- 
- 
-Now we create a new variable called __cab_rile__, which reflects the ideological positon of a cabinet. We decide to use a weighted mean, which means that the variable is constructed as the mean position of all cabinet members, weighted by their amount of seats in parliament relative to all seats obtained by cabinet parties.
 
-``` {r}
-
-# Creating new variable: Sum of seats held by cabinet 
-parties_cabinfo <- join.germany %>%
-  group_by(edate, cabinet_party) %>%
+Moreover, parlgov sometimes treats parties slightly different than the Manifesto Project Dataset due to other coding criteria for political parties. For example the Manifesto Project treats the Left Party and the PDS as different parties with different ids. In contrast, parlgov codes them with the same party_id. In order to correctly merge them, we need to harmonize the coding in our dataset and treat them as the same party, too.
+ 
+```{r}
+mpds_germany <- mpds_germany %>% 
   mutate(
-    block_seats = ifelse( cabinet_party==1, sum(absseat), NA),
-    cab_size = absseat / block_seats,
-    cab_number = ifelse( cabinet_party==1, n(), NA)
-    )
+    party = ifelse(party %in% c(41222, 41223), 41221, party),
+    party = ifelse(party %in% c(41111, 41112, 41113), 41113, party),
+    partyabbrev = ifelse(party == 41113, "Greens", partyabbrev),
+    partyabbrev = ifelse(party == 41221, "Left", partyabbrev)
+  )
+```
+
+We then add the cmp ids to the cabinet information by left joining them to the cabinet data. For the sake of simplicity in this tutorial, we only keep the information for the first cabinet in each election term. Depending on the research question, one might rather take the last cabinet, or keep the information from all cabinets.  
+
+```{r}
+pg_mpds_link_table <- pg_mpds_link_table %>% select(-party_name)
+
+pg_cabinets_with_cmp_ids <- left_join(pg_cabinets_germany, pg_mpds_link_table, by = "party_id") %>% 
+  select(cabinet_party, party_id, cmp, party_name, cabinet_name, cabinet_id, election_date, start_date, seats, election_seats_total) %>% # adding the cmp-codes to the parlgov cabinet data on germany
+group_by(election_date) %>%
+top_n(n = 1, wt = cabinet_id) %>% ungroup() # only keep information from first cabinet in each electoral term
+```
+
+In the next step, we slightly shorten the mpds dataset and keep only the party, date and the left-right positon (`rile`) and merge with the cabinet data.
+
+```{r}
+cabinets_mpds <- mpds_germany %>% 
+  select(edate, party, partyabbrev, rile, pervote, absseat) %>%
+  left_join(pg_cabinets_with_cmp_ids, by=c("party" = "cmp", "edate" = "election_date")) %>%
+  filter(edate > "1960-01-01") %>%
+  mutate(cabinet_party = ifelse(edate == "2013-09-27" & partyabbrev == "FDP", 0, cabinet_party)) %>%
+  filter(!is.na(cabinet_party))
   
-
-# Creating weighted cabinet variable:
-weighted_positions <- parties_cabinfo %>%
-  mutate(cab_rile = sum(rile * cab_size )) %>% ungroup()%>%
-  gather(rile_type, value, cab_rile, rile) %>%
-  filter (value != 0 ) 
+cabinets_mpds 
+```
 
 
-for (i in 1:nrow(weighted_positions)){
- if (weighted_positions$rile_type[i] == "cab_rile") {
-  number <- ifelse(as.character(weighted_positions$year[i])=="2005", "2005", "2009")
-  weighted_positions$partyabbrev[i] <- paste("Cabinet", number)
-  }}
 
 
-       
-# Plotting the results, where the red points show the weighted position of the cabinet
+### Plotting parties' ideological movements
 
-ggplot(weighted_positions, aes(x=date, y=value)) +
-  geom_line( aes(colour = partyabbrev)) + 
-  geom_point (data= weighted_positions[1:4,], aes(date, value), colour = "red", size = 3) +
-  geom_text(data= weighted_positions[1:4,], aes(label=partyabbrev),hjust= 0, vjust=1.5) +
-    xlim(NA, 201000)
-``` 
+We have succesfully merged our info on party manifestos with data by parlgov on cabinet status. We plot parties' ideological movements. The shapes provide information on the government/opposition status. A triangle marks when a party gained office at a focal election and marks when it became an opposition party. 
 
-### Interpretation of the results and plot
+```{r}
+ggplot(data = cabinets_mpds, aes(edate, rile), group = as.factor(partyabbrev)) +
+  geom_line(aes(colour = as.factor(partyabbrev))) +
+  geom_point(aes(shape = factor(cabinet_party, labels = c("Opposition", "Government")), colour = as.factor(partyabbrev)), size = 3) + 
+  labs(color = "Party", shape = "government status", y = "Left-Right-Positions", x = "Zeit")
+```
 
-We see an interesting development. On first sight, we would expect that the 2009 cabinet would be much more conservative than it's predecessor, since the social democrats (SPD) have been replaced by the liberals (FDP) as the "junior" coalition partner of the christian democrats (CDU/CSU). However, this is not what the data tells us. We can clearly see that the new cabinet has moved to the centre (it became less rightist) and the plotted party developments tell us the reason why:      
-Both right parties (CDU/CSU and FDP) have moved significantly to the left between 2005 and 2009. Thus, our weighted average measurement of cabinets reflects these movements.
+```{r eval=FALSE, include=FALSE}
+# How to plot a two-level plot, where the first level is a line plot grouped by party(abbrev) and in the second layer, points are highlightet if cabinet_party=1 ?
+ggplot(data = cabinets_mpds, aes(edate, rile), group = partyabbrev) +
+  geom_line(aes(colour = partyabbrev)) +
+  geom_point(aes(shape = as.factor(cabinet_party), colour = partyabbrev, size = 1))
+```
+ 
+ 
 
 
-We have to keep in mind, that these findings are exemplary and based on assumptions that can and should be discussed critically. However, we wanted to briefly show how our dataset can be combined with external data in order to address new and interesting questions.
+## References
+
+
+Döring, Holger & Philip Manow (2018): Parliaments and governments database (ParlGov): Information on parties, elections and cabinets in modern democracies. Development version. Parlgov.org
+

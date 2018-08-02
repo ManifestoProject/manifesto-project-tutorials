@@ -3,6 +3,7 @@
         "Working with the main dataset": "main-dataset",
         "Subcategories": "subcategories",
         "First steps with manifestoR": "firststepsmanifestoR",
+        "Merging with ParlGov.org": "parlgov_merge",
         "Using the Manifesto Corpus with the tidytext package": "tidymanifestocorpus",
         "Using the Manifesto Corpus with quanteda": "quanteda",
         "... more to come": "HEADER"
