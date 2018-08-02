@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE, cache = FALSE, self.contained = TRUE)
 
 In this tutorial, we will show how to merge the Manifesto Project Dataset with data on cabinet compositions from [parlgov.org](https://www.parlgov.org). We assume that you have already read the [Short primer on the Manifesto Project and its methodology](https://manifesto-project.wzb.eu/tutorials/primer) and [First steps with manifestoR](https://manifesto-project.wzb.eu/tutorials/firststepsmanifestoR). Moreover, you should be familiar with the %>% operator and the dplyr package and grammar. 
 
-## parlgov.org data 
+## ParlGov.org - a data source for parties, cabinets and elections
 
 Along with our policy-codings, our dataset encompasses a number of useful metadata, such as the voteshare (_pervote_), partyname and -abbreviation, or codes that identify eu- and oecd-membership. However, a majority of research questions demand for more information and a broader dataset. Thus, combining the Manifesto Project Dataset with other datasets is often necessary to answer many research questions. In this brief tutorial, we will show how our data can be expanded by merging it with the popular database ParlGov (Döring & Manow 2018). Parlgov provides information on parties, cabinets and elections for 37 countries (EU and OECD). This can be useful if for example one would like to distinguish strategies of opposiiton and government parties, analyze whether some parties or strategies are associated with gaining or loosing office, or when calculating the position of whole cabinets (in contrast to party positions). 
 
@@ -57,7 +57,7 @@ pg_parties
 
 
 
-### Merging and working with the data
+## Merging and working with the data
 
 In the following, we will illustrate how to merge the Manifesto Project Data with parlgov data. For illustrative purposes, we will do this on German governments since 1950 only, but the shown procedure should work similarly for other countries. 
 
@@ -72,7 +72,7 @@ pg_parties_germany <- filter(pg_parties, country_name == "Germany")
 ```
 
 
-#### Merging
+### Merging
 
 ParlGov data is easy to merge with the Manifesto Project Data because the party view tables contain the party identifier from the Manifesto Project (often called CMP party code). To be able to calculate government position based on the positions of electoral programs of parties that form a government, we first merge the parlgov party information with the cabinet information, so that the cabinet information also contains the party identifier. 
 
@@ -130,9 +130,7 @@ cabinets_mpds
 ```
 
 
-
-
-### Plotting parties' ideological movements
+## Plotting parties' ideological movements
 
 We have succesfully merged our info on party manifestos with data by parlgov on cabinet status. We plot parties' ideological movements. The shapes provide information on the government/opposition status. A triangle marks when a party gained office at a focal election and marks when it became an opposition party. 
 
@@ -140,7 +138,7 @@ We have succesfully merged our info on party manifestos with data by parlgov on 
 ggplot(data = cabinets_mpds, aes(edate, rile), group = as.factor(partyabbrev)) +
   geom_line(aes(colour = as.factor(partyabbrev))) +
   geom_point(aes(shape = factor(cabinet_party, labels = c("Opposition", "Government")), colour = as.factor(partyabbrev)), size = 3) + 
-  labs(color = "Party", shape = "government status", y = "Left-Right-Positions", x = "Zeit")
+  labs(color = "Party", shape = "government status", y = "Left-Right-Positions", x = "Time")
 ```
 
 ```{r eval=FALSE, include=FALSE}
